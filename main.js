@@ -34,12 +34,6 @@ const createWindow = () => {
         }
     });
 
-    mainWindow.webContents.session.setPermissionCheckHandler((webContents, permission, requestingOrigin, details) => {
-        if (permission === 'hid' && details.securityOrigin === 'file:///') {
-            return true;
-        }
-    });
-
     mainWindow.webContents.session.setDevicePermissionHandler((details) => {
         if (details.deviceType === 'hid' && details.origin === 'file://') {
             if (!grantedDeviceThroughPermHandler) {
