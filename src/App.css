@@ -1,0 +1,83 @@
+@font-face {
+  font-family: "Satoshi";
+  src: url(../assets/fonts/Satoshi-Variable.ttf);
+}
+
+@font-face {
+  font-family: "DM sans";
+  src: url(../assets/fonts/DMSans-VariableFont_opsz\,wght.ttf);
+}
+
+*, ::before, ::after{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Satoshi", sans-serif;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #25293A;
+  color: #fff;
+  min-height: 100vh;
+}
+
+#root button{
+  font-family: "DM sans";
+}
+
+.title-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.title-wrapper h1{
+  font-size: 80px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.title-wrapper p{
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.title-wrapper button{
+  text-transform: none;
+  background-color: #FCDE9C;
+  color: #25293A;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+  padding: 16px;
+  margin-top: 54px;
+}
+
+.title-wrapper button:hover{
+  background-color: #E6BC83;
+}
+
+.words-container {
+  display: flex;
+  gap: 16px;
+}
+
+a {
+  display: flex;
+  text-decoration: none;
+  padding: 16px 24px;
+  background-color: #fff;
+}
+
+a:focus {
+  background-color: blueviolet;
+}
