@@ -9,17 +9,27 @@ let mainWindow;
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
-        width: 1000,
+        width: 1300,
         height: 800,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
-            nodeIntegration: true,
-        },
+            nodeIntegration: true
+        }
     });
 
     let grantedDeviceThroughPermHandler;
 
     mainWindow.webContents.session.on('select-hid-device', (event, details, callback) => {
+        mainWindow.webContents.session.on('hid-device-added', (event, device) => {
+            console.log('hid-device-added FIRED WITH', device);
+            mainWindow.webContents.send('device-added', "added")
+        });
+
+        mainWindow.webContents.session.on('hid-device-removed', (event, device) => {
+            console.log('hid-device-removed FIRED WITH', device);
+            mainWindow.webContents.send('device-removed', "removed")
+        });
+
         event.preventDefault();
 
         if (details.deviceList && details.deviceList.length > 0) {
