@@ -1,25 +1,28 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import UsbIcon from '@mui/icons-material/Usb';
-import './style.css';
+import logo from '../../assets/img/logo-eq.svg';
+import styles from './Home.module.css';
 
 function Home() {
     let [sentence, setSentence] = useState('');
     const [paired, setPaired] = useState(false);
     const [connected, setConnected] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        window.electronAPI.handleDeviceAdded((event, value) => {
-            if (value === 'added') {
-                setConnected(true);
-                getDeviceData();
-            }
-        });
-        window.electronAPI.handleDeviceRemoved((event, value) => {
-            if (value === 'removed') {
-                setConnected(false);
-            }
-        });
+        // window.electronAPI.handleDeviceAdded((event, value) => {
+        //     if (value === 'added') {
+        //         setConnected(true);
+        //         getDeviceData();
+        //     }
+        // });
+        // window.electronAPI.handleDeviceRemoved((event, value) => {
+        //     if (value === 'removed') {
+        //         setConnected(false);
+        //     }
+        // });
         getDeviceData();
     }, [paired, connected]);
 
@@ -27,7 +30,6 @@ function Home() {
         const devices = await navigator.hid.getDevices();
         if (devices.length > 0) {
             if (devices[0].vendorId === 1984 && devices[0].productId === 4410 && !devices[0].opened) {
-                setConnected(true);
                 try {
                     let openingDevice = await devices[0].open();
                     setPaired(true);
@@ -64,17 +66,20 @@ function Home() {
         if (devices.length > 0) {
             setPaired(true);
             setConnected(true);
+            navigate('/app');
         }
     };
 
     return (
         <>
             <header className="App-header"></header>
-            <main className="main-content">
-                <div className="title-wrapper">
-                    <div className="title">
-                        <h1>Hello talk</h1>
-                        <p>
+            <main className={styles.mainContent}>
+                <div className={styles.titleWrapper}>
+                    <div className={styles.title}>
+                        <h1 className={styles.titleH1}>
+                            Hello talk <img src={logo} />
+                        </h1>
+                        <p className={styles.titleP}>
                             L’application de communication alternative améliorée. Communiquez sans barrière, soyez
                             entendu et soyez inspiré.
                         </p>
@@ -84,6 +89,7 @@ function Home() {
                                 startIcon={<UsbIcon />}
                                 onClick={getDevicesPermission}
                                 tabIndex={-1}
+                                className={styles.titleButton}
                             >
                                 Appairer le controlleur
                             </Button>
@@ -98,7 +104,7 @@ function Home() {
                         <p>{sentence}</p>
                     </div>
                 </div>
-                <div className="background-image"></div>
+                <div className={styles.backgroundImg}></div>
             </main>
         </>
     );

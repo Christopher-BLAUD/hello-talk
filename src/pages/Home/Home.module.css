@@ -1,43 +1,9 @@
-@font-face {
-  font-family: "Satoshi";
-  src: url(../../../assets/fonts/Satoshi-Variable.ttf);
-}
-
-@font-face {
-  font-family: "DM sans";
-  src: url(../../../assets/fonts/DMSans-VariableFont_opsz\,wght.ttf);
-}
-
-:root{
-  --yellow-primary: #FCDE9C;
-  --blue-background: #25293A;
-}
-
-*, ::before, ::after{
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: "Satoshi", sans-serif;
-}
-
-#root {
+.mainContent{
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background-color: var(--blue-background);
-  color: #fff;
-  min-height: 100vh;
+  width: 100%;
 }
 
-#root button{
-  font-family: "DM sans";
-}
-
-.main-content{
-  display: flex;
-}
-
-.title-wrapper{
+.titleWrapper{
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -55,24 +21,28 @@
   justify-content: center;
   color: white;
   background-color: inherit;
-  gap: 8px;
+  gap: 16px;
 }
 
-.title h1{
+.titleH1 {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   font-size: 80px;
   font-weight: 900;
+  white-space: nowrap;
   line-height: normal;
   color: var(--yellow-primary);
 }
 
-.title p{
+.titleP{
   font-size: 18px;
   font-weight: 400;
   line-height: 1.5;
   max-width: 482px;
 }
 
-.title button{
+.titleButton{
   text-transform: none;
   background-color: var(--yellow-primary);
   color: #25293A;
@@ -89,8 +59,8 @@
   background-color: #E6BC83;
 }
 
-.main-content .background-image{
-  background-image: url(../../../assets/img/bg.png);
+.backgroundImg{
+  background-image: url(../../assets/img/bg.png);
   background-position-y: 20%;
   background-repeat: no-repeat;
   background-size: cover;
