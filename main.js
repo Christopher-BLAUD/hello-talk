@@ -1,4 +1,5 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
+const { createFileRoute } = require('electron-router-dom');
 const path = require('path');
 
 try {
@@ -9,7 +10,7 @@ let mainWindow;
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
-        width: 1300,
+        width: 1440,
         height: 800,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
@@ -22,12 +23,12 @@ const createWindow = () => {
     mainWindow.webContents.session.on('select-hid-device', (event, details, callback) => {
         mainWindow.webContents.session.on('hid-device-added', (event, device) => {
             console.log('hid-device-added FIRED WITH', device);
-            mainWindow.webContents.send('device-added', "added")
+            mainWindow.webContents.send('device-added', 'added');
         });
 
         mainWindow.webContents.session.on('hid-device-removed', (event, device) => {
             console.log('hid-device-removed FIRED WITH', device);
-            mainWindow.webContents.send('device-removed', "removed")
+            mainWindow.webContents.send('device-removed', 'removed');
         });
 
         event.preventDefault();

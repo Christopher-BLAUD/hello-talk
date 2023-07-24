@@ -1,20 +1,20 @@
-.card {
+.pad {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
-    width: 224px;
+    width: 230px;
     height: 127px;
     padding: 10px;
     gap: 4px;
     border-radius: 4px;
     background: var(--blue);
     box-shadow: 0px 2px 4px 0px #1f1e2f;
-    text-decoration: none;
+    border: none;
 }
 
-.cardId {
+.padId {
     position: absolute;
     left: 10px;
     top: 8.5px;
@@ -48,15 +48,15 @@
     line-height: normal;
 }
 
-.card:focus, .card:hover{
+.pad:focus, .pad:hover{
     background: var(--purple-focus);
     outline: transparent;
 }
 
-.card:focus .cardId, .card:focus .french, .card:hover .cardId, .card:hover .french{
+.pad:focus .padId, .pad:focus .french, .pad:hover .padId, .pad:hover .french{
     color: var(--blue);
 }
 
-.card:focus .english, .card:hover .english{
+.pad:focus .english, .pad:hover .english{
     color: var(--blue-light);
 }

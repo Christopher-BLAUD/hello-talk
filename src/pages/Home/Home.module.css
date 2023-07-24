@@ -42,7 +42,7 @@
   max-width: 482px;
 }
 
-.titleButton{
+.mainContent .titleButton{
   text-transform: none;
   background-color: var(--yellow-primary);
   color: #25293A;
@@ -55,7 +55,7 @@
   margin-top: 46px;
 }
 
-.title button:hover{
+.mainContent .titleButton:hover{
   background-color: #E6BC83;
 }
 
