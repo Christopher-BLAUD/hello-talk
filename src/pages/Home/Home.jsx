@@ -7,15 +7,14 @@ import logo from '../../assets/img/logo-gradient.svg';
 import styles from './Home.module.css';
 
 function Home() {
-    const { paired, setPaired, setConnected, setMyDevice} = useContext(SpeechContext);
+    const { connected, setConnected, setMyDevice } = useContext(SpeechContext);
     const navigate = useNavigate();
 
-    const getDevicesPermission = async () => {
+    const connectToDevice = async () => {
         const devices = await navigator.hid.requestDevice({ filters: [{ vendorId: 1984, productId: 4410 }] });
         if (devices.length > 0) {
-            setPaired(true);
             setConnected(true);
-            setMyDevice(devices[0])
+            setMyDevice(devices[0]);
             navigate('/app');
         }
     };
@@ -27,17 +26,17 @@ function Home() {
                 <div className={styles.titleWrapper}>
                     <div className={styles.title}>
                         <h1 className={styles.titleH1}>
-                            Hello talk <img src={logo} alt='logo de hello talk'/>
+                            Hello Talk <img src={logo} alt="logo de hello talk" />
                         </h1>
                         <p className={styles.titleP}>
                             L’application de communication augmentée et alternative. Communiquez sans barrière, soyez
                             entendu et soyez inspiré.
                         </p>
-                        {!paired && (
+                        {!connected && (
                             <Button
                                 variant="contained"
                                 startIcon={<UsbIcon />}
-                                onClick={getDevicesPermission}
+                                onClick={connectToDevice}
                                 tabIndex={-1}
                                 className={styles.titleButton}
                             >

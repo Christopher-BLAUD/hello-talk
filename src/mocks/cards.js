@@ -40,5 +40,23 @@ export const cards = [
         fr: "Bonus",
         eng: "bonus",
         sound: "sounds/bruh.mp3"
+    },
+    {
+        id: 108,
+        fr: "Bonus",
+        eng: "bonus",
+        sound: "sounds/bruh.mp3"
+    },
+    {
+        id: 109,
+        fr: "Bonus",
+        eng: "bonus",
+        sound: "sounds/bruh.mp3"
+    },
+    {
+        id: 110,
+        fr: "Bonus",
+        eng: "bonus",
+        sound: "sounds/bruh.mp3"
     }
 ]

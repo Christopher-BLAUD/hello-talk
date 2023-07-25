@@ -25,7 +25,7 @@ const autoplay = (i, tracks) => {
 };
 
 function App() {
-    let { sentence, setSentence, speech, setSpeech, setPaired, paired, setConnected, connected, myDevice } = useContext(SpeechContext);
+    let { sentence, setSentence, speech, setSpeech, connected, setConnected, myDevice } = useContext(SpeechContext);
     const deleteBtn = useRef();
     let [currentPad, setCurrentPad] = useState(0);
     const navigate = useNavigate();
@@ -36,12 +36,18 @@ function App() {
         const pressedPad = data.getUint8(2);
         switch (pressedPad) {
             case 32:
-                currentPad <= 0 ? setCurrentPad((currentPad = buttons.length - 1)) : setCurrentPad((currentPad -= 1));
+                setSentence('');
+                setSpeech([]);
                 break;
             case 16:
+                currentPad === 1
+                    ? setCurrentPad((currentPad = 6))
+                    : currentPad + 5 > buttons.length - 1
+                    ? setCurrentPad((currentPad = 1))
+                    : setCurrentPad((currentPad += 5));
                 break;
             case 8:
-                currentPad >= buttons.length - 1 ? setCurrentPad((currentPad = 0)) : setCurrentPad((currentPad += 1));
+                currentPad >= buttons.length - 1 ? setCurrentPad((currentPad = 1)) : setCurrentPad((currentPad += 1));
                 break;
             case 4:
                 buttons[currentPad].click();
@@ -53,29 +59,40 @@ function App() {
     };
 
     const handleDeviceData = async () => {
-        try {
-            await myDevice.open();
-            myDevice.addEventListener('inputreport', (event) => setFocusPosition(event));
-        } catch (error) {
-            console.error(error);
+        if (!myDevice.vendorId) {
+            const devices = await navigator.hid.getDevices();
+            try {
+                await devices[0].open();
+                devices[0].addEventListener('inputreport', (event) => setFocusPosition(event));
+            } catch (error) {
+                console.error(error);
+            }
+        } else {
+            try {
+                await myDevice.open();
+                myDevice.addEventListener('inputreport', (event) => setFocusPosition(event));
+            } catch (error) {
+                console.error(error);
+            }
         }
     };
 
     useEffect(() => {
         handleDeviceData();
-        window.electronAPI.handleDeviceRemoved((event, value) => {
-            if (value === 'removed') {
-                setConnected(false);
-                setPaired(false);
-                navigate('/');
-            }
-        });
-    }, [paired, connected]);
+        // window.electronAPI.handleDeviceRemoved((event, value) => {
+        //     if (value === 'removed') {
+        //         setConnected(false);
+        //         navigate('/');
+        //     }
+        // });
+    }, []);
 
     return (
         <>
             <header className={styles.appHeader}>
-                <h1 className={styles.headerH1}>Hello talk <img src={logo} alt='logo de hello talk'/></h1>
+                <h1 className={styles.headerH1}>
+                    Hello Talk <img src={logo} alt="logo de hello talk" />
+                </h1>
             </header>
             <main className={styles.content}>
                 <div className={styles.speechWrapper}>
@@ -99,6 +116,12 @@ function App() {
                         <Card key={card.id} id={card.id} frWord={card.fr} engWord={card.eng} sound={card.sound} />
                     ))}
                 </div>
+                {connected && (
+                    <div className={styles.deviceStatus}>
+                        <span>{myDevice.productName} est connecté</span>
+                        <div className={styles.led}></div>
+                    </div>
+                )}
             </main>
         </>
     );
