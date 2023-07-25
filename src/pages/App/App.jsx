@@ -63,13 +63,13 @@ function App() {
 
     useEffect(() => {
         handleDeviceData();
-        // window.electronAPI.handleDeviceRemoved((event, value) => {
-        //     if (value === 'removed') {
-        //         setConnected(false);
-        //         setPaired(false);
-        //         navigate('/');
-        //     }
-        // });
+        window.electronAPI.handleDeviceRemoved((event, value) => {
+            if (value === 'removed') {
+                setConnected(false);
+                setPaired(false);
+                navigate('/');
+            }
+        });
     }, [paired, connected]);
 
     return (
