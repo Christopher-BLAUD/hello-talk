@@ -1,5 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
-const { createFileRoute } = require('electron-router-dom');
+const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
 try {
@@ -10,7 +9,7 @@ let mainWindow;
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
-        width: 1440,
+        width: 1500,
         height: 800,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),

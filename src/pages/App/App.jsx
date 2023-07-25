@@ -2,8 +2,9 @@ import styles from './App.module.css';
 import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import Card from '../../components/Pad/Pad';
+import logo from '../../assets/img/logo-gradient.svg';
 import { cards } from '../../mocks/cards';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { SpeechContext } from '../../utils/Context/SpeechContext';
 import { Howl } from 'howler';
 import { useNavigate } from 'react-router-dom';
@@ -24,7 +25,8 @@ const autoplay = (i, tracks) => {
 };
 
 function App() {
-    let { sentence, setSentence, speech, setSpeech, setPaired, setConnected } = useContext(SpeechContext);
+    let { sentence, setSentence, speech, setSpeech, setPaired, paired, setConnected, connected, myDevice } = useContext(SpeechContext);
+    const deleteBtn = useRef();
     let [currentPad, setCurrentPad] = useState(0);
     const navigate = useNavigate();
 
@@ -32,7 +34,6 @@ function App() {
         const buttons = document.querySelectorAll('button');
         const { data } = event;
         const pressedPad = data.getUint8(2);
-
         switch (pressedPad) {
             case 32:
                 currentPad <= 0 ? setCurrentPad((currentPad = buttons.length - 1)) : setCurrentPad((currentPad -= 1));
@@ -48,26 +49,20 @@ function App() {
             default:
                 break;
         }
-
         buttons[currentPad].focus();
     };
 
-    const getDeviceData = async () => {
-        const devices = await navigator.hid.getDevices();
-        if (devices.length > 0) {
-            if (devices[0].vendorId === 1984 && devices[0].productId === 4410 && !devices[0].opened) {
-                try {
-                    let openingDevice = await devices[0].open();
-                    devices[0].addEventListener('inputreport', (event) => setFocusPosition(event));
-                } catch (error) {
-                    console.error(error);
-                }
-            }
+    const handleDeviceData = async () => {
+        try {
+            await myDevice.open();
+            myDevice.addEventListener('inputreport', (event) => setFocusPosition(event));
+        } catch (error) {
+            console.error(error);
         }
     };
 
     useEffect(() => {
-        getDeviceData();
+        handleDeviceData();
         // window.electronAPI.handleDeviceRemoved((event, value) => {
         //     if (value === 'removed') {
         //         setConnected(false);
@@ -75,12 +70,12 @@ function App() {
         //         navigate('/');
         //     }
         // });
-    });
+    }, [paired, connected]);
 
     return (
         <>
             <header className={styles.appHeader}>
-                <h1 className={styles.headerH1}>Hello talk</h1>
+                <h1 className={styles.headerH1}>Hello talk <img src={logo} alt='logo de hello talk'/></h1>
             </header>
             <main className={styles.content}>
                 <div className={styles.speechWrapper}>
@@ -90,6 +85,7 @@ function App() {
                             setSentence('');
                             setSpeech([]);
                         }}
+                        ref={deleteBtn}
                     >
                         <BackspaceOutlinedIcon className="delete" />
                     </button>

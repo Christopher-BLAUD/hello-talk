@@ -3,11 +3,11 @@ import { Button } from '@mui/material';
 import { useContext } from 'react';
 import { SpeechContext } from '../../utils/Context/SpeechContext';
 import UsbIcon from '@mui/icons-material/Usb';
-import logo from '../../assets/img/logo-eq.svg';
+import logo from '../../assets/img/logo-gradient.svg';
 import styles from './Home.module.css';
 
 function Home() {
-    const { paired, setPaired, setConnected } = useContext(SpeechContext);
+    const { paired, setPaired, setConnected, setMyDevice} = useContext(SpeechContext);
     const navigate = useNavigate();
 
     const getDevicesPermission = async () => {
@@ -15,6 +15,7 @@ function Home() {
         if (devices.length > 0) {
             setPaired(true);
             setConnected(true);
+            setMyDevice(devices[0])
             navigate('/app');
         }
     };
@@ -29,7 +30,7 @@ function Home() {
                             Hello talk <img src={logo} alt='logo de hello talk'/>
                         </h1>
                         <p className={styles.titleP}>
-                            L’application de communication alternative améliorée. Communiquez sans barrière, soyez
+                            L’application de communication augmentée et alternative. Communiquez sans barrière, soyez
                             entendu et soyez inspiré.
                         </p>
                         {!paired && (

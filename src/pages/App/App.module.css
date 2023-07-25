@@ -4,9 +4,24 @@
     padding: 32px;
 }
 
+button:hover{
+    cursor: pointer;
+}
+
 .headerH1{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 32px;
+    gap: 16px;
     font-size: 35.55px;
+    font-family: "DM sans", sans-serif;
+    font-weight: 500;
     color: var(--yellow-primary);
+}
+
+.headerH1 img {
+    height: 20px;
 }
 
 .content{
@@ -14,7 +29,7 @@
     flex-direction: column;
     justify-content: center;
     gap: 32px;
-    padding: 0 96px;
+    padding: 96px;
     max-width: 1440px;
 }
 
@@ -51,7 +66,7 @@
     color: var(--blue-lavander);
 }
 
-.iconContainer:focus{
+.iconContainer:focus, .iconContainer:hover{
     background-color: var(--purple-focus);
     color: var(--blue-light);
     outline: transparent;
