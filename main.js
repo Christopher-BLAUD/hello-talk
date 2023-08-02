@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, Tray } = require('electron');
 const path = require('path');
 
 try {
@@ -7,11 +7,14 @@ try {
 
 let mainWindow;
 
+let appIcon = null;
+
 const createWindow = () => {
     mainWindow = new BrowserWindow({
-        width: 1500,
-        height: 800,
+        width: 1440,
+        height: 900,
         autoHideMenuBar: true,
+        icon: path.join(__dirname, '/src/assets/icons/favicon.ico'),
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true
@@ -61,6 +64,7 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
     createWindow();
+    appIcon = new Tray('/src/assets/icons/favicon.ico');
     app.on('activate', () => (BrowserWindow.getAllWindows().length === 0 ? createWindow() : ''));
 });
 

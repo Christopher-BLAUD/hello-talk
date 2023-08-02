@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { useContext } from 'react';
 import { SpeechContext } from '../../utils/Context/SpeechContext';
-import UsbIcon from '@mui/icons-material/Usb';
 import logo from '../../assets/img/logo-gradient.svg';
 import styles from './Home.module.css';
 
@@ -20,34 +19,27 @@ function Home() {
     };
 
     return (
-        <>
+        <div className="wrapper">
             <header className="App-header"></header>
             <main className={styles.mainContent}>
-                <div className={styles.titleWrapper}>
-                    <div className={styles.title}>
-                        <h1 className={styles.titleH1}>
-                            Hello Talk <img src={logo} alt="logo de hello talk" />
-                        </h1>
-                        <p className={styles.titleP}>
-                            L’application de communication augmentée et alternative. Communiquez sans barrière, soyez
-                            entendu et soyez inspiré.
-                        </p>
-                        {!connected && (
-                            <Button
-                                variant="contained"
-                                startIcon={<UsbIcon />}
-                                onClick={connectToDevice}
-                                tabIndex={-1}
-                                className={styles.titleButton}
-                            >
-                                Connecter le controlleur
+                <div className={styles.title}>
+                    <h1 className={styles.titleH1}>
+                        Hello Talk <img src={logo} alt="logo de hello talk" />
+                    </h1>
+                    <p className={styles.titleP}>L’application de communication augmentée et alternative. Communiquez sans barrière, soyez entendu et soyez inspiré.</p>
+                    {!connected && (
+                        <div className={styles.buttonsContainer}>
+                            <Button variant="contained" onClick={connectToDevice} tabIndex={-1} className={styles.titleButton}>
+                                Lancer l'application
                             </Button>
-                        )}
-                    </div>
+                            <Button variant="outlined" className={styles.titleButtonOutlined}>
+                                Accéder au tableau de bord
+                            </Button>
+                        </div>
+                    )}
                 </div>
-                <div className={styles.backgroundImg}></div>
             </main>
-        </>
+        </div>
     );
 }
 

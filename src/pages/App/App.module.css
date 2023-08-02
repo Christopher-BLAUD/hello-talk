@@ -1,5 +1,7 @@
 .appHeader {
     display: flex;
+    position: absolute;
+    top: 0;
     justify-content: center;
     padding: 32px;
 }
@@ -11,13 +13,10 @@ button:hover {
 .headerH1 {
     display: flex;
     align-items: center;
-    position: absolute;
-    top: 32px;
-    gap: 16px;
-    font-size: 35.55px;
+    gap: 12px;
+    font-size: 24px;
     font-family: "Founders grotesk", sans-serif;
     font-weight: 500;
-    color: var(--yellow-primary);
 }
 
 .headerH1 img {
@@ -29,8 +28,7 @@ button:hover {
     flex-direction: column;
     justify-content: center;
     gap: 32px;
-    padding: 96px;
-    max-width: 1440px;
+    max-width: 1248px;
 }
 
 .speechWrapper {

@@ -19,6 +19,7 @@
     --blue: #2c3144;
     --blue-light: #3c435d;
     --blue-lavander: #939cbd;
+    --grey-light: #E9E9EA;
     --purple-focus: #e5d4ed;
     --green-succes: #28afb0;
 }
@@ -30,9 +31,10 @@
     margin: 0;
     padding: 0;
     font-family: 'Satoshi', sans-serif;
+    color: #fff;
 }
 
-#root {
+.wrapper {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -44,4 +46,10 @@
 
 #root button {
     font-family: 'DM sans';
+}
+
+h2{
+    font-size: 18px;
+    color: var(--grey-light);
+    font-weight: 600;
 }

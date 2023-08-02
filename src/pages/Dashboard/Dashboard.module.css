@@ -1,0 +1,96 @@
+.wrapper{
+    display: flex;
+    position: relative;
+}
+
+.header{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 2;
+    gap: 56px;
+    padding: 24px 0;
+    height: 100dvh;
+    background-color: var(--blue);
+    box-shadow: 1px 0px 2px 0px #1f1e2f;
+}
+
+.headerTitle {
+    display: flex;
+    align-items: center;
+    align-self: center;
+    gap: 12px;
+    font-size: 18px;
+    font-family: "Founders grotesk", sans-serif;
+    color: var(--grey-light);
+}
+
+.headerTitle img {
+    height: 20px;
+}
+
+.navBar{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.navBar a{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 16px 24px 16px 48px;
+    text-decoration: none;
+}
+
+.navBar .navItem{
+    border-right: 2px solid var(--blue);
+}
+
+.navBar .subMenuHeading{
+    padding: 24px 24px 24px 64px;
+}
+
+.navBar .subMenuItem{
+    padding: 24px ;
+}
+
+.navItem .iconContainer{
+    min-width: 42px;
+}
+
+.navItem .navIcon{
+    fill: var(--blue-lavander);
+}
+
+.navBar .navItem:hover{
+    background-color: #fcde9c36;
+    border-right: 2px solid var(--yellow-primary);
+}
+
+.navItem .navText span{
+    font-family: "Satoshi";
+    font-size: 15px;
+    font-weight: 500;
+    line-height: .9;
+    color: var(--grey-light);
+    transition: all 100ms linear;
+}
+
+.navItem:hover .navIcon{
+    fill: var(--yellow-primary);
+}
+
+.navItem:hover .navText span{
+    color: var(--yellow-primary);
+}
+
+.content{
+    display: flex;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 32px;
+    background-color: var(--blue-background);
+}

@@ -79,19 +79,19 @@ function App() {
 
     useEffect(() => {
         handleDeviceData();
-        // window.electronAPI.handleDeviceRemoved((event, value) => {
-        //     if (value === 'removed') {
-        //         setConnected(false);
-        //         navigate('/');
-        //     }
-        // });
+        window.electronAPI.handleDeviceRemoved((event, value) => {
+            if (value === 'removed') {
+                setConnected(false);
+                navigate('/');
+            }
+        });
     }, []);
 
     return (
-        <>
+        <div className='wrapper'>
             <header className={styles.appHeader}>
                 <h1 className={styles.headerH1}>
-                    Hello Talk <img src={logo} alt="logo de hello talk" />
+                    <img src={logo} alt="logo de hello talk" /> Hello Talk
                 </h1>
             </header>
             <main className={styles.content}>
@@ -123,7 +123,7 @@ function App() {
                     </div>
                 )}
             </main>
-        </>
+        </div>
     );
 }
 
