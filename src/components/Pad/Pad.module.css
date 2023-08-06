@@ -5,13 +5,34 @@
     align-items: center;
     position: relative;
     width: 236.8px;
-    height: 127px;
+    height: 100px;
     padding: 10px;
     gap: 4px;
     border-radius: 4px;
     background: var(--blue);
     box-shadow: 0px 2px 4px 0px #1f1e2f;
     border: none;
+}
+
+.pad.permanent{
+    background-color: var(--blue-light);
+}
+
+.pad.outlined{
+    background-color: transparent;
+    box-shadow: unset;
+    border: 1px solid var(--blue-light);
+}
+
+.pad.outlined .french{
+    text-transform: uppercase;
+    letter-spacing: .64px;
+    color: var(--grey-light);
+    font-size: 16px;
+}
+
+.pad.outlined svg{
+    height: 20px;
 }
 
 .padId {
@@ -29,13 +50,21 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 4px;
+    gap: 2px;
 }
+
+.iconWrapper{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
 
 .french {
     color: #fcde9c;
     font-family: 'Satoshi', sans-serif;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
     line-height: normal;
 }
@@ -44,7 +73,7 @@
     color: #fff;
     font-family: Satoshi;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 400;
     line-height: normal;
 }
 
@@ -59,4 +88,8 @@
 
 .pad:focus .english, .pad:hover .english{
     color: var(--blue-light);
+}
+
+.pad.outlined:focus svg, .pad.outlined:hover svg{
+    fill: var(--blue-dark);
 }

@@ -2,21 +2,25 @@ import { useContext } from 'react';
 import { SpeechContext } from '../../utils/Context/SpeechContext';
 import styles from './Pad.module.css';
 
-function Pad({ id, frWord, engWord, sound }) {
-    const { sentence, setSentence, speech, setSpeech } = useContext(SpeechContext);
+function Pad({ id, word, engWord, sound, permanent = false, outlined = false, icon, callback }) {
+    const { openModal} = useContext(SpeechContext);
 
     return (
         <button
-            className={styles.pad}
-            onClick={() => {
-                setSentence(sentence + ' ' + frWord);
-                setSpeech([...speech, sound]);
-            }}
+            className={`${styles.pad} ${permanent ? styles.permanent : outlined ? styles.outlined : ''} ${!openModal ? "selectable" : ""}`}
+            onClick={callback}
         >
-            <span className={styles.padId}>{id}</span>
+            {id && <span className={styles.padId}>{id}</span>}
             <div className={styles.wordsContainer}>
-                <span className={styles.french}>{frWord}</span>
-                <span className={styles.english}>{engWord}</span>
+                {icon ? (
+                    <div className={styles.iconWrapper}>
+                        {icon}
+                        <span className={styles.french}>{word}</span>
+                    </div>
+                ) : (
+                    <span className={styles.french}>{word}</span>
+                )}
+                {engWord && <span className={styles.english}>{engWord}</span>}
             </div>
         </button>
     );

@@ -1,16 +1,16 @@
-.wrapper{
+.wrapper {
     display: flex;
     position: relative;
 }
 
-.header{
+.header {
     display: flex;
     flex-direction: column;
     position: relative;
     z-index: 2;
     gap: 56px;
     padding: 24px 0;
-    height: 100dvh;
+    min-height: 100dvh;
     background-color: var(--blue);
     box-shadow: 1px 0px 2px 0px #1f1e2f;
 }
@@ -21,7 +21,7 @@
     align-self: center;
     gap: 12px;
     font-size: 18px;
-    font-family: "Founders grotesk", sans-serif;
+    font-family: 'Founders grotesk', sans-serif;
     color: var(--grey-light);
 }
 
@@ -29,68 +29,70 @@
     height: 20px;
 }
 
-.navBar{
+.navBar {
     display: flex;
     flex-direction: column;
     width: 100%;
 }
 
-.navBar a{
+.navBar a {
     display: flex;
     align-items: center;
     width: 100%;
     height: 100%;
-    padding: 16px 24px 16px 48px;
+    padding: 12px 24px 12px 24px;
     text-decoration: none;
 }
 
-.navBar .navItem{
+.navBar .navItem {
     border-right: 2px solid var(--blue);
 }
 
-.navBar .subMenuHeading{
-    padding: 24px 24px 24px 64px;
+.navBar .subMenuHeading {
+    padding: 24px 24px 24px 40px;
 }
 
-.navBar .subMenuItem{
-    padding: 24px ;
+.navBar .subMenuItem {
+    padding: 24px;
 }
 
-.navItem .iconContainer{
-    min-width: 42px;
+.navItem .iconContainer {
+    min-width: 36px;
 }
 
-.navItem .navIcon{
+.navItem .navIcon {
     fill: var(--blue-lavander);
+    height: 20px;
 }
 
-.navBar .navItem:hover{
+.navBar .navItem:hover {
     background-color: #fcde9c36;
     border-right: 2px solid var(--yellow-primary);
 }
 
-.navItem .navText span{
-    font-family: "Satoshi";
+.navItem .navText span {
+    font-family: 'Satoshi';
     font-size: 15px;
-    font-weight: 500;
-    line-height: .9;
+    font-weight: 400;
+    line-height: 0.9;
     color: var(--grey-light);
     transition: all 100ms linear;
 }
 
-.navItem:hover .navIcon{
+.navItem:hover .navIcon {
     fill: var(--yellow-primary);
 }
 
-.navItem:hover .navText span{
+.navItem:hover .navText span {
     color: var(--yellow-primary);
 }
 
-.content{
+.content {
     display: flex;
     position: relative;
     z-index: 1;
     width: 100%;
-    padding: 32px;
-    background-color: var(--blue-background);
+    padding: 24px;
+    color: var(--blue);
+    background-color: var(--grey-background);
 }

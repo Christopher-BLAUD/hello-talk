@@ -1,13 +1,15 @@
 import styles from './App.module.css';
 import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
-import Card from '../../components/Pad/Pad';
+import AppsIcon from '@mui/icons-material/Apps';
+import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
+import Pad from '../../components/Pad/Pad';
+import Modal from '../../components/Modal/Modal';
 import logo from '../../assets/img/logo-gradient.svg';
-import { cards } from '../../mocks/cards';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { pads } from '../../mocks/cards';
+import { useContext, useEffect } from 'react';
 import { SpeechContext } from '../../utils/Context/SpeechContext';
 import { Howl } from 'howler';
-import { useNavigate } from 'react-router-dom';
 
 const autoplay = (i, tracks) => {
     const sound = new Howl({
@@ -24,101 +26,132 @@ const autoplay = (i, tracks) => {
     sound.play();
 };
 
-function App() {
-    let { sentence, setSentence, speech, setSpeech, connected, setConnected, myDevice } = useContext(SpeechContext);
-    const deleteBtn = useRef();
-    let [currentPad, setCurrentPad] = useState(0);
-    const navigate = useNavigate();
+function App(props) {
+    let {
+        sentence,
+        setSentence,
+        speech,
+        setSpeech,
+        connected,
+        myController,
+        setMyController,
+        currentTarget,
+        setCurrentTarget,
+        openModal,
+        setOpenModal
+    } = useContext(SpeechContext);
 
-    const setFocusPosition = (event) => {
-        const buttons = document.querySelectorAll('button');
+    const makeSentence = (word, sound) => {
+        setSentence(sentence + ' ' + word);
+        setSpeech([...speech, sound]);
+    };
+
+    const deleteSentence = () => {
+        setSentence('');
+        setSpeech([]);
+    };
+
+    const selectPad = (event) => {
         const { data } = event;
-        const pressedPad = data.getUint8(2);
-        switch (pressedPad) {
+        const padData = data.getUint8(2);
+        const targets = document.querySelectorAll('button.selectable');
+
+        switch (padData) {
             case 32:
                 setSentence('');
                 setSpeech([]);
                 break;
             case 16:
-                currentPad === 1
-                    ? setCurrentPad((currentPad = 6))
-                    : currentPad + 5 > buttons.length - 1
-                    ? setCurrentPad((currentPad = 1))
-                    : setCurrentPad((currentPad += 5));
+                if (!openModal) {
+                    if (currentTarget === 1) setCurrentTarget((currentTarget = 6));
+                    else if (currentTarget + 5 > targets.length - 1) setCurrentTarget((currentTarget = 0));
+                    else setCurrentTarget((currentTarget += 5));
+                } else {
+                    currentTarget === targets.length - 1 ? setCurrentTarget(currentTarget = 0) : setCurrentTarget(currentTarget += 1)
+                }
                 break;
             case 8:
-                currentPad >= buttons.length - 1 ? setCurrentPad((currentPad = 1)) : setCurrentPad((currentPad += 1));
+                currentTarget >= targets.length - 1 ? setCurrentTarget((currentTarget = 0)) : setCurrentTarget((currentTarget += 1));
                 break;
             case 4:
-                buttons[currentPad].click();
+                targets[currentTarget].click();
                 break;
             default:
                 break;
         }
-        buttons[currentPad].focus();
+        targets[currentTarget].focus();
     };
 
-    const handleDeviceData = async () => {
-        if (!myDevice.vendorId) {
+    const openController = async () => {
+        if (!myController.vendorId) {
             const devices = await navigator.hid.getDevices();
-            try {
-                await devices[0].open();
-                devices[0].addEventListener('inputreport', (event) => setFocusPosition(event));
-            } catch (error) {
-                console.error(error);
-            }
-        } else {
-            try {
-                await myDevice.open();
-                myDevice.addEventListener('inputreport', (event) => setFocusPosition(event));
-            } catch (error) {
-                console.error(error);
-            }
+            setMyController(devices[0]);
+        }
+        try {
+            if (!myController.opened) await myController.open();
+        } catch (error) {
+            console.error(error);
         }
     };
 
+    const handleClickOpen = () => {
+        setOpenModal(true);
+        setCurrentTarget((currentTarget = 0));
+    };
+
+    const handleClose = () => {
+        setOpenModal(false);
+    };
+
     useEffect(() => {
-        handleDeviceData();
-        window.electronAPI.handleDeviceRemoved((event, value) => {
-            if (value === 'removed') {
-                setConnected(false);
-                navigate('/');
-            }
-        });
-    }, []);
+        openController();
+        myController.oninputreport = (e) => selectPad(e);
+        // window.electronAPI.handleDeviceRemoved((event, value) => {
+        //     if (value === 'removed') {
+        //         setConnected(false);
+        //         navigate('/');
+        //     }
+        // });
+    }, [openModal]);
 
     return (
-        <div className='wrapper'>
+        <div className="wrapper">
             <header className={styles.appHeader}>
                 <h1 className={styles.headerH1}>
                     <img src={logo} alt="logo de hello talk" /> Hello Talk
                 </h1>
             </header>
             <main className={styles.content}>
+                <Modal isOpen={openModal} onClose={handleClose} />
                 <div className={styles.speechWrapper}>
-                    <button
-                        className={styles.iconContainer}
-                        onClick={() => {
-                            setSentence('');
-                            setSpeech([]);
-                        }}
-                        ref={deleteBtn}
-                    >
+                    <button className={styles.iconContainer} onClick={deleteSentence}>
                         <BackspaceOutlinedIcon className="delete" />
                     </button>
                     <input type="text" name="speech" value={sentence} readOnly tabIndex={-1} />
-                    <button className={styles.iconContainer} onClick={() => autoplay(0, speech)}>
+                    <button className={`${styles.iconContainer} ${!openModal ? 'selectable' : ''}`} onClick={() => autoplay(0, speech)}>
                         <RecordVoiceOverIcon className="play" />
                     </button>
                 </div>
                 <div className={styles.cardsContainer}>
-                    {cards.map((card) => (
-                        <Card key={card.id} id={card.id} frWord={card.fr} engWord={card.eng} sound={card.sound} />
+                    <Pad permanent={true} id="100" word="oui" engWord="yes" sound="sounds/oui.mp3" />
+                    <Pad permanent={true} id="101" word="non" engWord="no" sound="sounds/non.mp3" />
+                    <Pad permanent={true} id="102" word="?" sound="sounds/ne-comprends-pas.mp3" />
+                    <Pad outlined={true} icon={<AppsIcon />} word="Menu" callback={handleClickOpen} />
+                    <Pad outlined={true} icon={<FormatAlignLeftIcon />} word="Liste" />
+                    {pads.map((card) => (
+                        <Pad
+                            key={card.id}
+                            id={card.id}
+                            word={card.fr}
+                            engWord={card.eng}
+                            sound={card.sound}
+                            callback={() => makeSentence(card.fr, card.sound)}
+                        />
                     ))}
                 </div>
                 {connected && (
                     <div className={styles.deviceStatus}>
-                        <span>{myDevice.productName} est connecté</span>
+                        <span>{myController.productName} est connecté</span>
                         <div className={styles.led}></div>
                     </div>
                 )}

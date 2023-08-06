@@ -6,14 +6,14 @@ import logo from '../../assets/img/logo-gradient.svg';
 import styles from './Home.module.css';
 
 function Home() {
-    const { connected, setConnected, setMyDevice } = useContext(SpeechContext);
+    const { connected, setConnected, setMyController } = useContext(SpeechContext);
     const navigate = useNavigate();
 
     const connectToDevice = async () => {
         const devices = await navigator.hid.requestDevice({ filters: [{ vendorId: 1984, productId: 4410 }] });
         if (devices.length > 0) {
             setConnected(true);
-            setMyDevice(devices[0]);
+            setMyController(devices[0]);
             navigate('/app');
         }
     };

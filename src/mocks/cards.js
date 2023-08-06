@@ -1,4 +1,4 @@
-export const cards = [
+export const pads = [
     {
         id: 101,
         fr: "Bonjour",
@@ -25,38 +25,8 @@ export const cards = [
     },
     {
         id: 105,
-        fr: "christopher",
-        eng: "christopher",
-        sound: "sounds/christopher.mp3"
-    },
-    {
-        id: 106,
-        fr: "wellan",
-        eng: "wellan",
-        sound: "sounds/wellan.mp3"
-    },
-    {
-        id: 107,
-        fr: "Bonus",
-        eng: "bonus",
-        sound: "sounds/bruh.mp3"
-    },
-    {
-        id: 108,
-        fr: "Bonus",
-        eng: "bonus",
-        sound: "sounds/bruh.mp3"
-    },
-    {
-        id: 109,
-        fr: "Bonus",
-        eng: "bonus",
-        sound: "sounds/bruh.mp3"
-    },
-    {
-        id: 110,
-        fr: "Bonus",
-        eng: "bonus",
-        sound: "sounds/bruh.mp3"
+        fr: "marius",
+        eng: "marius",
+        sound: "sounds/marius.mp3"
     }
 ]

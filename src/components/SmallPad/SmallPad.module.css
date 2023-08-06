@@ -1,0 +1,42 @@
+.pad {
+    display: flex;
+    width: 118px;
+    height: 75px;
+    padding: 10px;
+    position: relative;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    background: var(--blue);
+    box-shadow: 0px 2px 4px 0px #1f1e2f;
+}
+
+.id {
+    position: absolute;
+    left: 8px;
+    top: 4.5px;
+    color: #b6b6b6;
+    font-family: DM Sans;
+    font-size: 10.667px;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.fr {
+    color: #fcde9c;
+    font-family: Satoshi;
+    font-size: 12.8px;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.eng {
+    color: #fff;
+    font-family: Satoshi;
+    font-size: 12.8px;
+    font-weight: 500;
+    line-height: normal;
+}
