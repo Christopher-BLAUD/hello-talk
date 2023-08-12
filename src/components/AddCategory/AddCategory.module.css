@@ -1,0 +1,6 @@
+.containerHeading{
+    color: var(--grey-light);
+    font-family: "DM sans";
+    font-weight: 300;
+    font-size: 16px
+}

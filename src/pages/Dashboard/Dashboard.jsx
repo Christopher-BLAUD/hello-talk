@@ -8,18 +8,22 @@ import ListItemText from '@mui/material/ListItemText';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import AppsOutlinedIcon from '@mui/icons-material/AppsOutlined';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import CategoryIcon from '@mui/icons-material/Category';
+import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
 import Overview from '../../components/Overview/Overview';
-import { useEffect, useState } from 'react';
+import AddWord from '../../components/AddWord/AddWord';
+import AddCategory from '../../components/AddCategory/AddCategory';
+import { useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material';
 
 function Dashboard() {
     const [open, setOpen] = useState(false);
     const [isOverview, setIsOverview] = useState(true);
+    const [ openWordModal, setOpenWordModal ] = useState(false)
+    const [ openCategoryModal, setOpenCategoryModal ] = useState(false)
 
     const selectedTheme = createTheme({
         components: {
@@ -50,6 +54,14 @@ function Dashboard() {
         setOpen(!open);
     };
 
+    const closeWordModal = () => {
+        setOpenWordModal(false);
+    };
+
+    const closeCategoryModal = () => {
+        setOpenCategoryModal(false);
+    };
+
     const setSelected = (path) => {
         return path === window.location.hash ? true : false;
     };
@@ -58,12 +70,12 @@ function Dashboard() {
         <div className={styles.wrapper}>
             <header className={styles.header}>
                 <h1 className={styles.headerTitle}>
-                    <img src={logo} alt="logo de hello talk" /> Hello Talk
+                    <img src={logo} alt="logo de Marius System" /> Marius System
                 </h1>
                 <nav className={styles.navBar}>
-                    <List sx={{ minWidth: '300px' }}>
+                    <List className={styles.listContainer}>
                         <ThemeProvider theme={selectedTheme}>
-                            <ListItemButton className={styles.navItem} selected={setSelected('#/dashboard')}>
+                            <ListItemButton className={styles.navItem} selected={setSelected('#/dashboard')} title="Tableau de bord">
                                 <Link onClick={() => setIsOverview(true)}>
                                     <ListItemIcon className={styles.iconContainer}>
                                         <HomeOutlinedIcon className={styles.navIcon} />
@@ -71,7 +83,7 @@ function Dashboard() {
                                     <ListItemText primary="Tableau de bord" className={styles.navText} />
                                 </Link>
                             </ListItemButton>
-                            <ListItemButton className={styles.navItem} selected={setSelected('#/app')}>
+                            <ListItemButton className={styles.navItem} selected={setSelected('#/app')} title="Application">
                                 <Link to={'/app'}>
                                     <ListItemIcon className={styles.iconContainer}>
                                         <AppsOutlinedIcon className={styles.navIcon} />
@@ -79,7 +91,7 @@ function Dashboard() {
                                     <ListItemText primary="Application" className={styles.navText} />
                                 </Link>
                             </ListItemButton>
-                            <ListItemButton className={`${styles.navItem} ${styles.subMenuHeading}`} onClick={handleClick}>
+                            <ListItemButton className={`${styles.navItem} ${styles.subMenuHeading}`} onClick={handleClick} title="Ajouter un élément">
                                 <ListItemIcon className={styles.iconContainer}>
                                     <AddCircleOutlineOutlinedIcon className={styles.navIcon} />
                                 </ListItemIcon>
@@ -88,16 +100,21 @@ function Dashboard() {
                             </ListItemButton>
                             <Collapse in={open} timeout="auto" unmountOnExit>
                                 <List component="ul">
-                                    <ListItemButton className={styles.navItem} sx={{ pl: 4 }}>
-                                        <Link onClick={() => setIsOverview(false)}>
+                                    <ListItemButton className={styles.navItem} sx={{ pl: 4 }} title="Ajouter une catégorie">
+                                        <Link onClick={() => setOpenCategoryModal(true)}>
                                             <ListItemIcon className={styles.iconContainer}>
-                                                <CategoryIcon className={styles.navIcon} />
+                                                <CreateNewFolderOutlinedIcon className={styles.navIcon} />
                                             </ListItemIcon>
                                             <ListItemText primary="Nouvelle catégorie" className={styles.navText} />
                                         </Link>
                                     </ListItemButton>
-                                    <ListItemButton className={styles.navItem} sx={{ pl: 4 }} selected={setSelected('#/dashboard/add-word')}>
-                                        <Link to={'add-word'} onClick={() => setIsOverview(false)}>
+                                    <ListItemButton
+                                        className={styles.navItem}
+                                        sx={{ pl: 4 }}
+                                        selected={setSelected('#/dashboard/add-word')}
+                                        title="Ajouter un mot"
+                                    >
+                                        <Link onClick={() => setOpenWordModal(true)}>
                                             <ListItemIcon className={styles.iconContainer}>
                                                 <DriveFileRenameOutlineIcon className={styles.navIcon} />
                                             </ListItemIcon>
@@ -110,7 +127,11 @@ function Dashboard() {
                     </List>
                 </nav>
             </header>
-            <main className={styles.content}>{isOverview ? <Overview /> : <Outlet />}</main>
+            <main className={styles.content}>
+                <AddWord onClose={closeWordModal} isOpen={openWordModal}/>
+                <AddCategory onClose={closeCategoryModal} isOpen={openCategoryModal}/>
+                <Overview />
+            </main>
         </div>
     );
 }

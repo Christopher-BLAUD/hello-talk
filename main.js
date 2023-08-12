@@ -1,5 +1,6 @@
-const { app, BrowserWindow, Tray } = require('electron');
+const { app, BrowserWindow, Tray, ipcMain } = require('electron');
 const path = require('path');
+const fs = require('fs')
 
 try {
     require('electron-reloader')(module);
@@ -71,3 +72,17 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
 });
+
+ipcMain.on('move-file', (event, filePath) => {
+    const destinationPath = path.join(__dirname, 'sounds', path.basename(filePath));
+  
+    fs.copyFile(filePath, destinationPath, (err) => {
+      if (err) {  
+        // event.sender.send('move-file-error', err.message);
+        console.log(err)
+      } else {
+        // event.sender.send('move-file-success', destinationPath);
+        console.log('Succés !')
+      }
+    });
+  });

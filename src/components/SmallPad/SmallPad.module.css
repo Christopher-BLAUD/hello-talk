@@ -1,17 +1,23 @@
 .pad {
     display: flex;
-    width: 118px;
-    height: 75px;
+    min-width: 118px;
+    width: calc(50% - 8px);
+    height: 90px;
     padding: 10px;
     position: relative;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 2px;
-    flex-shrink: 0;
     border-radius: 4px;
     background: var(--blue);
     box-shadow: 0px 2px 4px 0px #1f1e2f;
+    cursor: pointer;
+    transition: all 25ms linear;
+}
+
+.pad:active{
+    transform: scale(0.9);
 }
 
 .id {
@@ -39,4 +45,10 @@
     font-size: 12.8px;
     font-weight: 500;
     line-height: normal;
+}
+
+@media screen and (max-width: 1135px) {
+    .pad{
+        width: 100%;
+    }
 }

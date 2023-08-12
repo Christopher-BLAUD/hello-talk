@@ -44,6 +44,10 @@
     text-decoration: none;
 }
 
+.navBar .listContainer{
+    min-width: 265px;
+}
+
 .navBar .navItem {
     border-right: 2px solid var(--blue);
 }
@@ -95,4 +99,28 @@
     padding: 24px;
     color: var(--blue);
     background-color: var(--grey-background);
+}
+
+@media screen and (max-width: 768px) {
+    .headerTitle{
+        display: flex;
+        flex-direction: column;
+        font-size: 16px;
+        font-weight: 400;
+    }
+    .navBar .listContainer{
+        display: flex;
+        flex-direction: column;
+        width: 126px;
+        min-width: unset;
+    }
+    
+    .navItem .navText{
+        display: none;
+    }
+
+    .navItem .iconContainer {
+        display: flex;
+        justify-content: center;
+    }
 }

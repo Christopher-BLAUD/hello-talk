@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { useContext } from 'react';
 import { SpeechContext } from '../../utils/Context/SpeechContext';
@@ -26,13 +26,15 @@ function Home() {
                     <h1 className={styles.titleH1}>
                         Hello Talk <img src={logo} alt="logo de hello talk" />
                     </h1>
-                    <p className={styles.titleP}>L’application de communication augmentée et alternative. Communiquez sans barrière, soyez entendu et soyez inspiré.</p>
+                    <p className={styles.titleP}>
+                        L’application de communication augmentée et alternative. Communiquez sans barrière, soyez entendu et soyez inspiré.
+                    </p>
                     {!connected && (
                         <div className={styles.buttonsContainer}>
                             <Button variant="contained" onClick={connectToDevice} tabIndex={-1} className={styles.titleButton}>
                                 Lancer l'application
                             </Button>
-                            <Button variant="outlined" className={styles.titleButtonOutlined}>
+                            <Button variant="outlined" className={styles.titleButtonOutlined} onClick={() => navigate('/dashboard')}>
                                 Accéder au tableau de bord
                             </Button>
                         </div>

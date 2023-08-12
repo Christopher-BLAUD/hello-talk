@@ -9,22 +9,10 @@ import logo from '../../assets/img/logo-gradient.svg';
 import { pads } from '../../mocks/cards';
 import { useContext, useEffect } from 'react';
 import { SpeechContext } from '../../utils/Context/SpeechContext';
-import { Howl } from 'howler';
-
-const autoplay = (i, tracks) => {
-    const sound = new Howl({
-        src: [tracks[i]],
-        preload: true,
-        onend: function () {
-            if (i + 1 === tracks.length) {
-                return;
-            } else {
-                autoplay(i + 1, tracks);
-            }
-        }
-    });
-    sound.play();
-};
+import { autoplay } from '../../utils/helpers/autoplay';
+import { useNavigate } from 'react-router-dom';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from '../../utils/helpers/db';
 
 function App(props) {
     let {
@@ -33,6 +21,7 @@ function App(props) {
         speech,
         setSpeech,
         connected,
+        setConnected,
         myController,
         setMyController,
         currentTarget,
@@ -40,6 +29,15 @@ function App(props) {
         openModal,
         setOpenModal
     } = useContext(SpeechContext);
+    const navigate = useNavigate();
+
+    const words = useLiveQuery(async () => {
+        return await db.words.where('recurrent').equals(0).toArray();
+    });
+
+    const reccurentsWords = useLiveQuery(async () => {
+        return await db.words.where('recurrent').equals(1).limit(3).toArray();
+    });
 
     const makeSentence = (word, sound) => {
         setSentence(sentence + ' ' + word);
@@ -55,7 +53,6 @@ function App(props) {
         const { data } = event;
         const padData = data.getUint8(2);
         const targets = document.querySelectorAll('button.selectable');
-
         switch (padData) {
             case 32:
                 setSentence('');
@@ -67,7 +64,7 @@ function App(props) {
                     else if (currentTarget + 5 > targets.length - 1) setCurrentTarget((currentTarget = 0));
                     else setCurrentTarget((currentTarget += 5));
                 } else {
-                    currentTarget === targets.length - 1 ? setCurrentTarget(currentTarget = 0) : setCurrentTarget(currentTarget += 1)
+                    currentTarget === targets.length - 1 ? setCurrentTarget((currentTarget = 0)) : setCurrentTarget((currentTarget += 1));
                 }
                 break;
             case 8:
@@ -106,12 +103,12 @@ function App(props) {
     useEffect(() => {
         openController();
         myController.oninputreport = (e) => selectPad(e);
-        // window.electronAPI.handleDeviceRemoved((event, value) => {
-        //     if (value === 'removed') {
-        //         setConnected(false);
-        //         navigate('/');
-        //     }
-        // });
+        window.electronAPI.handleDeviceRemoved((event, value) => {
+            if (value === 'removed') {
+                setConnected(false);
+                navigate('/');
+            }
+        });
     }, [openModal]);
 
     return (
@@ -133,19 +130,27 @@ function App(props) {
                     </button>
                 </div>
                 <div className={styles.cardsContainer}>
-                    <Pad permanent={true} id="100" word="oui" engWord="yes" sound="sounds/oui.mp3" />
-                    <Pad permanent={true} id="101" word="non" engWord="no" sound="sounds/non.mp3" />
-                    <Pad permanent={true} id="102" word="?" sound="sounds/ne-comprends-pas.mp3" />
-                    <Pad outlined={true} icon={<AppsIcon />} word="Menu" callback={handleClickOpen} />
-                    <Pad outlined={true} icon={<FormatAlignLeftIcon />} word="Liste" />
-                    {pads.map((card) => (
+                    {reccurentsWords?.map((word) => (
                         <Pad
-                            key={card.id}
-                            id={card.id}
-                            word={card.fr}
-                            engWord={card.eng}
-                            sound={card.sound}
-                            callback={() => makeSentence(card.fr, card.sound)}
+                            permanent={true}
+                            key={word.id}
+                            id={word.id}
+                            word={word.original}
+                            engWord={word.engTranslation}
+                            sound={word.soundPath}
+                            callback={() => makeSentence(word.original, word.soundPath)}
+                        />
+                    ))}
+                    <Pad outlined={true} icon={<AppsIcon />} word="Menu" callback={handleClickOpen} />
+                    <Pad outlined={true} icon={<FormatAlignLeftIcon />} word="Liste" callback={() => navigate('/dashboard')} />
+                    {words?.map((word) => (
+                        <Pad
+                            key={word.id}
+                            id={word.id}
+                            word={word.original}
+                            engWord={word.engTranslation}
+                            sound={word.soundPath}
+                            callback={() => makeSentence(word.original, word.soundPath)}
                         />
                     ))}
                 </div>
