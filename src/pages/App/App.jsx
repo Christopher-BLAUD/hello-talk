@@ -6,29 +6,17 @@ import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
 import Pad from '../../components/Pad/Pad';
 import Modal from '../../components/Modal/Modal';
 import logo from '../../assets/img/logo-gradient.svg';
-import { pads } from '../../mocks/cards';
 import { useContext, useEffect } from 'react';
-import { SpeechContext } from '../../utils/Context/SpeechContext';
-import { autoplay } from '../../utils/helpers/autoplay';
+import { AppContext } from '../../utils/Context/AppContext';
+import { autoplay } from '../../utils/Helpers/autoplay';
 import { useNavigate } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '../../utils/helpers/db';
+import { db } from '../../utils/Helpers/db';
+import { ConstructionOutlined } from '@mui/icons-material';
 
 function App(props) {
-    let {
-        sentence,
-        setSentence,
-        speech,
-        setSpeech,
-        connected,
-        setConnected,
-        myController,
-        setMyController,
-        currentTarget,
-        setCurrentTarget,
-        openModal,
-        setOpenModal
-    } = useContext(SpeechContext);
+    let { sentence, setSentence, speech, setSpeech, connected, setConnected, myController, setMyController, currentTarget, setCurrentTarget, openModal, setOpenModal } =
+        useContext(AppContext);
     const navigate = useNavigate();
 
     const words = useLiveQuery(async () => {
@@ -103,12 +91,12 @@ function App(props) {
     useEffect(() => {
         openController();
         myController.oninputreport = (e) => selectPad(e);
-        window.electronAPI.handleDeviceRemoved((event, value) => {
-            if (value === 'removed') {
-                setConnected(false);
-                navigate('/');
-            }
-        });
+        // window.electronAPI.handleDeviceRemoved((event, value) => {
+        //     if (value === 'removed') {
+        //         setConnected(false);
+        //         navigate('/');
+        //     }
+        // });
     }, [openModal]);
 
     return (

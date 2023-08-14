@@ -4,9 +4,10 @@ import { createHashRouter, RouterProvider } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import App from './pages/App/App';
 import Dashboard from './pages/Dashboard/Dashboard';
-import Overview from './components/Overview/Overview';
-import AddWord from './components/AddWord/AddWord';
-import { SpeechProvider } from './utils/Context/SpeechContext';
+import Words from './components/Words/Words';
+import Sentences from './components/Sentences/Sentences';
+import Categories from './components/Categories/Categories';
+import { AppProvider } from './utils/Context/AppContext';
 import './global.css';
 
 const router = createHashRouter([
@@ -20,11 +21,19 @@ const router = createHashRouter([
     },
     {
         path: '/dashboard',
-        element: <Dashboard/>,
+        element: <Dashboard />,
         children: [
             {
-                path: 'add-word',
-                element: <AddWord/>
+                path: 'words',
+                element: <Words />
+            },
+            {
+                path: 'sentences',
+                element: <Sentences />
+            },
+            {
+                path: 'categories',
+                element: <Categories/>
             }
         ]
     }
@@ -33,8 +42,8 @@ const router = createHashRouter([
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <SpeechProvider>
+        <AppProvider>
             <RouterProvider router={router} />
-        </SpeechProvider>
+        </AppProvider>
     </React.StrictMode>
 );

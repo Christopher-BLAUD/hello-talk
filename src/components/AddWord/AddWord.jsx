@@ -20,7 +20,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import MicIcon from '@mui/icons-material/Mic';
 import styles from './AddWord.module.css';
 import { modalTheme } from '../../utils/Theme/Modal/modalTheme';
-import { db } from '../../utils/helpers/db';
+import { db } from '../../utils/Helpers/db';
 import { Checkbox } from '@mui/material';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useCategories } from '../../utils/hooks/useCategories';
@@ -70,10 +70,11 @@ function AddWord(props) {
             const query = await db.words.add({
                 original: original,
                 engTranslation: engTranslation,
+                category: category,
                 soundPath: soundPath,
                 recurrent: recurrentWord
             });
-            sendFile(file.path);
+            // sendFile(file.path);
         } else {
             alert("Veuillez remplir l'ensemble des informations");
         }

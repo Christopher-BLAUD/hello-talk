@@ -1,4 +1,4 @@
-import { formatName } from "../src/components/AddWord/AddCategory/AddCategory";
+import { formatName } from "../src/utils/helpers/formatName";
 
 it('should return a hello string with the first letter capitalized', () => {
     expect(formatName("hello")).toBe('Hello');

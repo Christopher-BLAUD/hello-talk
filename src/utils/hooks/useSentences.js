@@ -3,12 +3,13 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { useContext } from 'react';
 import { AppContext } from '../Context/AppContext';
 
-export const useCategories = () => {
-    const { categories, setCategories } = useContext(AppContext);
+export const useSentences = () => {
+    const { sentences, setSentences } = useContext(AppContext);
 
     const query = useLiveQuery(async () => {
-        setCategories(await db.categories.toArray());
+        setSentences(await db.sentences.orderBy('id').toArray());
+
     });
 
-    return categories;
+    return [sentences, setSentences];
 };

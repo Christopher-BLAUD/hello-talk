@@ -1,9 +1,9 @@
 import { useContext } from 'react';
-import { SpeechContext } from '../../utils/Context/SpeechContext';
+import { AppContext } from '../../utils/Context/AppContext';
 import styles from './Pad.module.css';
 
 function Pad({ id, word, engWord, sound, permanent = false, outlined = false, icon, callback }) {
-    const { openModal} = useContext(SpeechContext);
+    const { openModal} = useContext(AppContext);
 
     return (
         <button

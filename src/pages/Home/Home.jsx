@@ -1,19 +1,23 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { useContext } from 'react';
-import { SpeechContext } from '../../utils/Context/SpeechContext';
+import { AppContext } from '../../utils/Context/AppContext';
 import logo from '../../assets/img/logo-gradient.svg';
 import styles from './Home.module.css';
 
 function Home() {
-    const { connected, setConnected, setMyController } = useContext(SpeechContext);
+    const { connected, setConnected, myController, setMyController } = useContext(AppContext);
     const navigate = useNavigate();
 
     const connectToDevice = async () => {
-        const devices = await navigator.hid.requestDevice({ filters: [{ vendorId: 1984, productId: 4410 }] });
-        if (devices.length > 0) {
-            setConnected(true);
-            setMyController(devices[0]);
+        if(myController.vendorId === undefined) {
+            const devices = await navigator.hid.requestDevice({ filters: [{ vendorId: 1984, productId: 4410 }] });
+            if (devices.length > 0) {
+                setConnected(true);
+                setMyController(devices[0]);
+                navigate('/app');
+            }
+        } else {
             navigate('/app');
         }
     };

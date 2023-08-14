@@ -6,13 +6,13 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import styles from './Modal.module.css';
 import { useContext } from 'react';
-import { SpeechContext } from '../../utils/Context/SpeechContext';
+import { AppContext } from '../../utils/Context/AppContext';
 
 const categories = ['Présentation', 'Repas', 'Travail', 'Loisirs'];
 
 function Modal(props) {
     const { onClose, isOpen } = props;
-    let { openModal } = useContext(SpeechContext);
+    let { openModal } = useContext(AppContext);
 
     const handleClose = () => {
         onClose(isOpen);

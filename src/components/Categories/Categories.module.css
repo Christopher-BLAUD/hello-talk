@@ -1,0 +1,68 @@
+.wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.heading{
+    color: var(--blue-light);
+    font-family: DM Sans;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+}
+
+.rows{
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    width: 100%;
+    padding: 24px 24px;
+    background-color: #EEEEF1;
+}
+
+.rows{
+    position: relative;
+    background-color: transparent;
+    border-bottom: 1px solid var(--grey-light);
+}
+
+.rows:last-child{
+    border-bottom: 0;
+}
+
+.rows span{
+    width: 170px;
+    font-family: "Satoshi";
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--blue-light);
+}
+
+
+.rows span:nth-child(1){
+    display: flex;
+    align-items: center;
+    width: 24px;
+}
+
+.rows span:nth-child(1) svg{
+    fill: var(--blue-lavander);
+}
+
+
+.iconContainer{
+    display: flex;
+    width: 50px;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    right: 18px;
+    cursor: pointer;
+}
+
+.iconContainer .cancelIcon{
+    height: 20px;
+    fill: var(--red);
+}

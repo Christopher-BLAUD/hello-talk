@@ -19,9 +19,9 @@ import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutl
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import styles from './AddCategory.module.css';
 import { modalTheme } from '../../utils/Theme/Modal/modalTheme';
-import { db } from '../../utils/helpers/db';
+import { db } from '../../utils/Helpers/db';
 import { useState } from 'react';
-import { formatName } from '../../utils/helpers/formatName';
+import { formatName } from '../../utils/Helpers/formatName';
 import { useCategories } from '../../utils/hooks/useCategories';
 
 function AddCategory(props) {
@@ -38,6 +38,8 @@ function AddCategory(props) {
             const query = await db.categories.add({
                 name: category
             });
+
+            setCategory('');
         } else {
             alert('Veuillez saisir un nom de catégorie');
         }
@@ -51,14 +53,12 @@ function AddCategory(props) {
     return (
         <ThemeProvider theme={modalTheme}>
             <Dialog onClose={handleClose} open={isOpen}>
-                <Box sx={{padding: "32px",  borderBottom: "1px solid var(--blue-dark)", backgroundColor: "var(--blue)"}}>
+                <Box sx={{ padding: '32px', borderBottom: '1px solid var(--blue-dark)', backgroundColor: 'var(--blue)' }}>
                     <DialogTitle sx={{ fontFamily: 'DM sans', fontWeight: '500!important', fontSize: '20px' }}>Enregistrer une catégorie</DialogTitle>
                 </Box>
-                <Box sx={{display: "flex", flexDirection: "column", gap: "24px", padding: "32px"}}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px', padding: '32px' }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                        <h3 className={styles.containerHeading}>
-                            {categories?.length === 0 ? 'Aucune catégorie enregistée.' : 'Catégories disponibles'}
-                        </h3>
+                        <h3 className={styles.containerHeading}>{categories?.length === 0 ? 'Aucune catégorie enregistée.' : 'Catégories disponibles'}</h3>
                         <List
                             sx={{
                                 display: 'flex',
@@ -98,6 +98,7 @@ function AddCategory(props) {
                                 label="Nouvelle catégorie"
                                 sx={{ '& input': { padding: '16px', fontWeight: '400' } }}
                                 onChange={handleCategory}
+                                value={category}
                             />
                         </FormControl>
                         <FormControl>

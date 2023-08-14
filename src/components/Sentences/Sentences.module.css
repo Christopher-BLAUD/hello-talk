@@ -1,0 +1,79 @@
+.wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.heading{
+    color: var(--blue-light);
+    font-family: DM Sans;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+}
+
+.listHeader, .rows{
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+    padding: 16px 24px;
+    background-color: #EEEEF1;
+}
+
+.rows{
+    position: relative;
+    background-color: transparent;
+    border-bottom: 1px solid var(--grey-light);
+}
+
+.rows:last-child{
+    border-bottom: 0;
+}
+
+.listHeader span, .rows span{
+    width: 170px;
+    font-family: "DM sans";
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--blue-light);
+}
+
+.rows span{
+    font-family: "Satoshi";
+    font-weight: 500;
+}
+
+.listHeader span:nth-child(1), .rows span:nth-child(1){
+    width: 90px;
+}
+
+.listHeader span:nth-child(2), .rows span:nth-child(2){
+    width: 400px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+.iconContainer{
+    display: flex;
+    width: 50px;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    right: 18px;
+    cursor: pointer;
+}
+
+.iconContainer .cancelIcon{
+    height: 20px;
+    fill: var(--red);
+}
+
+.speakerIcon{
+    height: 20px;
+    fill: var(--blue-dark);
+    cursor: pointer;
+}
