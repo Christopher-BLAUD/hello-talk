@@ -171,6 +171,18 @@ export const modalTheme = createTheme({
                     }
                 }
             }
+        },
+        MuiSwitch: {
+            styleOverrides: {
+                root: {
+                    "& .Mui-checked": {
+                        color: "var(--yellow-primary)!important"
+                    },
+                    "& .MuiSwitch-track": {
+                        backgroundColor: "#595961!important"
+                    }
+                }
+            }
         }
     }
 });

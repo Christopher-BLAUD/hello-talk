@@ -1,11 +1,13 @@
-.wrapper{
+.wrapper {
     display: flex;
     flex-direction: column;
     gap: 16px;
     width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
-.heading{
+.heading {
     color: var(--blue-light);
     font-family: DM Sans;
     font-size: 16px;
@@ -13,43 +15,45 @@
     line-height: 24px;
 }
 
-.listHeader, .rows{
+.listHeader,
+.rows {
     display: flex;
     align-items: center;
     gap: 16px;
     width: 100%;
     padding: 16px 24px;
-    background-color: #EEEEF1;
+    background-color: #eeeef1;
 }
 
-.rows{
+.rows {
     position: relative;
     background-color: transparent;
     border-bottom: 1px solid var(--grey-light);
 }
 
-.rows:last-child{
+.rows:last-child {
     border-bottom: 0;
 }
 
-.listHeader span, .rows span{
+.listHeader span,
+.rows span {
     width: 170px;
-    font-family: "Satoshi";
-    font-weight: 500;
+    font-family: 'DM sans';
+    font-weight: 600;
     font-size: 14px;
     color: var(--blue-light);
 }
 
-.rows span{
-    
+.rows span {
+    font-weight: 500;
 }
 
-.listHeader span:nth-child(1), .rows span:nth-child(1){
-    width: 90px;
+.listHeader span:nth-child(1),
+.rows span:nth-child(1) {
+    width: 60px;
 }
 
-
-.iconContainer{
+.iconContainer {
     display: flex;
     width: 50px;
     justify-content: center;
@@ -59,13 +63,22 @@
     cursor: pointer;
 }
 
-.iconContainer .cancelIcon{
+.iconContainer .cancelIcon {
     height: 20px;
     fill: var(--red);
 }
 
-.speakerIcon{
+.speakerIcon {
     height: 20px;
     fill: var(--blue-dark);
     cursor: pointer;
+}
+
+.listContainer{
+    height: calc(100% - 40px);
+}
+
+.listRows{
+    height: calc(100% - 50px);
+    overflow: auto;
 }

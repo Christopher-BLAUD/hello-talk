@@ -13,6 +13,9 @@ export const AppProvider = ({ children }) => {
     const [words, setWords] = useState([]);
     const [categories, setCategories] = useState([]);
     const [sentences, setSentences] = useState([]);
+    const [alert, setAlert] = useState(false);
+    const [alertMess, setAlertMess] = useState('');
+    const [alertType, setAlertType] = useState('');
 
     return (
         <AppContext.Provider
@@ -36,7 +39,13 @@ export const AppProvider = ({ children }) => {
                 categories,
                 setCategories,
                 sentences,
-                setSentences
+                setSentences,
+                alert, 
+                setAlert,
+                alertMess,
+                setAlertMess,
+                alertType,
+                setAlertType
             }}
         >
             {children}

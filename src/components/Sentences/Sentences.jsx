@@ -1,16 +1,13 @@
-import styles from './Sentences.module.css';
-import CancelIcon from '@mui/icons-material/Cancel';
-import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import { useSentences } from '../../utils/hooks/useSentences';
+import { deleteSentence } from '../../utils/Helpers/deleteSentence';
 import { autoplay } from '../../utils/Helpers/autoplay';
-import { db } from '../../utils/Helpers/db';
+import NoData from '../NoData/NoData';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import CancelIcon from '@mui/icons-material/Cancel';
+import styles from './Sentences.module.css';
 
 function Sentences() {
     const [sentences] = useSentences();
-
-    const deleteSentence = async (sentenceId) => {
-        return await db.sentences.delete(sentenceId);
-    };
 
     return (
         <div className={styles.wrapper}>
@@ -38,7 +35,7 @@ function Sentences() {
                     </div>
                 </div>
             ) : (
-                <span>Oups ! Aucune phrase n'est enregistrée.</span>
+                <NoData text={"Oups ... Aucune phrase disponible."}/>
             )}
         </div>
     );

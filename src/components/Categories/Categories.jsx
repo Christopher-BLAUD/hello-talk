@@ -1,6 +1,7 @@
 import { useCategories } from '../../utils/hooks/useCategories';
 import { db } from '../../utils/Helpers/db';
 import { Avatar } from '@mui/material';
+import NoData from '../NoData/NoData';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -17,9 +18,9 @@ function Categories() {
         <div className={styles.wrapper}>
             <h3 className={styles.heading}>Catégories enregistrées</h3>
             {categories.length > 0 ? (
-                <div className={styles.listContainer}>
+                <ul className={styles.listContainer}>
                     {categories?.map((category) => (
-                        <div key={category.id} className={styles.rows}>
+                        <li key={category.id} className={styles.rows}>
                             <span>
                                 <Avatar
                                     sx={{
@@ -37,11 +38,11 @@ function Categories() {
                             <div className={styles.iconContainer} onClick={() => deleteCategories(category.id)}>
                                 <CancelIcon className={styles.cancelIcon} />
                             </div>
-                        </div>
+                        </li>
                     ))}
-                </div>
+                </ul>
             ) : (
-                <span>Oups ! Aucune catégorie n'est enregistrée.</span>
+                <NoData text={"Oups ... Aucune catégorie disponible."}/>
             )}
         </div>
     );

@@ -11,6 +11,7 @@
     gap: 56px;
     padding: 24px 0;
     min-height: 100dvh;
+    max-width: 265px;
     background-color: var(--blue);
     box-shadow: 1px 0px 2px 0px #1f1e2f;
 }
@@ -44,7 +45,7 @@
     text-decoration: none;
 }
 
-.navBar .listContainer{
+.navBar .listContainer {
     min-width: 265px;
 }
 
@@ -96,10 +97,17 @@
     display: flex;
     position: relative;
     z-index: 1;
-    width: 100%;
+    width: calc(100% - 265px);
     padding: 24px;
     color: var(--blue);
     background-color: var(--grey-background);
+}
+
+.errorAlert {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    z-index: 1000;
 }
 
 .container {
@@ -117,6 +125,7 @@
 .globalInfos {
     display: flex;
     gap: 24px;
+    flex-wrap: wrap;
 }
 
 .cardsContainer {
@@ -128,12 +137,12 @@
 .details {
     display: flex;
     height: 387px;
+    width: 100%;
     padding: 16px;
     flex-direction: column;
     align-items: flex-start;
-    overflow-y: auto;
     gap: 32px;
-    flex: 1 0 0;
+    flex: 1 1 387px;
     border-radius: 5px;
     background: #fff;
     box-shadow: 0px 0px 30px 0px #d8d8df;
@@ -141,12 +150,11 @@
 
 .sentenceWrapper {
     display: flex;
-    padding: 16px;
     flex-direction: column;
     align-items: flex-start;
+    height: 100%;
+    padding: 16px;
     gap: 16px;
-    flex: 1 0 0;
-    align-self: stretch;
     border-radius: 10px;
     background: #fff;
     box-shadow: 0px 0px 30px 0px #d8d8df;
@@ -211,14 +219,15 @@
     fill: var(--blue-icon);
 }
 
-.inputContainer .deleteIcon{
+.inputContainer .deleteIcon {
     position: absolute;
     left: 16px;
     fill: var(--blue-light);
     height: 20px;
+    cursor: pointer;
 }
 
-.inputContainer .iconsWrapper{
+.inputContainer .iconsWrapper {
     display: flex;
     gap: 12px;
     position: absolute;
@@ -226,13 +235,13 @@
     padding-right: 8px;
 }
 
-.iconsWrapper svg{
+.iconsWrapper svg {
     height: 20px;
     cursor: pointer;
     fill: var(--blue);
 }
 
-.iconsWrapper .sendIcon{
+.iconsWrapper .sendIcon {
     fill: var(--green-succes);
 }
 
@@ -281,9 +290,9 @@
 .sentenceMaker .sentenceMakerTitle {
     color: var(--blue-dark, #25293a);
     font-family: DM Sans;
-    font-size: 15px;
+    font-size: 14px;
     font-style: normal;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 24px;
 }
 
@@ -293,6 +302,7 @@
     flex-direction: column;
     align-items: flex-start;
     align-self: stretch;
+    overflow: hidden;
 }
 
 .sentenceItem {
@@ -301,6 +311,23 @@
     justify-content: space-between;
     align-items: center;
     align-self: stretch;
+    border-bottom: 1px solid var(--grey-light);
+}
+
+.sentenceItem span {
+    font-weight: 500;
+    max-width: calc(100% - 56px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.transitionContainer {
+    width: 100%;
+}
+
+.sentenceItem:last-child {
+    border-bottom: 0;
 }
 
 .contentContainer {
@@ -313,39 +340,49 @@
     font-style: normal;
     font-weight: 600;
     line-height: 21px;
+    max-width: calc(100% - 24px);
+    padding-right: 56px;
+    overflow: hidden;
 }
 
-.contentContainer svg{
-    cursor: pointer
+.contentContainer svg {
+    cursor: pointer;
 }
 
-.sentenceItem .cancelIcon, .inputContainer .cancelIcon {
+.sentenceItem .cancelIcon,
+.inputContainer .cancelIcon {
     height: 20px;
     fill: var(--red);
+    cursor: pointer;
 }
 
-@media screen and  (max-width: 1134px) {
-    .wordFinder{
+.lastItem {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+@media screen and (max-width: 1134px) {
+    .wordFinder {
         width: 100%;
     }
 }
 
-
 @media screen and (max-width: 768px) {
-    .headerTitle{
+    .headerTitle {
         display: flex;
         flex-direction: column;
         font-size: 16px;
         font-weight: 400;
     }
-    .navBar .listContainer{
+    .navBar .listContainer {
         display: flex;
         flex-direction: column;
         width: 126px;
         min-width: unset;
     }
-    
-    .navItem .navText{
+
+    .navItem .navText {
         display: none;
     }
 
@@ -354,12 +391,16 @@
         justify-content: center;
     }
 
-    .navBar a{
+    .navBar a {
         justify-content: center;
     }
 
-    .navBar .navItem{
+    .navBar .navItem {
         justify-content: center;
         padding-right: 0;
+    }
+
+    .content{
+        width: calc(100% - 126px);
     }
 }

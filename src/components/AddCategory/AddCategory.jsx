@@ -1,3 +1,10 @@
+import { useContext, useState } from 'react';
+import { AppContext } from '../../utils/Context/AppContext';
+import { useCategories } from '../../utils/hooks/useCategories';
+import { modalTheme } from '../../utils/Theme/Modal/modalTheme';
+import { db } from '../../utils/Helpers/db';
+import { formatName } from '../../utils/Helpers/formatName';
+import { validator } from '../../utils/Helpers/validator';
 import {
     ThemeProvider,
     List,
@@ -18,14 +25,10 @@ import {
 import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import styles from './AddCategory.module.css';
-import { modalTheme } from '../../utils/Theme/Modal/modalTheme';
-import { db } from '../../utils/Helpers/db';
-import { useState } from 'react';
-import { formatName } from '../../utils/Helpers/formatName';
-import { useCategories } from '../../utils/hooks/useCategories';
 
 function AddCategory(props) {
     const { onClose, isOpen } = props;
+    const { setAlert, setAlertMess, setAlertType } = useContext(AppContext);
     const [category, setCategory] = useState('');
     const categories = useCategories();
 
@@ -38,16 +41,27 @@ function AddCategory(props) {
             const query = await db.categories.add({
                 name: category
             });
-
+            setAlert(true);
+            setAlertMess('Catégorie créée avec succès !');
+            setAlertType('success');
             setCategory('');
         } else {
-            alert('Veuillez saisir un nom de catégorie');
+            setAlert(true);
+            setAlertMess('Veuillez saisir un nom de catégorie');
+            setAlertType('error');
         }
     };
 
     const handleCategory = (event) => {
         event.target.value = formatName(event.target.value);
-        setCategory(event.target.value);
+
+        if (!validator('word', event.target.value)) {
+            setAlert(true);
+            setAlertMess('Ce champ ne doit contenir que des lettres !');
+            setAlertType('warning');
+        } else {
+            setCategory(event.target.value);
+        }
     };
 
     return (

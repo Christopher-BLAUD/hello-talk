@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
+import { AppContext } from '../../utils/Context/AppContext';
+import { useCategories } from '../../utils/hooks/useCategories';
 import {
-    createTheme,
     ThemeProvider,
     Button,
     Dialog,
@@ -13,20 +14,20 @@ import {
     Box,
     Select,
     MenuItem,
-    FormControlLabel
+    FormControlLabel,
+    Switch
 } from '@mui/material';
+import { modalTheme } from '../../utils/Theme/Modal/modalTheme';
+import { db } from '../../utils/Helpers/db';
+import { validator } from '../../utils/Helpers/validator';
 import { IconFR, IconEN } from '../LangIcon/LangIcon';
 import DownloadIcon from '@mui/icons-material/Download';
 import MicIcon from '@mui/icons-material/Mic';
 import styles from './AddWord.module.css';
-import { modalTheme } from '../../utils/Theme/Modal/modalTheme';
-import { db } from '../../utils/Helpers/db';
-import { Checkbox } from '@mui/material';
-import { useLiveQuery } from 'dexie-react-hooks';
-import { useCategories } from '../../utils/hooks/useCategories';
 
 function AddWord(props) {
     const { onClose, isOpen } = props;
+    const { setAlert, setAlertMess, setAlertType } = useContext(AppContext);
     const [original, setOriginal] = useState('');
     const [engTranslation, setEngTranslation] = useState('');
     const [recurrentWord, setRecurrentWord] = useState(0);
@@ -40,11 +41,23 @@ function AddWord(props) {
     };
 
     const handleWord = (event) => {
-        setOriginal(event.target.value);
+        if (validator('word', event.target.value)) {
+            setOriginal(event.target.value);
+        } else {
+            setAlert(true);
+            setAlertMess('Ce champ ne doit contenir que des lettres !');
+            setAlertType('warning');
+        }
     };
 
     const handleTranslation = (event) => {
-        setEngTranslation(event.target.value);
+        if (validator('word', event.target.value)) {
+            setEngTranslation(event.target.value);
+        } else {
+            setAlert(true);
+            setAlertMess('Ce champ ne doit contenir que des lettres !');
+            setAlertType('warning');
+        }
     };
 
     const handleCategory = (event) => {
@@ -56,7 +69,13 @@ function AddWord(props) {
     };
 
     const handleFile = (event) => {
-        setFile(event.target.files[0]);
+        if (event.target.files[0].type === 'audio/mpeg') {
+            setFile(event.target.files[0]);
+        } else {
+            setAlert(true);
+            setAlertMess('Seul les fichiers .mp3 sont acceptés !');
+            setAlertType('error');
+        }
     };
 
     const sendFile = (sourcePath) => {
@@ -75,8 +94,18 @@ function AddWord(props) {
                 recurrent: recurrentWord
             });
             // sendFile(file.path);
+            setAlert(true);
+            setAlertMess('Mot enregistré avec succès !');
+            setAlertType('success');
+            setOriginal('');
+            setEngTranslation('');
+            setCategory('');
+            setRecurrentWord(0);
+            setFile([]);
         } else {
-            alert("Veuillez remplir l'ensemble des informations");
+            setAlert(true);
+            setAlertMess("Veuillez remplir l'ensemble des informations");
+            setAlertType('error');
         }
     };
 
@@ -102,6 +131,7 @@ function AddWord(props) {
                                     </InputAdornment>
                                 }
                                 label="Mot original"
+                                value={original}
                                 onChange={handleWord}
                                 required
                             />
@@ -119,6 +149,7 @@ function AddWord(props) {
                                     </InputAdornment>
                                 }
                                 label="Traduction"
+                                value={engTranslation}
                                 onChange={handleTranslation}
                                 required
                             />
@@ -127,12 +158,14 @@ function AddWord(props) {
                             <InputLabel id="demo-simple-select-label">Catégorie</InputLabel>
                             <Select label="Catégorie" onChange={handleCategory} value={category} required>
                                 {categories?.map((category) => (
-                                    <MenuItem key={category.id} value={category.name}>{category.name}</MenuItem>
+                                    <MenuItem key={category.id} value={category.name}>
+                                        {category.name}
+                                    </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
                         <FormControl>
-                            <FormControlLabel control={<Checkbox />} label="Mot récurrent ?" onClick={handleRecurrent} required />
+                            <FormControlLabel control={<Switch />} label="Mot récurrent ?" onClick={handleRecurrent} required />
                         </FormControl>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -145,11 +178,7 @@ function AddWord(props) {
                                 <input ref={inputFile} type="file" name="sound" id="sound" className={styles.inputFile} onChange={handleFile} />
                             </FormControl>
                             <FormControl>
-                                <Button
-                                    variant="outlined"
-                                    startIcon={<MicIcon />}
-                                    sx={{ backgroundColor: 'rgba(252, 222, 156, 0.13)', color: '#FDEDC9' }}
-                                >
+                                <Button variant="outlined" startIcon={<MicIcon />} sx={{ backgroundColor: 'rgba(252, 222, 156, 0.13)', color: '#FDEDC9' }}>
                                     Enregistrer ma voix
                                 </Button>
                             </FormControl>

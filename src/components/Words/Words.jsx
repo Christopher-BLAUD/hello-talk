@@ -1,18 +1,18 @@
 import { useWords } from '../../utils/hooks/useWords';
 import { autoplay } from '../../utils/Helpers/autoplay';
+import { db } from '../../utils/Helpers/db';
+import { TransitionGroup } from 'react-transition-group';
+import { Collapse } from '@mui/material';
+import NoData from '../NoData/NoData';
 import CancelIcon from '@mui/icons-material/Cancel';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import styles from './Words.module.css';
-import { db } from '../../utils/Helpers/db';
-import { useState } from 'react';
 
 function Words() {
     const words = useWords();
-    const [speech, setSpeech] = useState([]);
 
-    const playSound = (word) => {
-        setSpeech(word.sound);
-        autoplay(0, speech);
+    const playSound = (sound) => {
+        autoplay(0, [sound]);
     };
 
     const deleteWord = async (wordId) => {
@@ -32,24 +32,28 @@ function Words() {
                         <span>Son</span>
                     </div>
                     <div className={styles.listRows}>
-                        {words?.map((word) => (
-                            <article key={word.id} className={styles.rows} id={word.id}>
-                                <span>{word.id}</span>
-                                <span>{word.original}</span>
-                                <span>{word.engTranslation}</span>
-                                <span>{word.category}</span>
-                                <span onClick={playSound}>
-                                    <VolumeUpIcon className={styles.speakerIcon} />
-                                </span>
-                                <div className={styles.iconContainer} onClick={() => deleteWord(word.id)}>
-                                    <CancelIcon className={styles.cancelIcon} />
-                                </div>
-                            </article>
-                        ))}
+                        <TransitionGroup>
+                            {words?.map((word) => (
+                                <Collapse  key={word.id} >
+                                    <article className={styles.rows} id={word.id}>
+                                        <span>{word.id}</span>
+                                        <span>{word.original}</span>
+                                        <span>{word.engTranslation}</span>
+                                        <span>{word.category}</span>
+                                        <span onClick={() => playSound(word.soundPath)}>
+                                            <VolumeUpIcon className={styles.speakerIcon} />
+                                        </span>
+                                        <div className={styles.iconContainer} onClick={() => deleteWord(word.id)}>
+                                            <CancelIcon className={styles.cancelIcon} />
+                                        </div>
+                                    </article>
+                                </Collapse>
+                            ))}
+                        </TransitionGroup>
                     </div>
                 </div>
             ) : (
-                <span>Oups ! Aucun mot n'est enregistré.</span>
+                <NoData text={'Oups ... Aucun mot disponible.'} />
             )}
         </div>
     );

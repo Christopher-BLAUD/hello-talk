@@ -1,14 +1,18 @@
+import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate, Outlet } from 'react-router-dom';
+import { TransitionGroup } from 'react-transition-group';
 import { AppContext } from '../../utils/Context/AppContext';
 import { useCategories } from '../../utils/hooks/useCategories';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '../../utils/Helpers/db';
-import { useContext, useEffect, useState } from 'react';
-import { autoplay } from '../../utils/Helpers/autoplay';
-import { ThemeProvider, createTheme } from '@mui/material';
 import { useSentences } from '../../utils/hooks/useSentences';
-import { getLastSentences } from '../../utils/Helpers/getLastSentences';
+import { db } from '../../utils/Helpers/db';
+import { autoplay } from '../../utils/Helpers/autoplay';
+import { deleteSentence } from '../../utils/Helpers/deleteSentence';
+import { formatSentence } from '../../utils/Helpers/formatSentence';
+import { validator } from '../../utils/Helpers/validator';
+import { ThemeProvider, createTheme } from '@mui/material';
 import SmallPad from '../../components/SmallPad/SmallPad';
+import Alert from '../../components/Alert/Alert';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -33,7 +37,7 @@ import logo from '../../assets/img/logo-gradient.svg';
 import styles from './Dashboard.module.css';
 
 function Dashboard() {
-    const { words, setWords, setConnected, myController, setMyController } = useContext(AppContext);
+    const { words, setWords, setConnected, myController, setMyController, alert, setAlert, alertMess, setAlertMess, alertType, setAlertType } = useContext(AppContext);
     const [open, setOpen] = useState(false);
     const [openWordModal, setOpenWordModal] = useState(false);
     const [openCategoryModal, setOpenCategoryModal] = useState(false);
@@ -41,12 +45,16 @@ function Dashboard() {
     const [sentenceSounds, setSentenceSounds] = useState([]);
     const [search, setSearch] = useState([]);
     const categories = useCategories();
-    const [sentences, setSentences] = useSentences();
+    const [sentences] = useSentences();
+    const [lastSentences] = useSentences(4);
     const navigate = useNavigate();
 
+    const wordsQuery = useLiveQuery(async () => {
+        setWords(await db.words.orderBy('id').toArray());
+    });
 
     const connectToDevice = async () => {
-        if(myController.vendorId === undefined) {
+        if (myController.vendorId === undefined) {
             const devices = await navigator.hid.requestDevice({ filters: [{ vendorId: 1984, productId: 4410 }] });
             if (devices.length > 0) {
                 setConnected(true);
@@ -59,21 +67,35 @@ function Dashboard() {
     };
 
     const wordSearch = async (e) => {
-        setSearch(await db.words.where('original').startsWith(e.target.value).toArray());
+            setSearch(await db.words.where('original').startsWith(e.target.value).toArray());
     };
 
-    const wordsQuery = useLiveQuery(async () => {
-        setWords(await db.words.orderBy('id').toArray());
-    });
+    const findSentence = async (str) => {
+        const result = await db.sentences.where('sentence').equals(str).toArray();
+        return result.length !== 0 ? true : false;
+    };
 
     const addSentence = async () => {
-        const query = await db.sentences.add({
-            sentence: newSentence,
-            sounds: sentenceSounds
-        });
-
-        setNewSentence("")
-        setSentenceSounds([])
+        if (newSentence === '') {
+            setAlert(true);
+            setAlertType('warning');
+            setAlertMess("Aucune phrase n'est indiquée.");
+        } else {
+            const isSentenceExist = await findSentence(newSentence);
+            if (!isSentenceExist) {
+                setAlert(false);
+                await db.sentences.add({
+                    sentence: newSentence,
+                    sounds: sentenceSounds
+                });
+                setNewSentence('');
+                setSentenceSounds([]);
+            } else {
+                setAlert(true);
+                setAlertType('warning');
+                setAlertMess('Cette phrase existe déja !');
+            }
+        }
     };
 
     const selectedTheme = createTheme({
@@ -118,7 +140,7 @@ function Dashboard() {
     };
 
     const makeSentence = (word, sound) => {
-        setNewSentence(newSentence + ' ' + word);
+        setNewSentence(formatSentence(newSentence, word));
         setSentenceSounds([...sentenceSounds, sound]);
     };
 
@@ -128,8 +150,10 @@ function Dashboard() {
     };
 
     useEffect(() => {
-        if (sentences.length > 4) setSentences(getLastSentences(sentences, 4))
-    }, [sentences])
+        setTimeout(() => {
+            setAlert(false);
+        }, 5000);
+    }, [alert]);
 
     return (
         <div className={styles.wrapper}>
@@ -141,10 +165,13 @@ function Dashboard() {
                     <List className={styles.listContainer}>
                         <ThemeProvider theme={selectedTheme}>
                             <ListItemButton className={styles.navItem} selected={setSelected('#/app')} title="Application">
-                                <Link to={'/app'} onClick={(e) => {
-                                    e.preventDefault()
-                                    connectToDevice()
-                                }}>
+                                <Link
+                                    to={'/app'}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        connectToDevice();
+                                    }}
+                                >
                                     <ListItemIcon className={styles.iconContainer}>
                                         <AppsOutlinedIcon className={styles.navIcon} />
                                     </ListItemIcon>
@@ -169,7 +196,17 @@ function Dashboard() {
                                         </Link>
                                     </ListItemButton>
                                     <ListItemButton className={styles.navItem} sx={{ pl: 4, marginLeft: '16px' }} title="Ajouter un mot">
-                                        <Link onClick={() => setOpenWordModal(true)}>
+                                        <Link
+                                            onClick={() => {
+                                                if (categories.length === 0) {
+                                                    setAlert(true);
+                                                    setAlertType('error');
+                                                    setAlertMess("Veuillez d'abord créer une catégorie");
+                                                } else {
+                                                    setOpenWordModal(true);
+                                                }
+                                            }}
+                                        >
                                             <ListItemIcon className={styles.iconContainer}>
                                                 <DriveFileRenameOutlineIcon className={styles.navIcon} />
                                             </ListItemIcon>
@@ -223,6 +260,7 @@ function Dashboard() {
                                                   callback={() => makeSentence(word.original, word.soundPath)}
                                               />
                                           ))}
+                                    {search.length === 0 && words.length === 0 && <span>Aucun mot disponible pour le moment ...</span>}
                                 </div>
                             </div>
                             <div className={styles.sentenceMaker}>
@@ -234,25 +272,31 @@ function Dashboard() {
                                         <SendIcon className={styles.sendIcon} onClick={addSentence} />
                                     </div>
                                 </div>
-                                <div className={styles.content}>
+                                <div className={styles.lastItem}>
                                     <h4 className={styles.sentenceMakerTitle}>Dernières phrases enregistrées</h4>
                                     <div className={styles.registered}>
-                                        {sentences?.map((item) => (
-                                            <div key={item.id} className={styles.sentenceItem}>
-                                                <div className={styles.contentContainer}>
-                                                    <VolumeUpIcon onClick={() => autoplay(0, item.sounds)} />
-                                                    <span>{item.sentence}</span>
-                                                </div>
-                                                <CancelIcon className={styles.cancelIcon} />
-                                            </div>
-                                        ))}
+                                        <TransitionGroup className={styles.transitionContainer}>
+                                            {lastSentences?.map((item) => (
+                                                <Collapse key={item.id}>
+                                                    <article key={item.id} className={styles.sentenceItem}>
+                                                        <div className={styles.contentContainer}>
+                                                            <VolumeUpIcon onClick={() => autoplay(0, item.sounds)} />
+                                                            <span>{item.sentence}</span>
+                                                        </div>
+                                                        <CancelIcon className={styles.cancelIcon} onClick={() => deleteSentence(item.id)} />
+                                                    </article>
+                                                </Collapse>
+                                            ))}
+                                        </TransitionGroup>
                                     </div>
+                                    {lastSentences.length === 0 && <span className={styles.noData}>Aucune phrase disponible.</span>}
                                 </div>
                             </div>
                         </div>
                     </section>
                 </div>
             </main>
+            <Alert type={alertType} text={alertMess} alert={alert} onClick={() => setAlert(false)} />
         </div>
     );
 }
