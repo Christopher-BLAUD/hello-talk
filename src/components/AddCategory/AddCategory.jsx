@@ -54,13 +54,12 @@ function AddCategory(props) {
 
     const handleCategory = (event) => {
         event.target.value = formatName(event.target.value);
-
-        if (!validator('word', event.target.value)) {
+        if (validator('word', event.target.value)) {
+            setCategory(event.target.value);
+        } else {
             setAlert(true);
             setAlertMess('Ce champ ne doit contenir que des lettres !');
             setAlertType('warning');
-        } else {
-            setCategory(event.target.value);
         }
     };
 

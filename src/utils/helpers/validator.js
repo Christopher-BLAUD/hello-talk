@@ -6,9 +6,9 @@ export const validator = (type, value) => {
 
     switch (type) {
         case 'word':
-            return regexp.number.test(value) ? false : true;
+            return !regexp.number.test(value) ? true : false;
         case 'number':
-            return regexp.word.test(value) ? false : true;
+            return !regexp.word.test(value) ? true : false;
         default:
             return;
     }

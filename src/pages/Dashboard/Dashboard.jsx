@@ -67,7 +67,13 @@ function Dashboard() {
     };
 
     const wordSearch = async (e) => {
-            setSearch(await db.words.where('original').startsWith(e.target.value).toArray());
+            if(validator('word', e.target.value)) {
+                setSearch(await db.words.where('original').startsWith(e.target.value).toArray());
+            } else {
+                setAlert(true)
+                setAlertMess('Ce champ ne doit contenir que des lettres !')
+                setAlertType('error')
+            }
     };
 
     const findSentence = async (str) => {
