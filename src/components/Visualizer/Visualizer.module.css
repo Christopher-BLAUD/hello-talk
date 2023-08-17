@@ -1,0 +1,42 @@
+.container {
+    display: flex;
+    gap: 3px;
+  }
+  
+  .rod,.l:nth-child(9) {
+    border-radius: 5em;
+    width: 1px;
+    background-color: var(--grey-light);
+    height: 20px;
+    box-shadow: 1px 1px 4px black;
+    animation: scale cubic-bezier(.41,.44,.72,.69) 2s infinite;
+  }
+  
+  .rod:nth-child(2), 
+  .rod:nth-child(8) {
+    animation-delay: .25s;
+  }
+  
+  .rod:nth-child(3), 
+  .rod:nth-child(7) {
+    animation-delay: .5s;
+  }
+  
+  .rod:nth-child(4), 
+  .rod:nth-child(6) {
+    animation-delay: .75s;
+  }
+  
+  .rod:nth-child(5) {
+    animation-delay: 1s;
+  }
+  
+  @keyframes scale {
+    0% {
+      transform: scaleY(1);
+    }
+  
+    100% {
+      transform: scaleY(-1);
+    }
+  }

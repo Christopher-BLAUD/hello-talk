@@ -15,7 +15,7 @@ export const modalTheme = createTheme({
                     gap: '16px',
                     boxShadow: '0px 0px 13px 6px rgba(32, 35, 49, 0.23)',
                     backgroundColor: 'var(--blue-background)',
-                    minWidth: '420px',
+                    minWidth: '600px',
                     "&::-webkit-scrollbar-thumb": {
                         backgroundColor: "var(--blue-light)"
                     }
@@ -104,8 +104,10 @@ export const modalTheme = createTheme({
                     color: 'var(--yellow-primary)',
                     fontWeight: '300',
                     fontFamily: 'DM sans',
+                    width: "100%",
                     '&:hover': {
-                        borderColor: 'unset'
+                        borderColor: 'unset',
+                        backgroundColor: "#fcde9c36"
                     }
                 }
             }

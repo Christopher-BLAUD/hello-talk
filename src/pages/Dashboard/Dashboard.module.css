@@ -36,14 +36,6 @@
     width: 100%;
 }
 
-.navBar a {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    padding: 8px 24px 8px 24px;
-    text-decoration: none;
-}
 
 .navBar .listContainer {
     min-width: 265px;
@@ -69,11 +61,6 @@
 .navItem .navIcon {
     fill: var(--blue-lavander);
     height: 20px;
-}
-
-.navBar .navItem:hover {
-    background-color: #fcde9c36;
-    border-right: 2px solid var(--yellow-primary);
 }
 
 .navItem .navText span {

@@ -1,6 +1,6 @@
-import { useContext, useRef, useState } from 'react';
-import { AppContext } from '../../utils/Context/AppContext';
+import { useEffect, useRef, useState } from 'react';
 import { useCategories } from '../../utils/hooks/useCategories';
+import { useAlert } from '../../utils/hooks/useAlert';
 import {
     ThemeProvider,
     Button,
@@ -15,49 +15,45 @@ import {
     Select,
     MenuItem,
     FormControlLabel,
-    Switch
+    Switch,
 } from '@mui/material';
 import { modalTheme } from '../../utils/Theme/Modal/modalTheme';
 import { db } from '../../utils/Helpers/db';
-import { validator } from '../../utils/Helpers/validator';
 import { IconFR, IconEN } from '../LangIcon/LangIcon';
 import DownloadIcon from '@mui/icons-material/Download';
 import MicIcon from '@mui/icons-material/Mic';
+import Visualizer from '../Visualizer/Visualizer';
 import styles from './AddWord.module.css';
 
 function AddWord(props) {
     const { onClose, isOpen } = props;
-    const { setAlert, setAlertMess, setAlertType } = useContext(AppContext);
     const [original, setOriginal] = useState('');
     const [engTranslation, setEngTranslation] = useState('');
     const [recurrentWord, setRecurrentWord] = useState(0);
     const [category, setCategory] = useState('');
     const [file, setFile] = useState([]);
+    const [stream, setStream] = useState(null);
+    const [permission, setPermission] = useState(false);
+    const [mimeType, setMimeType] = useState('audio/mpeg-3');
+    const [recordingStatus, setRecordingStatus] = useState('inactive');
+    const [audio, setAudio] = useState(null);
+    const [time, setTime] = useState(0);
+    const mediaRecorder = useRef(null);
+    const inputFile = useRef(null);
+    const audioPlayer = useRef(null);
     const categories = useCategories();
-    const inputFile = useRef();
+    const createAlert = useAlert()
 
     const handleClose = () => {
         onClose(isOpen);
     };
 
     const handleWord = (event) => {
-        if (validator('word', event.target.value)) {
-            setOriginal(event.target.value);
-        } else {
-            setAlert(true);
-            setAlertMess('Ce champ ne doit contenir que des lettres !');
-            setAlertType('warning');
-        }
+        setOriginal(event.target.value);
     };
 
     const handleTranslation = (event) => {
-        if (validator('word', event.target.value)) {
-            setEngTranslation(event.target.value);
-        } else {
-            setAlert(true);
-            setAlertMess('Ce champ ne doit contenir que des lettres !');
-            setAlertType('warning');
-        }
+        setEngTranslation(event.target.value);
     };
 
     const handleCategory = (event) => {
@@ -72,42 +68,85 @@ function AddWord(props) {
         if (event.target.files[0].type === 'audio/mpeg') {
             setFile(event.target.files[0]);
         } else {
-            setAlert(true);
-            setAlertMess('Seul les fichiers .mp3 sont acceptés !');
-            setAlertType('error');
+            createAlert(true, "error", 'Seul les fichiers .mp3 sont acceptés !')
         }
     };
 
-    const sendFile = (sourcePath) => {
-        window.electronAPI.moveFile(sourcePath);
+    const sendFile = (source) => {
+        window.electronAPI.moveFile(source);
     };
 
     const addNewWord = async (word) => {
-        let soundPath = './sounds/' + file.name;
-
-        if (original !== '' && engTranslation !== '' && category !== '' && file.name !== undefined) {
-            const query = await db.words.add({
+        let soundPath;
+        if (original !== '' && engTranslation !== '' && category !== '' && file.length !== 0) {
+            if (file.name && file.type === 'audio/mpeg') {
+                soundPath = './sounds/' + file.name;
+                sendFile(file.path);
+            }
+            if (file.type === 'audio/mpeg-3') {
+                soundPath = file;
+            }
+            await db.words.add({
                 original: original,
                 engTranslation: engTranslation,
                 category: category,
                 soundPath: soundPath,
                 recurrent: recurrentWord
             });
-            // sendFile(file.path);
-            setAlert(true);
-            setAlertMess('Mot enregistré avec succès !');
-            setAlertType('success');
+            createAlert(true, "success", 'Mot enregistré avec succès !')
             setOriginal('');
             setEngTranslation('');
             setCategory('');
             setRecurrentWord(0);
             setFile([]);
         } else {
-            setAlert(true);
-            setAlertMess("Veuillez remplir l'ensemble des informations");
-            setAlertType('error');
+            createAlert(true, "error", "Veuillez remplir l'ensemble des informations")
         }
     };
+
+    const getMicPermission = async () => {
+        try {
+            const streamData = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true }, video: false });
+            setPermission(true);
+            setStream(streamData);
+        } catch (error) {
+            alert(error.message);
+        }
+    };
+
+    const startRecording = async () => {
+        setRecordingStatus('recording');
+        const media = new MediaRecorder(stream, { type: mimeType });
+        mediaRecorder.current = media;
+        mediaRecorder.current.start();
+        let localAudioChunks = [];
+
+        mediaRecorder.current.ondataavailable = (event) => {
+            if (typeof event.data === 'undefined') return;
+            if (event.data.size === 0) return;
+            localAudioChunks.push(event.data);
+        };
+        setFile(localAudioChunks);
+    };
+
+    const stopRecording = () => {
+        setRecordingStatus('inactive');
+        mediaRecorder.current.stop();
+        mediaRecorder.current.onstop = () => {
+            const audioBlob = new Blob(file, { type: mimeType });
+            setFile(audioBlob);
+            const audioUrl = URL.createObjectURL(audioBlob);
+            setAudio(audioUrl);
+            audioPlayer.current.controls = true;
+            audioPlayer.current.autoplay = true;
+
+            console.log(audioPlayer.current);
+        };
+    };
+
+    useEffect(() => {
+        getMicPermission();
+    }, []);
 
     return (
         <ThemeProvider theme={modalTheme}>
@@ -170,20 +209,60 @@ function AddWord(props) {
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <h3 className={styles.containerHeading}>Choisissez un son</h3>
-                        <Box sx={{ display: 'flex', gap: '16px' }}>
-                            <FormControl>
-                                <Button variant="outlined" startIcon={<DownloadIcon />} onClick={() => inputFile.current.click()}>
-                                    Télécharger un fichier
-                                </Button>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', gap: '24px' }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'center', gap: '16px', width: '100%' }}>
+                                {recordingStatus === 'inactive' && (
+                                    <FormControl sx={{ width: '100%' }}>
+                                        <Button variant="outlined" startIcon={<DownloadIcon />} onClick={() => inputFile.current.click()}>
+                                            Télécharger un fichier
+                                        </Button>
+                                    </FormControl>
+                                )}
                                 <input ref={inputFile} type="file" name="sound" id="sound" className={styles.inputFile} onChange={handleFile} />
-                            </FormControl>
-                            <FormControl>
-                                <Button variant="outlined" startIcon={<MicIcon />} sx={{ backgroundColor: 'rgba(252, 222, 156, 0.13)', color: '#FDEDC9' }}>
-                                    Enregistrer ma voix
-                                </Button>
-                            </FormControl>
+                                <FormControl sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                    {permission && recordingStatus === 'inactive' && (
+                                        <Button
+                                            variant="outlined"
+                                            startIcon={<MicIcon />}
+                                            sx={{
+                                                backgroundColor: '#e3e3e814',
+                                                color: 'var(--grey-light)',
+                                                borderColor: 'var(--grey-light)',
+                                                '&:hover': {
+                                                    backgroundColor: '#e9e9ea24'
+                                                }
+                                            }}
+                                            onClick={startRecording}
+                                        >
+                                            Enregistrer ma voix
+                                        </Button>
+                                    )}
+                                    {recordingStatus === 'recording' && (
+                                        <Button
+                                            startIcon={<Visualizer />}
+                                            variant="container"
+                                            onClick={stopRecording}
+                                            sx={{
+                                                border: '1px solid var(--grey-light)',
+                                                color: 'var(--grey-light)',
+                                                width: 'fit-content',
+                                                '& .MuiButton-startIcon': {
+                                                    marginRight: '16px'
+                                                },
+                                                '&:hover': {
+                                                    backgroundColor: '#e9e9ea24'
+                                                }
+                                            }}
+                                        >
+                                            Arrêter l'enregistrement
+                                        </Button>
+                                    )}
+                                </FormControl>
+                            </Box>
+                            {!file.name && <audio ref={audioPlayer} src={audio}></audio>}
+                            <span className={styles.fileName}>{file.name}</span>
+                            {recordingStatus === 'recording' && <span className={styles.fileName}>{time}</span>}
                         </Box>
-                        <span className={styles.fileName}>{file.name}</span>
                         <FormControl>
                             <Button
                                 variant="contained"

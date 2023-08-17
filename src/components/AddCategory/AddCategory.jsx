@@ -1,10 +1,9 @@
-import { useContext, useState } from 'react';
-import { AppContext } from '../../utils/Context/AppContext';
+import { useState } from 'react';
 import { useCategories } from '../../utils/hooks/useCategories';
+import { useAlert } from '../../utils/hooks/useAlert';
 import { modalTheme } from '../../utils/Theme/Modal/modalTheme';
 import { db } from '../../utils/Helpers/db';
 import { formatName } from '../../utils/Helpers/formatName';
-import { validator } from '../../utils/Helpers/validator';
 import {
     ThemeProvider,
     List,
@@ -28,9 +27,9 @@ import styles from './AddCategory.module.css';
 
 function AddCategory(props) {
     const { onClose, isOpen } = props;
-    const { setAlert, setAlertMess, setAlertType } = useContext(AppContext);
     const [category, setCategory] = useState('');
     const categories = useCategories();
+    const createAlert = useAlert();
 
     const handleClose = () => {
         onClose(isOpen);
@@ -41,26 +40,16 @@ function AddCategory(props) {
             const query = await db.categories.add({
                 name: category
             });
-            setAlert(true);
-            setAlertMess('Catégorie créée avec succès !');
-            setAlertType('success');
+            createAlert(true, 'success', 'Catégorie créée avec succès !');
             setCategory('');
         } else {
-            setAlert(true);
-            setAlertMess('Veuillez saisir un nom de catégorie');
-            setAlertType('error');
+            createAlert(true, 'error', 'Veuillez saisir un nom de catégorie');
         }
     };
 
     const handleCategory = (event) => {
         event.target.value = formatName(event.target.value);
-        if (validator('word', event.target.value)) {
-            setCategory(event.target.value);
-        } else {
-            setAlert(true);
-            setAlertMess('Ce champ ne doit contenir que des lettres !');
-            setAlertType('warning');
-        }
+        setCategory(event.target.value);
     };
 
     return (

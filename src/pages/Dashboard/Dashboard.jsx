@@ -1,16 +1,17 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useNavigate, Outlet } from 'react-router-dom';
 import { TransitionGroup } from 'react-transition-group';
 import { AppContext } from '../../utils/Context/AppContext';
 import { useCategories } from '../../utils/hooks/useCategories';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useSentences } from '../../utils/hooks/useSentences';
+import { useAlert } from '../../utils/hooks/useAlert';
 import { db } from '../../utils/Helpers/db';
 import { autoplay } from '../../utils/Helpers/autoplay';
 import { deleteSentence } from '../../utils/Helpers/deleteSentence';
 import { formatSentence } from '../../utils/Helpers/formatSentence';
-import { validator } from '../../utils/Helpers/validator';
-import { ThemeProvider, createTheme } from '@mui/material';
+import { ThemeProvider } from '@mui/material';
+import { navbarTheme } from '../../utils/Theme/Navbar/navbarTheme';
 import SmallPad from '../../components/SmallPad/SmallPad';
 import Alert from '../../components/Alert/Alert';
 import List from '@mui/material/List';
@@ -37,7 +38,7 @@ import logo from '../../assets/img/logo-gradient.svg';
 import styles from './Dashboard.module.css';
 
 function Dashboard() {
-    const { words, setWords, setConnected, myController, setMyController, alert, setAlert, alertMess, setAlertMess, alertType, setAlertType } = useContext(AppContext);
+    const { words, setWords, setConnected, myController, setMyController, alert, setAlert, alertMess, alertType } = useContext(AppContext);
     const [open, setOpen] = useState(false);
     const [openWordModal, setOpenWordModal] = useState(false);
     const [openCategoryModal, setOpenCategoryModal] = useState(false);
@@ -47,6 +48,7 @@ function Dashboard() {
     const categories = useCategories();
     const [sentences] = useSentences();
     const [lastSentences] = useSentences(4);
+    const createAlert = useAlert();
     const navigate = useNavigate();
 
     const wordsQuery = useLiveQuery(async () => {
@@ -67,13 +69,7 @@ function Dashboard() {
     };
 
     const wordSearch = async (e) => {
-            if(validator('word', e.target.value)) {
-                setSearch(await db.words.where('original').startsWith(e.target.value).toArray());
-            } else {
-                setAlert(true)
-                setAlertMess('Ce champ ne doit contenir que des lettres !')
-                setAlertType('error')
-            }
+        setSearch(await db.words.where('original').startsWith(e.target.value).toArray());
     };
 
     const findSentence = async (str) => {
@@ -83,13 +79,10 @@ function Dashboard() {
 
     const addSentence = async () => {
         if (newSentence === '') {
-            setAlert(true);
-            setAlertType('warning');
-            setAlertMess("Aucune phrase n'est indiquée.");
+            createAlert(true, 'warning', "Aucune phrase n'est indiquée.");
         } else {
             const isSentenceExist = await findSentence(newSentence);
             if (!isSentenceExist) {
-                setAlert(false);
                 await db.sentences.add({
                     sentence: newSentence,
                     sounds: sentenceSounds
@@ -97,37 +90,10 @@ function Dashboard() {
                 setNewSentence('');
                 setSentenceSounds([]);
             } else {
-                setAlert(true);
-                setAlertType('warning');
-                setAlertMess('Cette phrase existe déja !');
+                createAlert(true, 'warning', 'Cette phrase existe déja !');
             }
         }
     };
-
-    const selectedTheme = createTheme({
-        components: {
-            MuiListItemButton: {
-                styleOverrides: {
-                    root: {
-                        '&.Mui-selected': {
-                            backgroundColor: '#fcde9c36',
-                            borderRight: '2px solid #fcde9c'
-                        },
-                        '&.Mui-selected:hover': {
-                            backgroundColor: '#fcde9c36',
-                            borderRight: '2px solid #fcde9c'
-                        },
-                        '&.Mui-selected .MuiTypography-root': {
-                            color: '#fcde9c'
-                        },
-                        '&.Mui-selected .MuiSvgIcon-root': {
-                            fill: '#fcde9c'
-                        }
-                    }
-                }
-            }
-        }
-    });
 
     const handleClick = () => {
         setOpen(!open);
@@ -155,12 +121,6 @@ function Dashboard() {
         setSentenceSounds([]);
     };
 
-    useEffect(() => {
-        setTimeout(() => {
-            setAlert(false);
-        }, 5000);
-    }, [alert]);
-
     return (
         <div className={styles.wrapper}>
             <header className={styles.header}>
@@ -168,9 +128,9 @@ function Dashboard() {
                     <img src={logo} alt="logo de Marius System" /> Marius System
                 </h1>
                 <nav className={styles.navBar}>
-                    <List className={styles.listContainer}>
-                        <ThemeProvider theme={selectedTheme}>
-                            <ListItemButton className={styles.navItem} selected={setSelected('#/app')} title="Application">
+                    <List component="ul" className={styles.listContainer}>
+                        <ThemeProvider theme={navbarTheme}>
+                            <ListItemButton component="li" className={styles.navItem} selected={setSelected('#/app')} title="Application">
                                 <Link
                                     to={'/app'}
                                     onClick={(e) => {
@@ -184,7 +144,7 @@ function Dashboard() {
                                     <ListItemText primary="Application" className={styles.navText} />
                                 </Link>
                             </ListItemButton>
-                            <ListItemButton className={`${styles.navItem} ${styles.subMenuHeading}`} onClick={handleClick} title="Ajouter un élément">
+                            <ListItemButton component="li" className={`${styles.navItem} ${styles.subMenuHeading}`} onClick={handleClick} title="Ajouter un élément">
                                 <ListItemIcon className={styles.iconContainer}>
                                     <AddCircleOutlineOutlinedIcon className={styles.navIcon} />
                                 </ListItemIcon>
@@ -193,7 +153,12 @@ function Dashboard() {
                             </ListItemButton>
                             <Collapse in={open} timeout="auto" unmountOnExit>
                                 <List component="ul">
-                                    <ListItemButton className={styles.navItem} sx={{ pl: 4, marginLeft: '16px' }} title="Ajouter une catégorie">
+                                    <ListItemButton
+                                        component="li"
+                                        className={styles.navItem}
+                                        sx={{ pl: 4, '& a': { padding: '16px 32px 16px 56px' } }}
+                                        title="Ajouter une catégorie"
+                                    >
                                         <Link onClick={() => setOpenCategoryModal(true)}>
                                             <ListItemIcon className={styles.iconContainer}>
                                                 <CreateNewFolderOutlinedIcon className={styles.navIcon} />
@@ -201,13 +166,16 @@ function Dashboard() {
                                             <ListItemText primary="Nouvelle catégorie" className={styles.navText} />
                                         </Link>
                                     </ListItemButton>
-                                    <ListItemButton className={styles.navItem} sx={{ pl: 4, marginLeft: '16px' }} title="Ajouter un mot">
+                                    <ListItemButton
+                                        component="li"
+                                        className={styles.navItem}
+                                        sx={{ pl: 4, '& a': { padding: '16px 32px 16px 56px' } }}
+                                        title="Ajouter un mot"
+                                    >
                                         <Link
                                             onClick={() => {
                                                 if (categories.length === 0) {
-                                                    setAlert(true);
-                                                    setAlertType('error');
-                                                    setAlertMess("Veuillez d'abord créer une catégorie");
+                                                    createAlert(true, 'error', "Veuillez d'abord créer une catégorie");
                                                 } else {
                                                     setOpenWordModal(true);
                                                 }

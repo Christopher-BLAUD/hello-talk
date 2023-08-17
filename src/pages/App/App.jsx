@@ -12,10 +12,9 @@ import { autoplay } from '../../utils/Helpers/autoplay';
 import { useNavigate } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../../utils/Helpers/db';
-import { ConstructionOutlined } from '@mui/icons-material';
 
 function App(props) {
-    let { sentence, setSentence, speech, setSpeech, connected, setConnected, myController, setMyController, currentTarget, setCurrentTarget, openModal, setOpenModal } =
+    let { sentence, setSentence, speech, setSpeech, connected, myController, setMyController, currentTarget, setCurrentTarget, openModal, setOpenModal } =
         useContext(AppContext);
     const navigate = useNavigate();
 

@@ -12,7 +12,12 @@ function Words() {
     const words = useWords();
 
     const playSound = (sound) => {
-        autoplay(0, [sound]);
+        if (typeof sound === 'string') autoplay(0, [sound]);
+        if (typeof sound === 'object') {
+            console.log(sound);
+            const url = URL.createObjectURL(sound);
+            autoplay(0, [url]);
+        }
     };
 
     const deleteWord = async (wordId) => {
@@ -34,7 +39,7 @@ function Words() {
                     <div className={styles.listRows}>
                         <TransitionGroup>
                             {words?.map((word) => (
-                                <Collapse  key={word.id} >
+                                <Collapse key={word.id}>
                                     <article className={styles.rows} id={word.id}>
                                         <span>{word.id}</span>
                                         <span>{word.original}</span>

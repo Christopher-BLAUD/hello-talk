@@ -3,7 +3,6 @@ import { db } from '../../utils/Helpers/db';
 import { Avatar } from '@mui/material';
 import NoData from '../NoData/NoData';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
-import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import CancelIcon from '@mui/icons-material/Cancel';
 import styles from './Categories.module.css';
 

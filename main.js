@@ -78,10 +78,8 @@ ipcMain.on('move-file', (event, filePath) => {
   
     fs.copyFile(filePath, destinationPath, (err) => {
       if (err) {  
-        // event.sender.send('move-file-error', err.message);
         console.log(err)
       } else {
-        // event.sender.send('move-file-success', destinationPath);
         console.log('Succés !')
       }
     });
