@@ -15,7 +15,7 @@ import {
     Select,
     MenuItem,
     FormControlLabel,
-    Switch,
+    Switch
 } from '@mui/material';
 import { modalTheme } from '../../utils/Theme/Modal/modalTheme';
 import { db } from '../../utils/Helpers/db';
@@ -29,7 +29,6 @@ function AddWord(props) {
     const { onClose, isOpen } = props;
     const [original, setOriginal] = useState('');
     const [engTranslation, setEngTranslation] = useState('');
-    const [recurrentWord, setRecurrentWord] = useState(0);
     const [category, setCategory] = useState('');
     const [file, setFile] = useState([]);
     const [stream, setStream] = useState(null);
@@ -42,7 +41,7 @@ function AddWord(props) {
     const inputFile = useRef(null);
     const audioPlayer = useRef(null);
     const categories = useCategories();
-    const createAlert = useAlert()
+    const createAlert = useAlert();
 
     const handleClose = () => {
         onClose(isOpen);
@@ -60,15 +59,11 @@ function AddWord(props) {
         setCategory(event.target.value);
     };
 
-    const handleRecurrent = (event) => {
-        event.target.checked === true ? setRecurrentWord(1) : setRecurrentWord(0);
-    };
-
     const handleFile = (event) => {
         if (event.target.files[0].type === 'audio/mpeg') {
             setFile(event.target.files[0]);
         } else {
-            createAlert(true, "error", 'Seul les fichiers .mp3 sont acceptés !')
+            createAlert(true, 'error', 'Seul les fichiers .mp3 sont acceptés !');
         }
     };
 
@@ -81,7 +76,7 @@ function AddWord(props) {
         if (original !== '' && engTranslation !== '' && category !== '' && file.length !== 0) {
             if (file.name && file.type === 'audio/mpeg') {
                 soundPath = './sounds/' + file.name;
-                sendFile(file.path);
+                // sendFile(file.path);
             }
             if (file.type === 'audio/mpeg-3') {
                 soundPath = file;
@@ -90,17 +85,15 @@ function AddWord(props) {
                 original: original,
                 engTranslation: engTranslation,
                 category: category,
-                soundPath: soundPath,
-                recurrent: recurrentWord
+                sound: soundPath
             });
-            createAlert(true, "success", 'Mot enregistré avec succès !')
+            createAlert(true, 'success', 'Mot enregistré avec succès !');
             setOriginal('');
             setEngTranslation('');
             setCategory('');
-            setRecurrentWord(0);
             setFile([]);
         } else {
-            createAlert(true, "error", "Veuillez remplir l'ensemble des informations")
+            createAlert(true, 'error', "Veuillez remplir l'ensemble des informations");
         }
     };
 
@@ -196,15 +189,15 @@ function AddWord(props) {
                         <FormControl>
                             <InputLabel id="demo-simple-select-label">Catégorie</InputLabel>
                             <Select label="Catégorie" onChange={handleCategory} value={category} required>
+                                <MenuItem  value="Récurrent">
+                                    Récurrent
+                                </MenuItem>
                                 {categories?.map((category) => (
                                     <MenuItem key={category.id} value={category.name}>
                                         {category.name}
                                     </MenuItem>
                                 ))}
                             </Select>
-                        </FormControl>
-                        <FormControl>
-                            <FormControlLabel control={<Switch />} label="Mot récurrent ?" onClick={handleRecurrent} required />
                         </FormControl>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>

@@ -20,10 +20,11 @@
     display: flex;
     align-items: center;
     align-self: center;
-    gap: 12px;
-    font-size: 18px;
-    font-family: 'Founders grotesk', sans-serif;
-    color: var(--grey-light);
+    gap: 8px;
+    font-size: 16px;
+    font-family: 'Founders grotesk';
+    letter-spacing: .7px;
+    color: #DECA9C;
 }
 
 .headerTitle img {
@@ -41,19 +42,6 @@
     min-width: 265px;
 }
 
-.navBar .navItem {
-    border-right: 2px solid var(--blue);
-    padding-left: 0;
-}
-
-.navBar .subMenuHeading {
-    padding: 24px;
-}
-
-.navBar .subMenuItem {
-    padding: 16px 24px;
-}
-
 .navItem .iconContainer {
     min-width: 36px;
 }
@@ -63,14 +51,6 @@
     height: 20px;
 }
 
-.navItem .navText span {
-    font-family: 'Satoshi';
-    font-size: 15px;
-    font-weight: 400;
-    line-height: 0.9;
-    color: var(--grey-light);
-    transition: all 100ms linear;
-}
 
 .navItem:hover .navIcon {
     fill: var(--yellow-primary);

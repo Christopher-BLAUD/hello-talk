@@ -13,6 +13,42 @@
     font-weight: 700;
     line-height: 24px;
 }
+.headingContainer {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.inputContainer {
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.inputContainer input {
+    height: 100%;
+    min-width: 200px;
+    padding: 4px 8px;
+    border-radius: 5px;
+    border: 1px solid var(--blue-icon);
+    background: #fff;
+    color: var(--blue);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.inputContainer input::placeholder {
+    color: #a5a5bb;
+    font-weight: 500;
+}
+
+.inputContainer .icon {
+    position: absolute;
+    right: 4px;
+    fill: var(--blue-icon);
+    height: 18px;
+}
 
 .listHeader, .rows{
     display: flex;
@@ -77,6 +113,7 @@
     height: 20px;
     fill: var(--blue-dark);
     cursor: pointer;
+    vertical-align: middle;
 }
 
 .listContainer{

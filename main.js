@@ -12,8 +12,10 @@ let appIcon = null;
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
-        width: 1440,
+        width: 1450,
+        minWidth: 1350,
         height: 900,
+        minHeight: 900,
         autoHideMenuBar: true,
         icon: path.join(__dirname, '/src/assets/icons/favicon.ico'),
         webPreferences: {

@@ -7,7 +7,7 @@ function Pad({ id, word, engWord, sound, permanent = false, outlined = false, ic
 
     return (
         <button
-            className={`${styles.pad} ${permanent ? styles.permanent : outlined ? styles.outlined : ''} ${!openModal ? "selectable" : ""}`}
+            className={`${styles.pad} ${permanent ? styles.permanent : outlined ? styles.outlined : ''} ${permanent ? 'recurrent' : ""} ${outlined ? 'options' : ""} ${!openModal ? "selectable" : ""}`}
             onClick={callback}
         >
             {id && <span className={styles.padId}>{id}</span>}

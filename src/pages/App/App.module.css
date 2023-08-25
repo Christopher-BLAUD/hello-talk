@@ -1,9 +1,46 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    background-color: var(--blue-background);
+    color: #fff;
+    min-height: 100vh;
+    /* padding-bottom: 48px; */
+}
+
+
 .appHeader {
     display: flex;
-    position: absolute;
-    top: 0;
     justify-content: center;
-    padding: 32px;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 75px;
+    padding: 16px 112px;
+    background-color: var(--blue);
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    box-shadow: 0px 0px 44px -11px var(--blue-dark), 0 0 7px 0 var(--blue-dark) inset;
+    animation: appear 700ms cubic-bezier(0,.66,.62,1) both;
+}
+
+@keyframes appear{
+    from{
+        transform: translateY(-110%);
+    } to {
+        transform: translateY(0);
+    }
+}
+
+.headerContainer{
+    display: inherit;
+    flex-direction: inherit;
+    justify-content: space-between;
+    align-items: inherit;
+    position: inherit;
+    width: inherit;
+    max-width: 1248px;
 }
 
 button:hover {
@@ -13,30 +50,47 @@ button:hover {
 .headerH1 {
     display: flex;
     align-items: center;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     gap: 12px;
-    font-size: 24px;
-    font-family: "Founders grotesk", sans-serif;
+    font-size: 18px;
+    font-family: 'Founders grotesk', sans-serif;
     font-weight: 500;
+    color: #DECA9C;
 }
 
 .headerH1 img {
     height: 20px;
 }
 
+.appHeader .navLink {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    height: 100%;
+    padding: 8px 16px;
+    color: var(--grey-light);
+    text-decoration: none;
+}
+
 .content {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 32px;
+    gap: 16px;
     max-width: 1248px;
+    margin: auto 96px;
 }
 
 .speechWrapper {
     display: flex;
     width: 100%;
-    height: 48px;
+    height: 55px;
     overflow: hidden;
-    border-radius: 23px;
+    border-radius: 30px;
     border: 1px solid var(--blue-light);
 }
 
@@ -45,9 +99,9 @@ button:hover {
     background-color: transparent;
     border: none;
     padding: 24px;
-    color: #fff;
+    color: var(--grey-light);
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .speechWrapper input:focus {
@@ -78,21 +132,34 @@ button:hover {
     flex-wrap: wrap;
 }
 
+.cardsContainer .mySwiper{
+    padding-right: 2px;
+    padding-bottom: 56px;
+}
+
+.cardsContainer .swiperSlide{
+    height: fit-content;
+}
+
+.cardsContainer .mySwiper .swiper-pagination .swiper-pagination-bullet{
+    background-color: red!important;
+}
+
 .deviceStatus {
     display: flex;
     align-items: center;
-    gap: 8px;
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    gap: 12px;
 }
 
 .deviceStatus span {
-    font-size: 14px;
+    font-size: 12px;
     font-style: normal;
     font-weight: 400;
+    color: var(--grey-light);
     line-height: normal;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .led {
@@ -107,12 +174,22 @@ button:hover {
     margin-top: 1px;
 }
 
-.led::after{
-    content: "";
+.led::after {
+    content: '';
     display: flex;
     position: absolute;
     width: 15px;
     height: 15px;
     border-radius: 50%;
     background-color: rgba(105, 220, 221, 0.15);
+    animation: pulse 1s infinite;
+    transform: perspective(336px) translateZ(0px);
 }
+
+
+@keyframes pulse {
+    to {
+      transform: perspective(336px) translateZ(168px);
+      opacity: 0;
+    }
+  }

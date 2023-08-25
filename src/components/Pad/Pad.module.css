@@ -11,6 +11,7 @@
     border-radius: 4px;
     background: var(--blue);
     box-shadow: 0px 2px 4px 0px #1f1e2f;
+    transition: all 90ms linear ;
     border: none;
 }
 
@@ -25,10 +26,9 @@
 }
 
 .pad.outlined .french{
-    text-transform: uppercase;
-    letter-spacing: .64px;
     color: var(--grey-light);
     font-size: 16px;
+    font-weight: 400;
 }
 
 .pad.outlined svg{
@@ -50,7 +50,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 2px;
+    gap: 4px;
 }
 
 .iconWrapper{
@@ -64,15 +64,15 @@
 .french {
     color: #fcde9c;
     font-family: 'Satoshi', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 18px;
+    font-weight: 500;
     line-height: normal;
 }
 
 .english {
     color: #fff;
     font-family: Satoshi;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 400;
     line-height: normal;
 }
@@ -92,4 +92,8 @@
 
 .pad.outlined:focus svg, .pad.outlined:hover svg{
     fill: var(--blue-dark);
+}
+
+.pad.outlined svg{
+    fill: var(--blue-icon);
 }

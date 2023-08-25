@@ -3,17 +3,20 @@ import { Link, useNavigate, Outlet } from 'react-router-dom';
 import { TransitionGroup } from 'react-transition-group';
 import { AppContext } from '../../utils/Context/AppContext';
 import { useCategories } from '../../utils/hooks/useCategories';
-import { useLiveQuery } from 'dexie-react-hooks';
 import { useSentences } from '../../utils/hooks/useSentences';
 import { useAlert } from '../../utils/hooks/useAlert';
 import { db } from '../../utils/Helpers/db';
 import { autoplay } from '../../utils/Helpers/autoplay';
 import { deleteSentence } from '../../utils/Helpers/deleteSentence';
 import { formatSentence } from '../../utils/Helpers/formatSentence';
-import { ThemeProvider } from '@mui/material';
-import { navbarTheme } from '../../utils/Theme/Navbar/navbarTheme';
+import { ThemeProvider, Tooltip } from '@mui/material';
+import { dashboardTheme } from '../../utils/Theme/Dashboard/dashboardTheme';
+import { useSearch } from '../../utils/hooks/useSearch';
+import { useWords } from '../../utils/hooks/useWords';
 import SmallPad from '../../components/SmallPad/SmallPad';
 import Alert from '../../components/Alert/Alert';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import Zoom from '@mui/material/Zoom';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -27,8 +30,9 @@ import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import CancelIcon from '@mui/icons-material/Cancel';
 import BackspaceIcon from '@mui/icons-material/Backspace';
 import SendIcon from '@mui/icons-material/Send';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import AbcIcon from '@mui/icons-material/Abc';
+import SubjectIcon from '@mui/icons-material/Subject';
 import Collapse from '@mui/material/Collapse';
 import AddWord from '../../components/AddWord/AddWord';
 import AddCategory from '../../components/AddCategory/AddCategory';
@@ -38,22 +42,19 @@ import logo from '../../assets/img/logo-gradient.svg';
 import styles from './Dashboard.module.css';
 
 function Dashboard() {
-    const { words, setWords, setConnected, myController, setMyController, alert, setAlert, alertMess, alertType } = useContext(AppContext);
+    const { setConnected, myController, setMyController, alert, setAlert, alertMess, alertType } = useContext(AppContext);
     const [open, setOpen] = useState(false);
     const [openWordModal, setOpenWordModal] = useState(false);
     const [openCategoryModal, setOpenCategoryModal] = useState(false);
     const [newSentence, setNewSentence] = useState('');
     const [sentenceSounds, setSentenceSounds] = useState([]);
-    const [search, setSearch] = useState([]);
     const categories = useCategories();
     const [sentences] = useSentences();
     const [lastSentences] = useSentences(4);
     const createAlert = useAlert();
+    const [result, setSearch] = useSearch();
+    const words = useWords();
     const navigate = useNavigate();
-
-    const wordsQuery = useLiveQuery(async () => {
-        setWords(await db.words.orderBy('id').toArray());
-    });
 
     const connectToDevice = async () => {
         if (myController.vendorId === undefined) {
@@ -64,12 +65,9 @@ function Dashboard() {
                 navigate('/app');
             }
         } else {
+            setConnected(true);
             navigate('/app');
         }
-    };
-
-    const wordSearch = async (e) => {
-        setSearch(await db.words.where('original').startsWith(e.target.value).toArray());
     };
 
     const findSentence = async (str) => {
@@ -122,14 +120,14 @@ function Dashboard() {
     };
 
     return (
-        <div className={styles.wrapper}>
-            <header className={styles.header}>
-                <h1 className={styles.headerTitle}>
-                    <img src={logo} alt="logo de Marius System" /> Marius System
-                </h1>
-                <nav className={styles.navBar}>
-                    <List component="ul" className={styles.listContainer}>
-                        <ThemeProvider theme={navbarTheme}>
+        <ThemeProvider theme={dashboardTheme}>
+            <div className={styles.wrapper}>
+                <header className={styles.header}>
+                    <h1 className={styles.headerTitle}>
+                        <img src={logo} alt="logo de Marius System" /> Marius System
+                    </h1>
+                    <nav className={styles.navBar}>
+                        <List component="ul" className={styles.listContainer}>
                             <ListItemButton component="li" className={styles.navItem} selected={setSelected('#/app')} title="Application">
                                 <Link
                                     to={'/app'}
@@ -144,7 +142,7 @@ function Dashboard() {
                                     <ListItemText primary="Application" className={styles.navText} />
                                 </Link>
                             </ListItemButton>
-                            <ListItemButton component="li" className={`${styles.navItem} ${styles.subMenuHeading}`} onClick={handleClick} title="Ajouter un élément">
+                            <ListItemButton component="li" className={styles.navItem} sx={{ padding: '16px 24px' }} onClick={handleClick} title="Ajouter un élément">
                                 <ListItemIcon className={styles.iconContainer}>
                                     <AddCircleOutlineOutlinedIcon className={styles.navIcon} />
                                 </ListItemIcon>
@@ -153,12 +151,7 @@ function Dashboard() {
                             </ListItemButton>
                             <Collapse in={open} timeout="auto" unmountOnExit>
                                 <List component="ul">
-                                    <ListItemButton
-                                        component="li"
-                                        className={styles.navItem}
-                                        sx={{ pl: 4, '& a': { padding: '16px 32px 16px 56px' } }}
-                                        title="Ajouter une catégorie"
-                                    >
+                                    <ListItemButton component="li" className={styles.navItem} sx={{ pl: 4 }} title="Ajouter une catégorie">
                                         <Link onClick={() => setOpenCategoryModal(true)}>
                                             <ListItemIcon className={styles.iconContainer}>
                                                 <CreateNewFolderOutlinedIcon className={styles.navIcon} />
@@ -166,21 +159,8 @@ function Dashboard() {
                                             <ListItemText primary="Nouvelle catégorie" className={styles.navText} />
                                         </Link>
                                     </ListItemButton>
-                                    <ListItemButton
-                                        component="li"
-                                        className={styles.navItem}
-                                        sx={{ pl: 4, '& a': { padding: '16px 32px 16px 56px' } }}
-                                        title="Ajouter un mot"
-                                    >
-                                        <Link
-                                            onClick={() => {
-                                                if (categories.length === 0) {
-                                                    createAlert(true, 'error', "Veuillez d'abord créer une catégorie");
-                                                } else {
-                                                    setOpenWordModal(true);
-                                                }
-                                            }}
-                                        >
+                                    <ListItemButton component="li" className={styles.navItem} sx={{ pl: 4 }} title="Ajouter un mot">
+                                        <Link onClick={() => setOpenWordModal(true)}>
                                             <ListItemIcon className={styles.iconContainer}>
                                                 <DriveFileRenameOutlineIcon className={styles.navIcon} />
                                             </ListItemIcon>
@@ -189,89 +169,120 @@ function Dashboard() {
                                     </ListItemButton>
                                 </List>
                             </Collapse>
-                        </ThemeProvider>
-                    </List>
-                </nav>
-            </header>
-            <main className={styles.content}>
-                <AddWord onClose={closeWordModal} isOpen={openWordModal} />
-                <AddCategory onClose={closeCategoryModal} isOpen={openCategoryModal} />
-                <div className={styles.container}>
-                    <h2 className={styles.titleH2}>Tableau de bord</h2>
-                    <section className={styles.globalInfos}>
-                        <div className={styles.cardsContainer}>
-                            <CounterCard onClick={() => navigate('categories')} title={'Catégories'} count={categories?.length} />
-                            <CounterCard onClick={() => navigate('words')} title={'Mots enregistrés'} count={words?.length} />
-                            <CounterCard onClick={() => navigate('sentences')} title={'Phrases enregistrées'} count={sentences?.length} />
-                        </div>
-                        <div className={styles.details}>{window.location.hash === '#/dashboard' ? <Words /> : <Outlet />}</div>
-                    </section>
-                    <section className={styles.sentenceWrapper}>
-                        <h3 className={styles.sentenceTitle}>Rédiger une phrase</h3>
-                        <div className={styles.sentenceContainer}>
-                            <div className={styles.wordFinder}>
-                                <div className={styles.inputContainer}>
-                                    <input type="text" placeholder="Rechercher un mot ..." name="word-finder" onChange={wordSearch} />
-                                    <SearchIcon className={styles.icon} />
-                                </div>
-                                <div className={styles.smallCardsContainer}>
-                                    {search.length > 0
-                                        ? search?.map((word) => (
-                                              <SmallPad
-                                                  key={word.id}
-                                                  id={word.id}
-                                                  fr={word.original}
-                                                  eng={word.engTranslation}
-                                                  callback={() => makeSentence(word.original, word.soundPath)}
-                                              />
-                                          ))
-                                        : words?.map((word) => (
-                                              <SmallPad
-                                                  key={word.id}
-                                                  id={word.id}
-                                                  fr={word.original}
-                                                  eng={word.engTranslation}
-                                                  callback={() => makeSentence(word.original, word.soundPath)}
-                                              />
-                                          ))}
-                                    {search.length === 0 && words.length === 0 && <span>Aucun mot disponible pour le moment ...</span>}
-                                </div>
+                        </List>
+                    </nav>
+                </header>
+                <main className={styles.content}>
+                    <AddWord onClose={closeWordModal} isOpen={openWordModal} />
+                    <AddCategory onClose={closeCategoryModal} isOpen={openCategoryModal} />
+                    <div className={styles.container}>
+                        <h2 className={styles.titleH2}>Tableau de bord</h2>
+                        <section className={styles.globalInfos}>
+                            <div className={styles.cardsContainer}>
+                                <CounterCard
+                                    onClick={() => navigate('categories')}
+                                    title={'Catégories'}
+                                    count={categories?.length}
+                                    icon={<FormatListBulletedIcon sx={{ fill: '#CB9173' }} />}
+                                />
+                                <CounterCard
+                                    onClick={() => navigate('words')}
+                                    title={'Mots enregistrés'}
+                                    count={words?.length}
+                                    icon={<AbcIcon sx={{ fill: '#7D8CC4' }} />}
+                                />
+                                <CounterCard
+                                    onClick={() => navigate('sentences')}
+                                    title={'Phrases enregistrées'}
+                                    count={sentences?.length}
+                                    icon={<SubjectIcon sx={{ fill: '#7FC29B' }} />}
+                                />
                             </div>
-                            <div className={styles.sentenceMaker}>
-                                <div className={styles.inputContainer}>
-                                    <BackspaceIcon className={styles.deleteIcon} onClick={clearSentence} />
-                                    <input type="text" placeholder="Votre phrase ..." name="word-finder" defaultValue={newSentence} readOnly />
-                                    <div className={styles.iconsWrapper}>
-                                        <VolumeUpIcon onClick={() => autoplay(0, sentenceSounds)} />
-                                        <SendIcon className={styles.sendIcon} onClick={addSentence} />
+                            <div className={styles.details}>{window.location.hash === '#/dashboard' ? <Words /> : <Outlet />}</div>
+                        </section>
+                        <section className={styles.sentenceWrapper}>
+                            <h3 className={styles.sentenceTitle}>Rédiger une phrase</h3>
+                            <div className={styles.sentenceContainer}>
+                                <div className={styles.wordFinder}>
+                                    <div className={styles.inputContainer}>
+                                        <input
+                                            type="text"
+                                            placeholder="Rechercher un mot ..."
+                                            name="word-finder"
+                                            autoComplete="off"
+                                            onChange={(e) => setSearch(e.target.value)}
+                                        />
+                                        <SearchIcon className={styles.icon} />
+                                    </div>
+                                    <div className={styles.smallCardsContainer}>
+                                        {result.length > 0
+                                            ? result?.map((word) => (
+                                                  <SmallPad
+                                                      key={word.id}
+                                                      id={word.id}
+                                                      fr={word.original}
+                                                      eng={word.engTranslation}
+                                                      callback={() => makeSentence(word.original, word.sound)}
+                                                  />
+                                              ))
+                                            : words?.map((word) => (
+                                                  <SmallPad
+                                                      key={word.id}
+                                                      id={word.id}
+                                                      fr={word.original}
+                                                      eng={word.engTranslation}
+                                                      callback={() => makeSentence(word.original, word.sound)}
+                                                  />
+                                              ))}
+                                        {result.length === 0 && words.length === 0 && <span>Aucun mot disponible pour le moment ...</span>}
                                     </div>
                                 </div>
-                                <div className={styles.lastItem}>
-                                    <h4 className={styles.sentenceMakerTitle}>Dernières phrases enregistrées</h4>
-                                    <div className={styles.registered}>
-                                        <TransitionGroup className={styles.transitionContainer}>
-                                            {lastSentences?.map((item) => (
-                                                <Collapse key={item.id}>
-                                                    <article key={item.id} className={styles.sentenceItem}>
-                                                        <div className={styles.contentContainer}>
-                                                            <VolumeUpIcon onClick={() => autoplay(0, item.sounds)} />
-                                                            <span>{item.sentence}</span>
-                                                        </div>
-                                                        <CancelIcon className={styles.cancelIcon} onClick={() => deleteSentence(item.id)} />
-                                                    </article>
-                                                </Collapse>
-                                            ))}
-                                        </TransitionGroup>
+                                <div className={styles.sentenceMaker}>
+                                    <div className={styles.inputContainer}>
+                                        <Tooltip arrow={true} TransitionComponent={Zoom} title="Effacer la sélection">
+                                            <BackspaceIcon className={styles.deleteIcon} onClick={clearSentence} />
+                                        </Tooltip>
+                                        <input type="text" placeholder="Votre phrase ..." name="word-finder" defaultValue={newSentence} readOnly />
+                                        <div className={styles.iconsWrapper}>
+                                            <Tooltip arrow={true} TransitionComponent={Zoom} title="Écouter">
+                                                <VolumeUpIcon onClick={() => autoplay(0, sentenceSounds)} />
+                                            </Tooltip>
+                                            <Tooltip arrow={true} TransitionComponent={Zoom} title="Enregistrer">
+                                                <SendIcon className={styles.sendIcon} onClick={addSentence} />
+                                            </Tooltip>
+                                        </div>
                                     </div>
-                                    {lastSentences.length === 0 && <span className={styles.noData}>Aucune phrase disponible.</span>}
+                                    <div className={styles.lastItem}>
+                                        <h4 className={styles.sentenceMakerTitle}>Dernières phrases enregistrées</h4>
+                                        <div className={styles.registered}>
+                                            <TransitionGroup className={styles.transitionContainer}>
+                                                {lastSentences?.map((item) => (
+                                                    <Collapse key={item.id}>
+                                                        <article key={item.id} className={styles.sentenceItem}>
+                                                            <div className={styles.contentContainer}>
+                                                                <Tooltip arrow={true} TransitionComponent={Zoom} title="Écouter">
+                                                                    <VolumeUpIcon onClick={() => autoplay(0, item.sounds)} />
+                                                                </Tooltip>
+                                                                <span>{item.sentence}</span>
+                                                            </div>
+                                                            <Tooltip arrow={true} TransitionComponent={Zoom} title="Supprimer">
+                                                                <CancelIcon className={styles.cancelIcon} onClick={() => deleteSentence(item.id)} />
+                                                            </Tooltip>
+                                                        </article>
+                                                    </Collapse>
+                                                ))}
+                                            </TransitionGroup>
+                                        </div>
+                                        {lastSentences.length === 0 && <span className={styles.noData}>Aucune phrase disponible.</span>}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </section>
-                </div>
-            </main>
-            <Alert type={alertType} text={alertMess} alert={alert} onClick={() => setAlert(false)} />
-        </div>
+                        </section>
+                    </div>
+                </main>
+                <Alert type={alertType} text={alertMess} alert={alert} onClick={() => setAlert(false)} />
+            </div>
+        </ThemeProvider>
     );
 }
 

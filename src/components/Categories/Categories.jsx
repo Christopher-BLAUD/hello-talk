@@ -1,6 +1,6 @@
 import { useCategories } from '../../utils/hooks/useCategories';
 import { db } from '../../utils/Helpers/db';
-import { Avatar } from '@mui/material';
+import { Avatar, Tooltip, Zoom } from '@mui/material';
 import NoData from '../NoData/NoData';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -21,27 +21,21 @@ function Categories() {
                     {categories?.map((category) => (
                         <li key={category.id} className={styles.rows}>
                             <span>
-                                <Avatar
-                                    sx={{
-                                        backgroundColor: 'var(--grey-light)',
-                                        '& svg': {
-                                            fill: 'var(--blue-icon)!important',
-                                            height: "18px"
-                                        }
-                                    }}
-                                >
+                                <Avatar>
                                     <FolderOutlinedIcon />
                                 </Avatar>
                             </span>
                             <span>{category.name}</span>
                             <div className={styles.iconContainer} onClick={() => deleteCategories(category.id)}>
-                                <CancelIcon className={styles.cancelIcon} />
+                                <Tooltip placement='left' arrow={true} TransitionComponent={Zoom} title="Supprimer">
+                                    <CancelIcon className={styles.cancelIcon} />
+                                </Tooltip>
                             </div>
                         </li>
                     ))}
                 </ul>
             ) : (
-                <NoData text={"Oups ... Aucune catégorie disponible."}/>
+                <NoData text={'Oups ... Aucune catégorie disponible.'} />
             )}
         </div>
     );

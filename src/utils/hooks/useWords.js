@@ -3,12 +3,12 @@ import { AppContext } from '../Context/AppContext';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../Helpers/db';
 
-export const useWords = () => {
+export const useWords = (filter) => {
     const { words, setWords } = useContext(AppContext);
 
     const query = useLiveQuery(async () => {
-        setWords(await db.words.toArray())
+        filter !== undefined ? setWords(await db.words.where('category').equals(filter).toArray()) :  setWords(await db.words.orderBy('id').toArray());
     });
-
+    
     return words;
 };
