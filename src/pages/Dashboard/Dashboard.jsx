@@ -12,7 +12,7 @@ import { formatSentence } from '../../utils/Helpers/formatSentence';
 import { ThemeProvider, Tooltip } from '@mui/material';
 import { dashboardTheme } from '../../utils/Theme/Dashboard/dashboardTheme';
 import { useSearch } from '../../utils/hooks/useSearch';
-import { useWords } from '../../utils/hooks/useWords';
+import { useLiveQuery } from 'dexie-react-hooks';
 import SmallPad from '../../components/SmallPad/SmallPad';
 import Alert from '../../components/Alert/Alert';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
@@ -52,8 +52,8 @@ function Dashboard() {
     const [sentences] = useSentences();
     const [lastSentences] = useSentences(4);
     const createAlert = useAlert();
-    const [result, setSearch] = useSearch();
-    const words = useWords();
+    const [result, setSearch] = useSearch('word');
+    const words = useLiveQuery(async () => await db.words.orderBy('id').toArray())
     const navigate = useNavigate();
 
     const connectToDevice = async () => {
@@ -234,7 +234,7 @@ function Dashboard() {
                                                       callback={() => makeSentence(word.original, word.sound)}
                                                   />
                                               ))}
-                                        {result.length === 0 && words.length === 0 && <span>Aucun mot disponible pour le moment ...</span>}
+                                        {result?.length === 0 && words?.length === 0 && <span>Aucun mot disponible pour le moment ...</span>}
                                     </div>
                                 </div>
                                 <div className={styles.sentenceMaker}>

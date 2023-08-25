@@ -1,12 +1,11 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { AppContext } from '../../utils/Context/AppContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { autoplay } from '../../utils/Helpers/autoplay';
 import { db } from '../../utils/Helpers/db';
 import { ThemeProvider } from '@emotion/react';
 import { List, ListItemButton, ListItemIcon, ListItemText, createTheme } from '@mui/material';
-import { useWords } from '../../utils/hooks/useWords';
 import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
 import { Grid, Pagination } from 'swiper/modules';
 import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
@@ -17,11 +16,14 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Pad from '../../components/Pad/Pad';
 import CategoryModal from '../../components/CategoryModal/CategoryModal';
+import SentenceModal from '../../components/SentenceModal/SentenceModal';
 import logo from '../../assets/img/logo-gradient.svg';
+import plan from '../../assets/img/plan.svg'
 import 'swiper/css';
 import 'swiper/css/grid';
 import 'swiper/css/pagination';
 import styles from './App.module.css';
+import PlanModal from '../../components/PlanModal/PlanModal';
 
 function App(props) {
     let {
@@ -30,22 +32,24 @@ function App(props) {
         speech,
         setSpeech,
         connected,
-        setConnected,
         myController,
         setMyController,
         currentTarget,
         setCurrentTarget,
-        openModal,
-        setOpenModal,
-        category
+        openCategoryModal,
+        setOpenCategoryModal,
+        openSentenceModal,
+        setOpenSentenceModal,
+        category,
+        words
     } = useContext(AppContext);
     const [padPerLine, setPadPerline] = useState(5);
-    const [firstOfTheLine, setFirstOfLine] = useState(0);
+    const [firstOfRow, setFirstOfRow] = useState(0);
     const [rowIndex, setRowIndex] = useState(0);
-    const navigate = useNavigate();
+    const [openPlan, setOpenPlan] = useState(false)
     const swiper = useSwiper();
     const swiperRef = useRef();
-    const words = useWords('Présentation');
+    const allWords = useLiveQuery(async () => await db.words.orderBy('id').toArray());
 
     const reccurentsWords = useLiveQuery(async () => {
         return await db.words.where('category').equals('Récurrent').limit(3).toArray();
@@ -61,90 +65,88 @@ function App(props) {
         setSpeech([]);
     };
 
-    const selectPad = (event) => {
-        const targets = document.querySelectorAll('button.selectable');
-        const recurrentPads = document.querySelectorAll('.recurrent');
-        const optionsPads = document.querySelectorAll('.options');
-        const { data } = event;
-        const padData = data.getUint8(2);
-        const firstLine = recurrentPads.length + optionsPads.length;
-        const body = document.querySelector('body');
-        const otherPages = swiperRef.current.snapGrid.length - 1;
-        const totalPerRow = padPerLine + otherPages;
-        const slideIndex = swiperRef.current.snapIndex;
+    const selectPad = useCallback(
+        (event) => {
+            const targets = document.querySelectorAll('button.selectable');
+            const recurrentPads = document.querySelectorAll('.recurrent');
+            const optionsPads = document.querySelectorAll('.options');
+            const { data } = event;
+            const padData = data.getUint8(2);
+            const firstRow = recurrentPads.length + optionsPads.length;
+            const otherPages = swiperRef.current.snapGrid.length - 1;
+            const totalPerRow = padPerLine + otherPages;
+            const slideIndex = swiperRef.current.snapIndex;
 
-        body.addEventListener('click', () => {
-            setCurrentTarget((currentTarget = 0));
-            setRowIndex(0);
-            setFirstOfLine(0);
-        });
-
-        switch (padData) {
-            case 32:
-                clearSentence();
-                break;
-            case 16:
-                if (!openModal) {
-                    if (currentTarget + totalPerRow > targets.length - 1) {
-                        setCurrentTarget((currentTarget = 0));
-                        setRowIndex(0);
-                        setFirstOfLine(0);
+            switch (padData) {
+                case 32:
+                    clearSentence();
+                    break;
+                case 16:
+                    if (!openCategoryModal && !openSentenceModal) {
+                        if (currentTarget + totalPerRow > targets.length - 1) {
+                            setCurrentTarget((currentTarget = 0));
+                            setRowIndex(0);
+                            setFirstOfRow(0);
+                        } else {
+                            if (currentTarget === 0) {
+                                setCurrentTarget((currentTarget += firstRow));
+                            } else if (currentTarget <= firstRow) {
+                                setCurrentTarget((currentTarget += firstRow + slideIndex));
+                                setFirstOfRow(firstRow + 1);
+                            } else if (currentTarget > firstRow) {
+                                setCurrentTarget((currentTarget += totalPerRow));
+                                setRowIndex((r) => r + 1);
+                                setFirstOfRow(firstRow + totalPerRow * (rowIndex + 1) + 1);
+                            }
+                        }
                     } else {
-                        if (currentTarget === 0) {
-                            setCurrentTarget((currentTarget += firstLine));
-                        } else if (currentTarget <= firstLine) {
-                            setCurrentTarget((currentTarget += firstLine + slideIndex));
-                            setFirstOfLine(firstLine + 1);
-                        } else if (currentTarget > firstLine) {
-                            setCurrentTarget((currentTarget += totalPerRow));
-                            setRowIndex((r) => r + 1);
-                            setFirstOfLine(firstLine + totalPerRow * (rowIndex + 1) + 1);
+                        currentTarget === targets.length - 1 ? setCurrentTarget((currentTarget = 0)) : setCurrentTarget((currentTarget += 1));
+                    }
+                    break;
+                case 8:
+                    if (currentTarget < targets.length - 1) {
+                        if (currentTarget === firstRow) {
+                            slideIndex !== 0 && swiperRef.current.slideTo(0);
+                            setFirstOfRow(currentTarget + 1);
+                            setCurrentTarget((currentTarget += 1));
+                        } else if (
+                            currentTarget > firstRow &&
+                            currentTarget >= firstOfRow + padPerLine - 1 &&
+                            currentTarget < firstOfRow + totalPerRow - 1 &&
+                            !openCategoryModal &&
+                            !openSentenceModal
+                        ) {
+                            swiperRef.current.slideNext();
+                            setCurrentTarget((currentTarget += 1));
+                        } else if (currentTarget === firstOfRow + totalPerRow - 1) {
+                            swiperRef.current.slideTo(0);
+                            setCurrentTarget((currentTarget += 1));
+                            setFirstOfRow(currentTarget);
+                        } else {
+                            setCurrentTarget((currentTarget += 1));
+                        }
+                    } else {
+                        if (slideIndex < otherPages && !openCategoryModal && !openSentenceModal) {
+                            swiperRef.current.slideNext();
+                        } else {
+                            setCurrentTarget(0);
+                            setRowIndex(0);
+                            setFirstOfRow(0);
                         }
                     }
-                } else {
-                    currentTarget === targets.length - 1 ? setCurrentTarget((currentTarget = 0)) : setCurrentTarget((currentTarget += 1));
-                }
-                break;
-            case 8:
-                if (currentTarget < targets.length - 1) {
-                    if (currentTarget === firstLine) {
-                        slideIndex !== 0 && swiperRef.current.slideTo(0)
-                        setFirstOfLine(currentTarget + 1);
-                        setCurrentTarget((currentTarget += 1));
-                    } else if (currentTarget > firstLine && currentTarget >= firstOfTheLine + padPerLine - 1 && currentTarget < firstOfTheLine + totalPerRow - 1) {
-                        swiperRef.current.slideNext();
-                        setCurrentTarget((currentTarget += 1));
-                    } else if (currentTarget === firstOfTheLine + totalPerRow - 1) {
-                        swiperRef.current.slideTo(0);
-                        setCurrentTarget((currentTarget += 1));
-                        setFirstOfLine(currentTarget);
-                    } else {
-                        setCurrentTarget((currentTarget += 1));
-                    }
-                } else {
-                    if (slideIndex < otherPages) {
-                        swiperRef.current.slideNext()
-                    } else {
-                        setCurrentTarget(0);
-                        setRowIndex(0);
-                        setFirstOfLine(0);
-                    }
-                }
-                break;
-            case 4:
-                targets[currentTarget].click();
-                break;
-            default:
-                break;
-        }
+                    break;
+                case 4:
+                    targets[currentTarget].click();
+                    break;
+                default:
+                    break;
+            }
+            targets[currentTarget].focus();
+        },
+        [openCategoryModal, openSentenceModal, category, words, firstOfRow, rowIndex]
+    );
 
-        console.log('index => ', currentTarget);
-        console.log('ligne => ', rowIndex);
-        console.log('1er de la ligne => ', firstOfTheLine);
-        targets[currentTarget].focus();
-    };
-
-    const openController = async () => {
+    const openController = useCallback(async () => {
         if (!myController.vendorId) {
             const devices = await navigator.hid.getDevices();
             setMyController(devices[0]);
@@ -154,15 +156,24 @@ function App(props) {
         } catch (error) {
             console.error(error);
         }
+    }, [myController, setMyController])
+    
+
+    const handleCategoryModal = () => {
+        setOpenCategoryModal(true);
+        setCurrentTarget((currentTarget = 0));
     };
 
-    const handleClickOpen = () => {
-        setOpenModal(true);
+    const handleSentenceModal = () => {
+        setOpenSentenceModal(true);
         setCurrentTarget((currentTarget = 0));
     };
 
     const handleClose = () => {
-        setOpenModal(false);
+        setOpenCategoryModal(false);
+        setOpenSentenceModal(false);
+        setOpenPlan(false)
+        setCurrentTarget((currentTarget = 0));
     };
 
     useEffect(() => {
@@ -174,7 +185,7 @@ function App(props) {
         //         navigate('/');
         //     }
         // });
-    }, [openModal, category, firstOfTheLine, rowIndex, myController, openController]);
+    }, [myController, openController, selectPad]);
 
     return (
         <div className={styles.wrapper}>
@@ -192,12 +203,12 @@ function App(props) {
                     <nav className={styles.navbar}>
                         <ThemeProvider theme={navTheme}>
                             <List component={'ul'}>
-                                <ListItemButton>
+                                <ListItemButton onClick={() => setOpenPlan(true)}>
                                     <Link className={styles.navLink}>
                                         <ListItemIcon>
                                             <InfoOutlinedIcon />
                                         </ListItemIcon>
-                                        <ListItemText primary="Connexion" />
+                                        <ListItemText primary="Raccordement" />
                                     </Link>
                                 </ListItemButton>
                                 <ListItemButton>
@@ -214,13 +225,15 @@ function App(props) {
                 </div>
             </header>
             <main className={styles.content}>
-                <CategoryModal isOpen={openModal} onClose={handleClose} title="Catégories" />
+                <CategoryModal isOpen={openCategoryModal} onClose={handleClose} />
+                <SentenceModal isOpen={openSentenceModal} onClose={handleClose} />
+                <PlanModal isOpen={openPlan} onClose={handleClose}/>
                 <div className={styles.speechWrapper}>
                     <button className={styles.iconContainer} onClick={clearSentence}>
                         <BackspaceOutlinedIcon className="delete" />
                     </button>
                     <input type="text" name="speech" value={sentence} readOnly tabIndex={-1} />
-                    <button className={`${styles.iconContainer} ${!openModal ? 'selectable' : ''}`} onClick={() => autoplay(0, speech)}>
+                    <button className={`${styles.iconContainer} ${!openCategoryModal && !openSentenceModal ? 'selectable' : ''}`} onClick={() => autoplay(0, speech)}>
                         <RecordVoiceOverIcon className="play" />
                     </button>
                 </div>
@@ -236,8 +249,8 @@ function App(props) {
                             callback={() => makeSentence(word.original, word.sound)}
                         />
                     ))}
-                    <Pad outlined={true} icon={<AppsIcon />} word="Menu" callback={handleClickOpen} />
-                    <Pad outlined={true} icon={<FormatAlignLeftIcon />} word="Liste" callback={() => console.log()} />
+                    <Pad outlined={true} icon={<AppsIcon />} word="Menu" callback={handleCategoryModal} />
+                    <Pad outlined={true} icon={<FormatAlignLeftIcon />} word="Liste" callback={handleSentenceModal} />
                     <Swiper
                         slidesPerView={padPerLine}
                         pagination={{ clickable: true }}
@@ -247,17 +260,29 @@ function App(props) {
                         className={styles.mySwiper}
                         onSwiper={(swiper) => (swiperRef.current = swiper)}
                     >
-                        {words?.map((word) => (
-                            <SwiperSlide key={word.id} className={styles.swiperSlide}>
-                                <Pad
-                                    id={word.id}
-                                    word={word.original}
-                                    engWord={word.engTranslation}
-                                    sound={word.sound}
-                                    callback={() => makeSentence(word.original, word.sound)}
-                                />
-                            </SwiperSlide>
-                        ))}
+                        {words?.length > 0
+                            ? words?.map((word) => (
+                                  <SwiperSlide key={word.id} className={styles.swiperSlide}>
+                                      <Pad
+                                          id={word.id}
+                                          word={word.original}
+                                          engWord={word.engTranslation}
+                                          sound={word.sound}
+                                          callback={() => makeSentence(word.original, word.sound)}
+                                      />
+                                  </SwiperSlide>
+                              ))
+                            : allWords?.map((word) => (
+                                  <SwiperSlide key={word.id} className={styles.swiperSlide}>
+                                      <Pad
+                                          id={word.id}
+                                          word={word.original}
+                                          engWord={word.engTranslation}
+                                          sound={word.sound}
+                                          callback={() => makeSentence(word.original, word.sound)}
+                                      />
+                                  </SwiperSlide>
+                              ))}
                     </Swiper>
                 </div>
             </main>

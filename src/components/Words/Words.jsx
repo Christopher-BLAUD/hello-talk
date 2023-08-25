@@ -1,4 +1,5 @@
 import { useWords } from '../../utils/hooks/useWords';
+import { useSearch } from '../../utils/hooks/useSearch';
 import { autoplay } from '../../utils/Helpers/autoplay';
 import { db } from '../../utils/Helpers/db';
 import { TransitionGroup } from 'react-transition-group';
@@ -7,7 +8,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import NoData from '../NoData/NoData';
 import CancelIcon from '@mui/icons-material/Cancel';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
-import { useSearch } from '../../utils/hooks/useSearch';
 import styles from './Words.module.css';
 
 function Words() {
@@ -42,13 +42,17 @@ function Words() {
                                       <Collapse component={'li'} key={word.id} className={styles.rowsContainer}>
                                           <div className={styles.rows} id={word.id}>
                                               <span onClick={() => autoplay(0, [word.sound])}>
-                                                  <VolumeUpIcon className={styles.speakerIcon} />
+                                                  <Tooltip placement="left" arrow={true} TransitionComponent={Zoom} title="Écouter">
+                                                      <VolumeUpIcon className={styles.speakerIcon} />
+                                                  </Tooltip>
                                               </span>
                                               <span>{word.original}</span>
                                               <span>{word.engTranslation}</span>
                                               <span>{word.category}</span>
                                               <div className={styles.iconContainer} onClick={() => deleteWord(word.id)}>
-                                                  <CancelIcon className={styles.cancelIcon} />
+                                                  <Tooltip placement="left" arrow={true} TransitionComponent={Zoom} title="Supprimer">
+                                                      <CancelIcon className={styles.cancelIcon} />
+                                                  </Tooltip>
                                               </div>
                                           </div>
                                       </Collapse>
@@ -57,7 +61,7 @@ function Words() {
                                       <Collapse component={'li'} key={word.id} className={styles.rowsContainer}>
                                           <div className={styles.rows} id={word.id}>
                                               <span onClick={() => autoplay(0, [word.sound])}>
-                                                  <Tooltip placement='left' arrow={true} TransitionComponent={Zoom} title="Écouter">
+                                                  <Tooltip placement="left" arrow={true} TransitionComponent={Zoom} title="Écouter">
                                                       <VolumeUpIcon className={styles.speakerIcon} />
                                                   </Tooltip>
                                               </span>
@@ -65,9 +69,9 @@ function Words() {
                                               <span>{word.engTranslation}</span>
                                               <span>{word.category}</span>
                                               <div className={styles.iconContainer} onClick={() => deleteWord(word.id)}>
-                                              <Tooltip placement='left' arrow={true} TransitionComponent={Zoom} title="Supprimer">
-                                                  <CancelIcon className={styles.cancelIcon} />
-                                                </Tooltip>
+                                                  <Tooltip placement="left" arrow={true} TransitionComponent={Zoom} title="Supprimer">
+                                                      <CancelIcon className={styles.cancelIcon} />
+                                                  </Tooltip>
                                               </div>
                                           </div>
                                       </Collapse>

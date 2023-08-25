@@ -3,11 +3,13 @@ import { AppContext } from '../../utils/Context/AppContext';
 import styles from './Pad.module.css';
 
 function Pad({ id, word, engWord, sound, permanent = false, outlined = false, icon, callback }) {
-    const { openModal} = useContext(AppContext);
+    const { openCategoryModal, openSentenceModal } = useContext(AppContext);
 
     return (
         <button
-            className={`${styles.pad} ${permanent ? styles.permanent : outlined ? styles.outlined : ''} ${permanent ? 'recurrent' : ""} ${outlined ? 'options' : ""} ${!openModal ? "selectable" : ""}`}
+            className={`${styles.pad} ${permanent ? styles.permanent : outlined ? styles.outlined : ''} ${permanent ? 'recurrent' : ''} ${outlined ? 'options' : ''} ${
+                !openCategoryModal && !openSentenceModal ? 'selectable' : ''
+            }`}
             onClick={callback}
         >
             {id && <span className={styles.padId}>{id}</span>}

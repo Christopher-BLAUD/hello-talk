@@ -11,27 +11,27 @@
     border-radius: 4px;
     background: var(--blue);
     box-shadow: 0px 2px 4px 0px #1f1e2f;
-    transition: all 90ms linear ;
+    transition: all 90ms linear;
     border: none;
 }
 
-.pad.permanent{
+.pad.permanent {
     background-color: var(--blue-light);
 }
 
-.pad.outlined{
+.pad.outlined {
     background-color: transparent;
     box-shadow: unset;
     border: 1px solid var(--blue-light);
 }
 
-.pad.outlined .french{
+.pad.outlined .french {
     color: var(--grey-light);
     font-size: 16px;
     font-weight: 400;
 }
 
-.pad.outlined svg{
+.pad.outlined svg {
     height: 20px;
 }
 
@@ -43,6 +43,10 @@
     font-size: 10.667px;
     font-weight: 500;
     line-height: normal;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 70px;
 }
 
 .wordsContainer {
@@ -53,13 +57,11 @@
     gap: 4px;
 }
 
-.iconWrapper{
+.iconWrapper {
     display: flex;
     align-items: center;
     gap: 8px;
 }
-
-
 
 .french {
     color: #fcde9c;
@@ -77,23 +79,37 @@
     line-height: normal;
 }
 
-.pad:focus, .pad:hover{
+.french,
+.english {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 170px;
+}
+
+.pad:focus,
+.pad:hover {
     background: var(--purple-focus);
     outline: transparent;
 }
 
-.pad:focus .padId, .pad:focus .french, .pad:hover .padId, .pad:hover .french{
+.pad:focus .padId,
+.pad:focus .french,
+.pad:hover .padId,
+.pad:hover .french {
     color: var(--blue);
 }
 
-.pad:focus .english, .pad:hover .english{
+.pad:focus .english,
+.pad:hover .english {
     color: var(--blue-light);
 }
 
-.pad.outlined:focus svg, .pad.outlined:hover svg{
+.pad.outlined:focus svg,
+.pad.outlined:hover svg {
     fill: var(--blue-dark);
 }
 
-.pad.outlined svg{
+.pad.outlined svg {
     fill: var(--blue-icon);
 }

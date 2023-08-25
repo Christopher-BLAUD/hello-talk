@@ -1,14 +1,14 @@
-import { useContext } from 'react';
-import { AppContext } from '../Context/AppContext';
-import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../Helpers/db';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { useState } from 'react';
 
-export const useWords = (filter) => {
-    const { words, setWords } = useContext(AppContext);
+
+export const useWords = () => {
+    const [words, setWords] = useState([]);
 
     const query = useLiveQuery(async () => {
-        filter !== undefined ? setWords(await db.words.where('category').equals(filter).toArray()) :  setWords(await db.words.orderBy('id').toArray());
+        setWords(await db.words.orderBy('id').toArray())
     });
-    
+
     return words;
 };

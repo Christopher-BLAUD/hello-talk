@@ -9,14 +9,15 @@ export const AppProvider = ({ children }) => {
     const [paired, setPaired] = useState(false);
     const [connected, setConnected] = useState(false);
     const [currentTarget, setCurrentTarget] = useState(0);
-    const [openModal, setOpenModal] = useState(false);
+    const [openCategoryModal, setOpenCategoryModal] = useState(false);
+    const [openSentenceModal, setOpenSentenceModal] = useState(false);
     const [words, setWords] = useState([]);
     const [categories, setCategories] = useState([]);
     const [sentences, setSentences] = useState([]);
     const [alert, setAlert] = useState(false);
     const [alertMess, setAlertMess] = useState('');
     const [alertType, setAlertType] = useState('');
-    const [category, setCategory] = useState('');
+    const [category, setCategory] = useState(undefined);
 
     return (
         <AppContext.Provider
@@ -33,8 +34,10 @@ export const AppProvider = ({ children }) => {
                 setMyController,
                 currentTarget,
                 setCurrentTarget,
-                openModal,
-                setOpenModal,
+                openCategoryModal,
+                setOpenCategoryModal,
+                openSentenceModal,
+                setOpenSentenceModal,
                 words,
                 setWords,
                 categories,

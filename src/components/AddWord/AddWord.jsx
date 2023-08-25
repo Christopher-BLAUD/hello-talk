@@ -36,7 +36,6 @@ function AddWord(props) {
     const [mimeType, setMimeType] = useState('audio/mpeg-3');
     const [recordingStatus, setRecordingStatus] = useState('inactive');
     const [audio, setAudio] = useState(null);
-    const [time, setTime] = useState(0);
     const mediaRecorder = useRef(null);
     const inputFile = useRef(null);
     const audioPlayer = useRef(null);
@@ -254,7 +253,6 @@ function AddWord(props) {
                             </Box>
                             {!file.name && <audio ref={audioPlayer} src={audio}></audio>}
                             <span className={styles.fileName}>{file.name}</span>
-                            {recordingStatus === 'recording' && <span className={styles.fileName}>{time}</span>}
                         </Box>
                         <FormControl>
                             <Button
