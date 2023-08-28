@@ -81,6 +81,7 @@ function Dashboard() {
         } else {
             const isSentenceExist = await findSentence(newSentence);
             if (!isSentenceExist) {
+                console.log(sentenceSounds)
                 await db.sentences.add({
                     sentence: newSentence,
                     sounds: sentenceSounds
@@ -215,7 +216,7 @@ function Dashboard() {
                                         <SearchIcon className={styles.icon} />
                                     </div>
                                     <div className={styles.smallCardsContainer}>
-                                        {result.length > 0
+                                        {result?.length > 0
                                             ? result?.map((word) => (
                                                   <SmallPad
                                                       key={word.id}
@@ -244,9 +245,6 @@ function Dashboard() {
                                         </Tooltip>
                                         <input type="text" placeholder="Votre phrase ..." name="word-finder" defaultValue={newSentence} readOnly />
                                         <div className={styles.iconsWrapper}>
-                                            <Tooltip arrow={true} TransitionComponent={Zoom} title="Écouter">
-                                                <VolumeUpIcon onClick={() => autoplay(0, sentenceSounds)} />
-                                            </Tooltip>
                                             <Tooltip arrow={true} TransitionComponent={Zoom} title="Enregistrer">
                                                 <SendIcon className={styles.sendIcon} onClick={addSentence} />
                                             </Tooltip>

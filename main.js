@@ -1,6 +1,6 @@
 const { app, BrowserWindow, Tray, ipcMain } = require('electron');
 const path = require('path');
-const fs = require('fs')
+const fs = require('fs');
 
 try {
     require('electron-reloader')(module);
@@ -14,8 +14,11 @@ const createWindow = () => {
     mainWindow = new BrowserWindow({
         width: 1450,
         minWidth: 1350,
-        height: 900,
-        minHeight: 900,
+        maxWidth: 1920,
+        height: 800,
+        minHeight: 800,
+        maxHeight: 1080,
+        backgroundColor: '#2C3144',
         autoHideMenuBar: true,
         icon: path.join(__dirname, '/src/assets/icons/favicon.ico'),
         webPreferences: {
@@ -77,12 +80,12 @@ app.on('window-all-closed', () => {
 
 ipcMain.on('move-file', (event, filePath) => {
     const destinationPath = path.join(__dirname, 'sounds', path.basename(filePath));
-  
+
     fs.copyFile(filePath, destinationPath, (err) => {
-      if (err) {  
-        console.log(err)
-      } else {
-        console.log('Succés !')
-      }
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('Succés !');
+        }
     });
-  });
+});

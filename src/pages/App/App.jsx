@@ -1,4 +1,5 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../../utils/Context/AppContext';
 import { Link } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -18,7 +19,6 @@ import Pad from '../../components/Pad/Pad';
 import CategoryModal from '../../components/CategoryModal/CategoryModal';
 import SentenceModal from '../../components/SentenceModal/SentenceModal';
 import logo from '../../assets/img/logo-gradient.svg';
-import plan from '../../assets/img/plan.svg'
 import 'swiper/css';
 import 'swiper/css/grid';
 import 'swiper/css/pagination';
@@ -32,6 +32,7 @@ function App(props) {
         speech,
         setSpeech,
         connected,
+        setConnected,
         myController,
         setMyController,
         currentTarget,
@@ -43,16 +44,17 @@ function App(props) {
         category,
         words
     } = useContext(AppContext);
+    const navigate = useNavigate()
     const [padPerLine, setPadPerline] = useState(5);
     const [firstOfRow, setFirstOfRow] = useState(0);
     const [rowIndex, setRowIndex] = useState(0);
     const [openPlan, setOpenPlan] = useState(false)
     const swiper = useSwiper();
     const swiperRef = useRef();
-    const allWords = useLiveQuery(async () => await db.words.orderBy('id').toArray());
+    const allWords = useLiveQuery(async () => await db.words.orderBy('id').filter(word => word.category !== "Récurrent").toArray());
 
     const reccurentsWords = useLiveQuery(async () => {
-        return await db.words.where('category').equals('Récurrent').limit(3).toArray();
+        return await db.words.where('category').equals('Récurrent').limit(3).sortBy('id');
     });
 
     const makeSentence = (word, sound) => {

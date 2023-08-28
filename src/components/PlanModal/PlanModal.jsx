@@ -13,10 +13,6 @@ function PlanModal(props) {
         onClose(isOpen);
     };
 
-    const handleListItemClick = (value, sounds) => {
-        onClose(value);
-    };
-
     return (
         <ThemeProvider theme={appModal}>
             <Dialog onClose={handleClose} open={isOpen}>

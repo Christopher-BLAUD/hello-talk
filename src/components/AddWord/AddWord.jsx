@@ -33,7 +33,7 @@ function AddWord(props) {
     const [file, setFile] = useState([]);
     const [stream, setStream] = useState(null);
     const [permission, setPermission] = useState(false);
-    const [mimeType, setMimeType] = useState('audio/mpeg-3');
+    const [mimeType, setMimeType] = useState('audio/mpeg');
     const [recordingStatus, setRecordingStatus] = useState('inactive');
     const [audio, setAudio] = useState(null);
     const mediaRecorder = useRef(null);
@@ -75,9 +75,9 @@ function AddWord(props) {
         if (original !== '' && engTranslation !== '' && category !== '' && file.length !== 0) {
             if (file.name && file.type === 'audio/mpeg') {
                 soundPath = './sounds/' + file.name;
-                // sendFile(file.path);
+                sendFile(file.path);
             }
-            if (file.type === 'audio/mpeg-3') {
+            if (file.type === 'audio/mpeg') {
                 soundPath = file;
             }
             await db.words.add({
