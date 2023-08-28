@@ -53,22 +53,8 @@ function Dashboard() {
     const [lastSentences] = useSentences(4);
     const createAlert = useAlert();
     const [result, setSearch] = useSearch('word');
-    const words = useLiveQuery(async () => await db.words.orderBy('id').toArray())
+    const words = useLiveQuery(async () => await db.words.orderBy('id').toArray());
     const navigate = useNavigate();
-
-    const connectToDevice = async () => {
-        if (myController.vendorId === undefined) {
-            const devices = await navigator.hid.requestDevice({ filters: [{ vendorId: 1984, productId: 4410 }] });
-            if (devices.length > 0) {
-                setConnected(true);
-                setMyController(devices[0]);
-                navigate('/app');
-            }
-        } else {
-            setConnected(true);
-            navigate('/app');
-        }
-    };
 
     const findSentence = async (str) => {
         const result = await db.sentences.where('sentence').equals(str).toArray();
@@ -81,7 +67,7 @@ function Dashboard() {
         } else {
             const isSentenceExist = await findSentence(newSentence);
             if (!isSentenceExist) {
-                console.log(sentenceSounds)
+                console.log(sentenceSounds);
                 await db.sentences.add({
                     sentence: newSentence,
                     sounds: sentenceSounds
@@ -130,13 +116,7 @@ function Dashboard() {
                     <nav className={styles.navBar}>
                         <List component="ul" className={styles.listContainer}>
                             <ListItemButton component="li" className={styles.navItem} selected={setSelected('#/app')} title="Application">
-                                <Link
-                                    to={'/app'}
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        connectToDevice();
-                                    }}
-                                >
+                                <Link to={'/app'}>
                                     <ListItemIcon className={styles.iconContainer}>
                                         <AppsOutlinedIcon className={styles.navIcon} />
                                     </ListItemIcon>
