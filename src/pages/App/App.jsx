@@ -1,13 +1,13 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../../utils/Context/AppContext';
 import { Link } from 'react-router-dom';
-import { autoplay } from '../../utils/Helpers/autoplay';
 import { ThemeProvider } from '@emotion/react';
 import { List, ListItemButton, ListItemIcon, ListItemText, createTheme } from '@mui/material';
 import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
 import { Grid, Pagination } from 'swiper/modules';
 import { words } from '../../mocks/words';
+import Alert from "../../components/Alert/Alert"
 import axios from 'axios';
 import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
@@ -24,19 +24,17 @@ import 'swiper/css';
 import 'swiper/css/grid';
 import 'swiper/css/pagination';
 import styles from './App.module.css';
-import * as FFT from 'fft-js';
+import { useAlert } from '../../utils/hooks/useAlert';
 
 function App(props) {
-    let { speech, setSpeech, openCategoryModal, setOpenCategoryModal, openSentenceModal, setOpenSentenceModal } = useContext(AppContext);
+    let { speech, setSpeech, openCategoryModal, setOpenCategoryModal, openSentenceModal, setOpenSentenceModal, alert, setAlert, alertType, alertMess } = useContext(AppContext);
     const [sentence, setSentence] = useState('');
-    const [audio, setAudio] = useState(null);
-    const [audioUrl, setAudioUrl] = useState('');
     const navigate = useNavigate();
     const [openPlan, setOpenPlan] = useState(false);
     const swiper = useSwiper();
     const swiperRef = useRef();
-    const audioPlayer = useRef();
-    const inputRef = useRef()
+    const inputRef = useRef();
+    const createAlert = useAlert();
 
     const allWords = words.filter((word) => word.category !== 'Récurrent');
     const reccurentsWords = words.filter((word) => word.category === 'Récurrent');
@@ -44,17 +42,22 @@ function App(props) {
     const makeSentence = (word, sound) => {
         setSentence(sentence + ' ' + word);
         setSpeech([...speech, sound]);
-        inputRef.current.value += " " + word;
-        inputRef.current.value.trim()
+        inputRef.current.value += ' ' + word;
+        inputRef.current.value.trim();
     };
 
     const clearSentence = () => {
         setSentence('');
         setSpeech([]);
-        inputRef.current.value = ""
+        inputRef.current.value = '';
     };
 
-    const sendSentence = async (sentence) => {
+    const playSentence = async (sentence) => {
+        if (sentence === "" && inputRef.current.value === "") {
+            createAlert(true, "error", "Veuillez saisir une phrase")
+            return
+        }
+
         const data = {
             text: sentence.trim() || inputRef.current.value
         };
@@ -65,6 +68,7 @@ function App(props) {
                 Accept: '*/*'
             }
         };
+
         try {
             let response = await axios.post('http://localhost:8080/api/sentences', data, config);
             const buffer = response.data.sentence.data;
@@ -76,7 +80,7 @@ function App(props) {
             const audioElement = new Audio(audioUrl);
             document.body.appendChild(audioElement);
 
-            audioElement.play();
+            if (sentence !== '' || inputRef.current.value !== '') audioElement.play();
         } catch (error) {
             console.error(error);
         }
@@ -139,10 +143,9 @@ function App(props) {
                     <button className={styles.iconContainer} onClick={clearSentence}>
                         <BackspaceOutlinedIcon className="delete" />
                     </button>
-                    <input ref={inputRef} type="text" name="speech" />
-                    <button className={`${styles.iconContainer} selectable`} onClick={() => sendSentence(sentence)}>
+                    <input ref={inputRef} type="text" name="speech" onClick={clearSentence} />
+                    <button className={`${styles.iconContainer} selectable`} onClick={() => playSentence(sentence)}>
                         <RecordVoiceOverIcon className="play" />
-                        <audio ref={audioPlayer} src={audioUrl}></audio>
                     </button>
                 </div>
                 <div className={styles.cardsContainer}>
@@ -181,6 +184,7 @@ function App(props) {
                         ))}
                     </Swiper>
                 </div>
+                <Alert type={alertType} text={alertMess} alert={alert} onClick={() => setAlert(false)} />
             </main>
         </div>
     );
