@@ -7,15 +7,16 @@ import { useSentences } from '../../utils/hooks/useSentences';
 import { useAlert } from '../../utils/hooks/useAlert';
 import { db } from '../../utils/Helpers/db';
 import { autoplay } from '../../utils/Helpers/autoplay';
+import { searchWord } from '../../components/Words/Words';
 import { deleteSentence } from '../../utils/Helpers/deleteSentence';
 import { formatSentence } from '../../utils/Helpers/formatSentence';
 import { ThemeProvider, Tooltip } from '@mui/material';
 import { dashboardTheme } from '../../utils/Theme/Dashboard/dashboardTheme';
 import { useSearch } from '../../utils/hooks/useSearch';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import SmallPad from '../../components/SmallPad/SmallPad';
 import Alert from '../../components/Alert/Alert';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import Zoom from '@mui/material/Zoom';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -37,23 +38,24 @@ import Collapse from '@mui/material/Collapse';
 import AddWord from '../../components/AddWord/AddWord';
 import AddCategory from '../../components/AddCategory/AddCategory';
 import CounterCard from '../../components/CounterCard/CounterCard';
-import Words from '../../components/Words/Words';
 import logo from '../../assets/img/logo-gradient.svg';
 import styles from './Dashboard.module.css';
+import Word from '../../controllers/words';
 
 function Dashboard() {
-    const { setConnected, myController, setMyController, alert, setAlert, alertMess, alertType } = useContext(AppContext);
+    const { setConnected, myController, setMyController, alert, setAlert, alertMess, alertType, words, setWords } = useContext(AppContext);
     const [open, setOpen] = useState(false);
     const [openWordModal, setOpenWordModal] = useState(false);
     const [openCategoryModal, setOpenCategoryModal] = useState(false);
     const [newSentence, setNewSentence] = useState('');
     const [sentenceSounds, setSentenceSounds] = useState([]);
-    const categories = useCategories();
     const [sentences] = useSentences();
     const [lastSentences] = useSentences(4);
-    const createAlert = useAlert();
     const [result, setSearch] = useSearch('word');
-    const words = useLiveQuery(async () => await db.words.orderBy('id').toArray())
+    const [filtered, setFiltered] = useState([])
+    const createAlert = useAlert();
+    const categories = useCategories();
+    const allWords = useLiveQuery(async () => await db.words.orderBy('id').toArray());
     const navigate = useNavigate();
 
     const connectToDevice = async () => {
@@ -81,7 +83,6 @@ function Dashboard() {
         } else {
             const isSentenceExist = await findSentence(newSentence);
             if (!isSentenceExist) {
-                console.log(sentenceSounds)
                 await db.sentences.add({
                     sentence: newSentence,
                     sounds: sentenceSounds
@@ -181,16 +182,18 @@ function Dashboard() {
                         <section className={styles.globalInfos}>
                             <div className={styles.cardsContainer}>
                                 <CounterCard
+                                    onClick={() => 
+                                        navigate('')
+                                    }
+                                    title={'Mots enregistrés'}
+                                    count={allWords?.length}
+                                    icon={<AbcIcon sx={{ fill: '#7D8CC4' }} />}
+                                />
+                                <CounterCard
                                     onClick={() => navigate('categories')}
                                     title={'Catégories'}
                                     count={categories?.length}
                                     icon={<FormatListBulletedIcon sx={{ fill: '#CB9173' }} />}
-                                />
-                                <CounterCard
-                                    onClick={() => navigate('words')}
-                                    title={'Mots enregistrés'}
-                                    count={words?.length}
-                                    icon={<AbcIcon sx={{ fill: '#7D8CC4' }} />}
                                 />
                                 <CounterCard
                                     onClick={() => navigate('sentences')}
@@ -199,7 +202,9 @@ function Dashboard() {
                                     icon={<SubjectIcon sx={{ fill: '#7FC29B' }} />}
                                 />
                             </div>
-                            <div className={styles.details}>{window.location.hash === '#/dashboard' ? <Words /> : <Outlet />}</div>
+                            <div className={styles.details}>
+                                <Outlet context={[words, setWords]}/>
+                            </div>
                         </section>
                         <section className={styles.sentenceWrapper}>
                             <h3 className={styles.sentenceTitle}>Rédiger une phrase</h3>
@@ -211,31 +216,31 @@ function Dashboard() {
                                             placeholder="Rechercher un mot ..."
                                             name="word-finder"
                                             autoComplete="off"
-                                            onChange={(e) => setSearch(e.target.value)}
+                                            onChange={(e) => setFiltered(searchWord(allWords, e.target.value))}
                                         />
                                         <SearchIcon className={styles.icon} />
                                     </div>
                                     <div className={styles.smallCardsContainer}>
-                                        {result?.length > 0
-                                            ? result?.map((word) => (
+                                        {filtered?.length > 0
+                                            ? filtered?.map((word) => (
                                                   <SmallPad
                                                       key={word.id}
                                                       id={word.id}
                                                       fr={word.original}
-                                                      eng={word.engTranslation}
+                                                      eng={word.engTranslation || word.translation}
                                                       callback={() => makeSentence(word.original, word.sound)}
                                                   />
                                               ))
-                                            : words?.map((word) => (
+                                            : allWords?.map((word) => (
                                                   <SmallPad
                                                       key={word.id}
                                                       id={word.id}
                                                       fr={word.original}
-                                                      eng={word.engTranslation}
+                                                      eng={word.engTranslation || word.translation}
                                                       callback={() => makeSentence(word.original, word.sound)}
                                                   />
                                               ))}
-                                        {result?.length === 0 && words?.length === 0 && <span>Aucun mot disponible pour le moment ...</span>}
+                                        {result?.length === 0 && allWords?.length === 0 && <span>Aucun mot disponible pour le moment ...</span>}
                                     </div>
                                 </div>
                                 <div className={styles.sentenceMaker}>

@@ -7,7 +7,7 @@ export const useSentences = (limit) => {
     const { sentences, setSentences } = useContext(AppContext);
     const [lastSentences, setLastSentences] = useState([]);
 
-    const query = useLiveQuery(async () => {
+    useLiveQuery(async () => {
         if (limit !== undefined) {
             setLastSentences(await db.sentences.orderBy('id').reverse().limit(limit).toArray());
         } else {

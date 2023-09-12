@@ -1,5 +1,4 @@
 import { useWords } from '../../utils/hooks/useWords';
-import { useSearch } from '../../utils/hooks/useSearch';
 import { autoplay } from '../../utils/Helpers/autoplay';
 import { db } from '../../utils/Helpers/db';
 import { TransitionGroup } from 'react-transition-group';
@@ -9,13 +8,18 @@ import NoData from '../NoData/NoData';
 import CancelIcon from '@mui/icons-material/Cancel';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import styles from './Words.module.css';
+import { useState } from 'react';
+
+export const searchWord = (array, search) => {
+    return array.filter((word) => word.original.match(search));
+};
 
 function Words() {
-    const words = useWords();
-    const [result, setSearch] = useSearch('word');
+    const allWords = useWords();
+    const [filteredWord, setFilteredWord] = useState([]);
 
     const deleteWord = async (wordId) => {
-        return await db.words.delete(wordId);
+        await db.words.delete(wordId);
     };
 
     return (
@@ -23,11 +27,17 @@ function Words() {
             <div className={styles.headingContainer}>
                 <h3 className={styles.heading}>Mots enregistrés</h3>
                 <div className={styles.inputContainer}>
-                    <input type="text" placeholder="Rechercher un mot ..." name="word-finder" autoComplete="off" onChange={(e) => setSearch(e.target.value)} />
+                    <input
+                        type="text"
+                        placeholder="Rechercher un mot ..."
+                        name="word-finder"
+                        autoComplete="off"
+                        onChange={(e) => setFilteredWord(searchWord(allWords, e.target.value))}
+                    />
                     <SearchIcon className={styles.icon} />
                 </div>
             </div>
-            {words?.length > 0 ? (
+            {allWords?.length > 0 ? (
                 <div className={styles.listContainer}>
                     <div className={styles.listHeader}>
                         <span>Son</span>
@@ -37,8 +47,8 @@ function Words() {
                     </div>
                     <div className={styles.listRows}>
                         <TransitionGroup component={'ul'}>
-                            {result.length > 0
-                                ? result?.map((word) => (
+                            {filteredWord.length > 0
+                                ? filteredWord?.map((word) => (
                                       <Collapse component={'li'} key={word.id} className={styles.rowsContainer}>
                                           <div className={styles.rows} id={word.id}>
                                               <span onClick={() => autoplay(0, [word.sound])}>
@@ -47,7 +57,7 @@ function Words() {
                                                   </Tooltip>
                                               </span>
                                               <span>{word.original}</span>
-                                              <span>{word.engTranslation}</span>
+                                              <span>{word.engTranslation || word.translation}</span>
                                               <span>{word.category}</span>
                                               <div className={styles.iconContainer} onClick={() => deleteWord(word.id)}>
                                                   <Tooltip placement="left" arrow={true} TransitionComponent={Zoom} title="Supprimer">
@@ -57,7 +67,7 @@ function Words() {
                                           </div>
                                       </Collapse>
                                   ))
-                                : words?.map((word) => (
+                                : allWords?.map((word) => (
                                       <Collapse component={'li'} key={word.id} className={styles.rowsContainer}>
                                           <div className={styles.rows} id={word.id}>
                                               <span onClick={() => autoplay(0, [word.sound])}>
@@ -66,7 +76,7 @@ function Words() {
                                                   </Tooltip>
                                               </span>
                                               <span>{word.original}</span>
-                                              <span>{word.engTranslation}</span>
+                                              <span>{word.engTranslation || word.translation}</span>
                                               <span>{word.category}</span>
                                               <div className={styles.iconContainer} onClick={() => deleteWord(word.id)}>
                                                   <Tooltip placement="left" arrow={true} TransitionComponent={Zoom} title="Supprimer">

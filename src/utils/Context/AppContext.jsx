@@ -1,4 +1,6 @@
-import { createContext, useState } from 'react';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { createContext, useEffect, useState } from 'react';
+import { db } from '../Helpers/db';
 
 export const AppContext = createContext();
 

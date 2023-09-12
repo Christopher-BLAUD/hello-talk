@@ -1,34 +1,21 @@
-import { useEffect, useRef, useState } from 'react';
+import Word from '../../controllers/words';
+import { db } from '../../utils/Helpers/db';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useCategories } from '../../utils/hooks/useCategories';
 import { useAlert } from '../../utils/hooks/useAlert';
-import {
-    ThemeProvider,
-    Button,
-    Dialog,
-    DialogTitle,
-    FilledInput,
-    InputAdornment,
-    Icon,
-    FormControl,
-    InputLabel,
-    Box,
-    Select,
-    MenuItem,
-    FormControlLabel,
-    Switch
-} from '@mui/material';
+import { ThemeProvider, Button, Dialog, DialogTitle, FilledInput, InputAdornment, Icon, FormControl, InputLabel, Box, Select, MenuItem } from '@mui/material';
 import { modalTheme } from '../../utils/Theme/Modal/modalTheme';
-import { db } from '../../utils/Helpers/db';
 import { IconFR, IconEN } from '../LangIcon/LangIcon';
 import DownloadIcon from '@mui/icons-material/Download';
 import MicIcon from '@mui/icons-material/Mic';
 import Visualizer from '../Visualizer/Visualizer';
 import styles from './AddWord.module.css';
+import { AppContext } from '../../utils/Context/AppContext';
 
 function AddWord(props) {
     const { onClose, isOpen } = props;
     const [original, setOriginal] = useState('');
-    const [engTranslation, setEngTranslation] = useState('');
+    const [translation, setTranslation] = useState('');
     const [category, setCategory] = useState('');
     const [file, setFile] = useState([]);
     const [stream, setStream] = useState(null);
@@ -36,6 +23,7 @@ function AddWord(props) {
     const [mimeType, setMimeType] = useState('audio/mpeg');
     const [recordingStatus, setRecordingStatus] = useState('inactive');
     const [audio, setAudio] = useState(null);
+    const { setWords } = useContext(AppContext);
     const mediaRecorder = useRef(null);
     const inputFile = useRef(null);
     const audioPlayer = useRef(null);
@@ -51,7 +39,7 @@ function AddWord(props) {
     };
 
     const handleTranslation = (event) => {
-        setEngTranslation(event.target.value);
+        setTranslation(event.target.value);
     };
 
     const handleCategory = (event) => {
@@ -70,9 +58,17 @@ function AddWord(props) {
         window.electronAPI.moveFile(source);
     };
 
-    const addNewWord = async (word) => {
+    const clearData = () => {
+        setOriginal('');
+        setTranslation('');
+        setCategory('');
+        setFile([]);
+    };
+
+    const addNewWord = async () => {
         let soundPath;
-        if (original !== '' && engTranslation !== '' && category !== '' && file.length !== 0) {
+
+        if (original !== '' && translation !== '' && category !== '' && file.length !== 0) {
             if (file.name && file.type === 'audio/mpeg') {
                 soundPath = './sounds/' + file.name;
                 sendFile(file.path);
@@ -80,17 +76,12 @@ function AddWord(props) {
             if (file.type === 'audio/mpeg') {
                 soundPath = file;
             }
-            await db.words.add({
-                original: original,
-                engTranslation: engTranslation,
-                category: category,
-                sound: soundPath
-            });
+
+            const word = new Word(original, translation, category, soundPath);
+            await word.save();
+
             createAlert(true, 'success', 'Mot enregistré avec succès !');
-            setOriginal('');
-            setEngTranslation('');
-            setCategory('');
-            setFile([]);
+            clearData();
         } else {
             createAlert(true, 'error', "Veuillez remplir l'ensemble des informations");
         }
@@ -180,7 +171,7 @@ function AddWord(props) {
                                     </InputAdornment>
                                 }
                                 label="Traduction"
-                                value={engTranslation}
+                                value={translation}
                                 onChange={handleTranslation}
                                 required
                             />
@@ -188,9 +179,7 @@ function AddWord(props) {
                         <FormControl>
                             <InputLabel id="demo-simple-select-label">Catégorie</InputLabel>
                             <Select label="Catégorie" onChange={handleCategory} value={category} required>
-                                <MenuItem  value="Récurrent">
-                                    Récurrent
-                                </MenuItem>
+                                <MenuItem value="Récurrent">Récurrent</MenuItem>
                                 {categories?.map((category) => (
                                     <MenuItem key={category.id} value={category.name}>
                                         {category.name}

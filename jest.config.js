@@ -5,7 +5,8 @@ const config = {
       },
       moduleNameMapper: {
         "\\.css$": "identity-obj-proxy",
-      },
+        '^dexie$': require.resolve("dexie")
+      }
   };
   
   module.exports = config;
