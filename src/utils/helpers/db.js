@@ -20,3 +20,15 @@ db.version(2)
             delete word.engTranslation;
         });
     });
+
+db.version(3).stores({
+    words: '++id, original, translation, category, sound, score',
+    categories: '++id, name, score',
+    sentences: '++id, sentence, *sounds, score'
+})
+
+db.version(4).stores({
+    words: '++id, original, translation, category, sound, score',
+    categories: '++id, name, color, score',
+    sentences: '++id, sentence, *sounds, score'
+})

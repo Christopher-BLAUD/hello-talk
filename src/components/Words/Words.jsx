@@ -1,14 +1,17 @@
+import { useState } from 'react';
 import { useWords } from '../../utils/hooks/useWords';
 import { autoplay } from '../../utils/Helpers/autoplay';
 import { db } from '../../utils/Helpers/db';
 import { TransitionGroup } from 'react-transition-group';
 import { Collapse, Tooltip, Zoom } from '@mui/material';
+import { setFilter } from '../../utils/Helpers/setFilter.js';
+import Word from '../../controllers/words';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import SearchIcon from '@mui/icons-material/Search';
 import NoData from '../NoData/NoData';
 import CancelIcon from '@mui/icons-material/Cancel';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import styles from './Words.module.css';
-import { useState } from 'react';
 
 export const searchWord = (array, search) => {
     return array.filter((word) => word.original.match(search));
@@ -17,6 +20,7 @@ export const searchWord = (array, search) => {
 function Words() {
     const allWords = useWords();
     const [filteredWord, setFilteredWord] = useState([]);
+    const [activeFilter, setActiveFilter] = useState('');
 
     const deleteWord = async (wordId) => {
         await db.words.delete(wordId);
@@ -26,15 +30,55 @@ function Words() {
         <div className={styles.wrapper}>
             <div className={styles.headingContainer}>
                 <h3 className={styles.heading}>Mots enregistrés</h3>
-                <div className={styles.inputContainer}>
-                    <input
-                        type="text"
-                        placeholder="Rechercher un mot ..."
-                        name="word-finder"
-                        autoComplete="off"
-                        onChange={(e) => setFilteredWord(searchWord(allWords, e.target.value))}
-                    />
-                    <SearchIcon className={styles.icon} />
+                <div className={styles.searchWrapper}>
+                    <div className={styles.filters}>
+                        <button
+                            onClick={() => {
+                                setFilteredWord(setFilter('id', allWords));
+                                setActiveFilter('id');
+                            }}
+                            className={activeFilter === 'id' ? styles.activeFilter : undefined}
+                        >
+                            ID
+                        </button>
+                        <button
+                            onClick={() => {
+                                setFilteredWord(setFilter('alphabetical', allWords));
+                                setActiveFilter('alphabetical');
+                            }}
+                            className={activeFilter === 'alphabetical' ? styles.activeFilter : undefined}
+                        >
+                            Alphabétique
+                        </button>
+                        <button
+                            onClick={() => {
+                                setFilteredWord(setFilter('score', allWords));
+                                setActiveFilter('score');
+                            }}
+                            className={activeFilter === 'score' ? styles.activeFilter : undefined}
+                        >
+                            Utilisation
+                        </button>
+                        <button
+                            onClick={() => {
+                                setFilteredWord(setFilter('category', allWords));
+                                setActiveFilter('category');
+                            }}
+                            className={activeFilter === 'category' ? styles.activeFilter : undefined}
+                        >
+                            Catégorie
+                        </button>
+                    </div>
+                    <div className={styles.inputContainer}>
+                        <input
+                            type="text"
+                            placeholder="Rechercher un mot ..."
+                            name="word-finder"
+                            autoComplete="off"
+                            onChange={(e) => setFilteredWord(searchWord(allWords, e.target.value))}
+                        />
+                        <SearchIcon className={styles.icon} />
+                    </div>
                 </div>
             </div>
             {allWords?.length > 0 ? (
@@ -59,9 +103,12 @@ function Words() {
                                               <span>{word.original}</span>
                                               <span>{word.engTranslation || word.translation}</span>
                                               <span>{word.category}</span>
-                                              <div className={styles.iconContainer} onClick={() => deleteWord(word.id)}>
-                                                  <Tooltip placement="left" arrow={true} TransitionComponent={Zoom} title="Supprimer">
-                                                      <CancelIcon className={styles.cancelIcon} />
+                                              <div className={styles.iconContainer}>
+                                              <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Modifier">
+                                                      <EditNoteIcon className={styles.editIcon} />
+                                                  </Tooltip>
+                                                  <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Supprimer">
+                                                      <CancelIcon className={styles.cancelIcon} onClick={() => deleteWord(word.id)} />
                                                   </Tooltip>
                                               </div>
                                           </div>
@@ -78,9 +125,12 @@ function Words() {
                                               <span>{word.original}</span>
                                               <span>{word.engTranslation || word.translation}</span>
                                               <span>{word.category}</span>
-                                              <div className={styles.iconContainer} onClick={() => deleteWord(word.id)}>
-                                                  <Tooltip placement="left" arrow={true} TransitionComponent={Zoom} title="Supprimer">
-                                                      <CancelIcon className={styles.cancelIcon} />
+                                              <div className={styles.iconContainer}>
+                                                  <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Modifier">
+                                                      <EditNoteIcon className={styles.editIcon} />
+                                                  </Tooltip>
+                                                  <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Supprimer">
+                                                      <CancelIcon className={styles.cancelIcon} onClick={() => deleteWord(word.id)} />
                                                   </Tooltip>
                                               </div>
                                           </div>

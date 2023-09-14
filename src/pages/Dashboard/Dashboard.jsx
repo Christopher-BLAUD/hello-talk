@@ -7,6 +7,7 @@ import { useSentences } from '../../utils/hooks/useSentences';
 import { useAlert } from '../../utils/hooks/useAlert';
 import { db } from '../../utils/Helpers/db';
 import { autoplay } from '../../utils/Helpers/autoplay';
+import { setFilter } from '../../utils/Helpers/setFilter';
 import { searchWord } from '../../components/Words/Words';
 import { deleteSentence } from '../../utils/Helpers/deleteSentence';
 import { formatSentence } from '../../utils/Helpers/formatSentence';
@@ -51,8 +52,9 @@ function Dashboard() {
     const [sentenceSounds, setSentenceSounds] = useState([]);
     const [sentences] = useSentences();
     const [lastSentences] = useSentences(4);
-    const [result, setSearch] = useSearch('word');
-    const [filtered, setFiltered] = useState([])
+    const [result] = useSearch('word');
+    const [filtered, setFiltered] = useState([]);
+    const [activeFilter, setActiveFilter] = useState('');
     const createAlert = useAlert();
     const categories = useCategories();
     const allWords = useLiveQuery(async () => await db.words.orderBy('id').toArray());
@@ -182,9 +184,7 @@ function Dashboard() {
                         <section className={styles.globalInfos}>
                             <div className={styles.cardsContainer}>
                                 <CounterCard
-                                    onClick={() => 
-                                        navigate('')
-                                    }
+                                    onClick={() => navigate('')}
                                     title={'Mots enregistrés'}
                                     count={allWords?.length}
                                     icon={<AbcIcon sx={{ fill: '#7D8CC4' }} />}
@@ -203,22 +203,62 @@ function Dashboard() {
                                 />
                             </div>
                             <div className={styles.details}>
-                                <Outlet context={[words, setWords]}/>
+                                <Outlet context={[words, setWords]} />
                             </div>
                         </section>
                         <section className={styles.sentenceWrapper}>
                             <h3 className={styles.sentenceTitle}>Rédiger une phrase</h3>
                             <div className={styles.sentenceContainer}>
                                 <div className={styles.wordFinder}>
-                                    <div className={styles.inputContainer}>
-                                        <input
-                                            type="text"
-                                            placeholder="Rechercher un mot ..."
-                                            name="word-finder"
-                                            autoComplete="off"
-                                            onChange={(e) => setFiltered(searchWord(allWords, e.target.value))}
-                                        />
-                                        <SearchIcon className={styles.icon} />
+                                    <div className={styles.searchWrapper}>
+                                        <div className={styles.inputContainer}>
+                                            <input
+                                                type="text"
+                                                placeholder="Rechercher un mot ..."
+                                                name="word-finder"
+                                                autoComplete="off"
+                                                onChange={(e) => setFiltered(searchWord(allWords, e.target.value))}
+                                            />
+                                            <SearchIcon className={styles.icon} />
+                                        </div>
+                                        <div className={styles.filters}>
+                                            <button
+                                                onClick={() => {
+                                                    setFiltered(setFilter('id', allWords));
+                                                    setActiveFilter('id');
+                                                }}
+                                                className={activeFilter === 'id' ? styles.activeFilter : undefined}
+                                            >
+                                                ID
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setFiltered(setFilter('alphabetical', allWords));
+                                                    setActiveFilter('alphabetical');
+                                                }}
+                                                className={activeFilter === 'alphabetical' ? styles.activeFilter : undefined}
+                                            >
+                                                Alphabétique
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setFiltered(setFilter('score', allWords));
+                                                    setActiveFilter('score');
+                                                }}
+                                                className={activeFilter === 'score' ? styles.activeFilter : undefined}
+                                            >
+                                                Utilisation
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setFiltered(setFilter('category', allWords));
+                                                    setActiveFilter('category');
+                                                }}
+                                                className={activeFilter === 'category' ? styles.activeFilter : undefined}
+                                            >
+                                                Catégorie
+                                            </button>
+                                        </div>
                                     </div>
                                     <div className={styles.smallCardsContainer}>
                                         {filtered?.length > 0
