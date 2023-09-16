@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useWords } from '../../utils/hooks/useWords';
+import ModifyWord from '../ModifyWord/ModifyWord';
 import { autoplay } from '../../utils/Helpers/autoplay';
 import { db } from '../../utils/Helpers/db';
 import { TransitionGroup } from 'react-transition-group';
 import { Collapse, Tooltip, Zoom } from '@mui/material';
 import { setFilter } from '../../utils/Helpers/setFilter.js';
-import Word from '../../controllers/words';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import SearchIcon from '@mui/icons-material/Search';
 import NoData from '../NoData/NoData';
@@ -19,15 +19,23 @@ export const searchWord = (array, search) => {
 
 function Words() {
     const allWords = useWords();
+    const [word, setWord] = useState({})
     const [filteredWord, setFilteredWord] = useState([]);
     const [activeFilter, setActiveFilter] = useState('');
+    const [open, setOpen] = useState(false);
 
-    const deleteWord = async (wordId) => {
-        await db.words.delete(wordId);
+    const handleClickOpen = (word) => {
+        setWord(word)
+        setOpen(true)
     };
+
+    const handleClose = () => setOpen(false);
+
+    const deleteWord = async (wordId) => await db.words.delete(wordId);
 
     return (
         <div className={styles.wrapper}>
+            <ModifyWord handleClose={handleClose} isOpen={open} word={word}/>
             <div className={styles.headingContainer}>
                 <h3 className={styles.heading}>Mots enregistrés</h3>
                 <div className={styles.searchWrapper}>
@@ -104,8 +112,8 @@ function Words() {
                                               <span>{word.engTranslation || word.translation}</span>
                                               <span>{word.category}</span>
                                               <div className={styles.iconContainer}>
-                                              <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Modifier">
-                                                      <EditNoteIcon className={styles.editIcon} />
+                                                  <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Modifier">
+                                                      <EditNoteIcon className={styles.editIcon} onClick={() => handleClickOpen(word)} />
                                                   </Tooltip>
                                                   <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Supprimer">
                                                       <CancelIcon className={styles.cancelIcon} onClick={() => deleteWord(word.id)} />
@@ -127,7 +135,7 @@ function Words() {
                                               <span>{word.category}</span>
                                               <div className={styles.iconContainer}>
                                                   <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Modifier">
-                                                      <EditNoteIcon className={styles.editIcon} />
+                                                      <EditNoteIcon className={styles.editIcon} onClick={() => handleClickOpen(word)} />
                                                   </Tooltip>
                                                   <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Supprimer">
                                                       <CancelIcon className={styles.cancelIcon} onClick={() => deleteWord(word.id)} />

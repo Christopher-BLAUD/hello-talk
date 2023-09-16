@@ -3,9 +3,9 @@ import { db } from '../src/utils/Helpers/db';
 
 jest.mock('../src/utils/Helpers/db');
 
-
 Word.getWord = jest.fn();
 Word.update = jest.fn();
+Word.delete = jest.fn();
 
 describe('word', () => {
     const word = new Word('bonjour', 'hello', 'Présentation', './sounds/bonjour.mp3');
@@ -64,7 +64,7 @@ describe('word', () => {
         expect(Word.getWord).toHaveBeenCalledTimes(1);
     });
 
-    it('should call update with specific parameters', () => {
+    it('should to call the update method with specific parameters', () => {
         const id = 3;
         const changes = { original: 'salut', translation: 'hi' };
 
@@ -72,5 +72,14 @@ describe('word', () => {
 
         expect(Word.update).toHaveBeenCalledWith(id, changes);
         expect(Word.update).toHaveBeenCalledTimes(1);
+    });
+
+    it('should to call the delete method with the word id', () => {
+        const id = 4;
+
+        Word.delete(id);
+
+        expect(Word.delete).toHaveBeenCalledWith(id);
+        expect(Word.delete).toHaveBeenCalledTimes(1);
     });
 });

@@ -1,4 +1,4 @@
-import { createTheme } from "@mui/material";
+import { createTheme } from '@mui/material';
 
 export const modalTheme = createTheme({
     components: {
@@ -12,13 +12,21 @@ export const modalTheme = createTheme({
         MuiPaper: {
             styleOverrides: {
                 root: {
-                    gap: '16px',
                     boxShadow: '0px 0px 13px 6px rgba(32, 35, 49, 0.23)',
                     backgroundColor: 'var(--blue-background)',
                     minWidth: '600px',
-                    "&::-webkit-scrollbar-thumb": {
-                        backgroundColor: "var(--blue-light)"
+                    '&::-webkit-scrollbar-thumb': {
+                        backgroundColor: 'var(--blue-light)'
                     }
+                }
+            }
+        },
+        MuiDialogTitle: {
+            styleOverrides: {
+                root: {
+                    fontFamily: 'DM sans',
+                    fontWeight: '500!important',
+                    fontSize: '20px'
                 }
             }
         },
@@ -44,6 +52,7 @@ export const modalTheme = createTheme({
         MuiFilledInput: {
             styleOverrides: {
                 root: {
+                    width: '100%',
                     backgroundColor: 'var(--blue)',
                     borderRadius: '4px',
                     color: '#fdedc9',
@@ -53,6 +62,9 @@ export const modalTheme = createTheme({
                     },
                     '&::before': {
                         display: 'none'
+                    },
+                    '& input': {
+                        width: '100%'
                     }
                 }
             }
@@ -72,6 +84,13 @@ export const modalTheme = createTheme({
                     '& svg': {
                         fill: '#fdedc9'
                     }
+                }
+            }
+        },
+        MuiFormControl: {
+            styleOverrides: {
+                root: {
+                    width: '100%'
                 }
             }
         },
@@ -104,10 +123,10 @@ export const modalTheme = createTheme({
                     color: 'var(--yellow-primary)',
                     fontWeight: '300',
                     fontFamily: 'DM sans',
-                    width: "100%",
+                    width: '100%',
                     '&:hover': {
                         borderColor: 'unset',
-                        backgroundColor: "#fcde9c36"
+                        backgroundColor: '#fcde9c36'
                     }
                 }
             }
@@ -129,8 +148,8 @@ export const modalTheme = createTheme({
                         fontSize: '14px',
                         fontWeight: '400!important'
                     },
-                    "& .MuiFormControlLabel-asterisk": {
-                        color: "#fff"
+                    '& .MuiFormControlLabel-asterisk': {
+                        color: '#fff'
                     }
                 }
             }
@@ -138,8 +157,8 @@ export const modalTheme = createTheme({
         MuiInputAdornment: {
             styleOverrides: {
                 root: {
-                    "& svg": {
-                        fill: "#fdedc9"
+                    '& svg': {
+                        fill: '#fdedc9'
                     }
                 }
             }
@@ -147,19 +166,19 @@ export const modalTheme = createTheme({
         MuiListItem: {
             styleOverrides: {
                 root: {
-                    padding: "8px 0",
-                    width: "fit-content"
+                    padding: '8px 0',
+                    width: 'fit-content'
                 }
             }
         },
         MuiListItemText: {
             styleOverrides: {
                 root: {
-                    fontFamily: "Satoshi",
-                    color: "var(--grey-light)",
-                    "& .MuiTypography-root": {
-                        fontSize: "14px",
-                        fontWeight: "400!important"
+                    fontFamily: 'Satoshi',
+                    color: 'var(--grey-light)',
+                    '& .MuiTypography-root': {
+                        fontSize: '14px',
+                        fontWeight: '400!important'
                     }
                 }
             }
@@ -167,9 +186,9 @@ export const modalTheme = createTheme({
         MuiAvatar: {
             styleOverrides: {
                 root: {
-                    backgroundColor: "var(--yellow-transparent)",
-                    "& svg": {
-                        fill: "var(--yellow-primary)"
+                    backgroundColor: 'var(--yellow-transparent)',
+                    '& svg': {
+                        fill: 'var(--yellow-primary)'
                     }
                 }
             }
@@ -177,11 +196,11 @@ export const modalTheme = createTheme({
         MuiSwitch: {
             styleOverrides: {
                 root: {
-                    "& .Mui-checked": {
-                        color: "var(--yellow-primary)!important"
+                    '& .Mui-checked': {
+                        color: 'var(--yellow-primary)!important'
                     },
-                    "& .MuiSwitch-track": {
-                        backgroundColor: "#595961!important"
+                    '& .MuiSwitch-track': {
+                        backgroundColor: '#595961!important'
                     }
                 }
             }

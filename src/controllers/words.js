@@ -35,6 +35,14 @@ class Word {
             throw new Error('Error while updating word');
         }
     }
+
+    static async delete(id) {
+        try {
+            await db.words.delete(id)
+        } catch (e) {
+            throw new Error('Error while deleting word')
+        }
+    }
 }
 
 export default Word;

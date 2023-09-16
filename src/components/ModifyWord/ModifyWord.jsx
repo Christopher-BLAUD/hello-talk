@@ -1,85 +1,33 @@
-import Word from '../../controllers/words';
-import { useEffect, useRef, useState } from 'react';
-import { useCategories } from '../../utils/hooks/useCategories';
+import { useState, useRef, useEffect } from 'react';
 import { useAlert } from '../../utils/hooks/useAlert';
+import { useCategories } from '../../utils/hooks/useCategories';
 import { sendFile } from '../../utils/Helpers/sendFile';
 import { ThemeProvider, Button, Dialog, DialogTitle, FilledInput, InputAdornment, Icon, FormControl, InputLabel, Box, Select, MenuItem } from '@mui/material';
 import { modalTheme } from '../../utils/Theme/Modal/modalTheme';
 import { IconFR, IconEN } from '../LangIcon/LangIcon';
+import Word from '../../controllers/words';
 import DownloadIcon from '@mui/icons-material/Download';
 import MicIcon from '@mui/icons-material/Mic';
 import Visualizer from '../Visualizer/Visualizer';
-import styles from './AddWord.module.css';
+import styles from './ModifyWord.module.css';
+import { create } from 'react-test-renderer';
 
-function AddWord(props) {
-    const { onClose, isOpen } = props;
+function ModifyWord(props) {
+    const { handleClose, isOpen, word } = props;
+    const [recordingStatus, setRecordingStatus] = useState('inactive');
+    const [permission, setPermission] = useState(false);
+    const [stream, setStream] = useState(null);
+    const [mimeType, setMimeType] = useState('audio/mpeg');
+    const [file, setFile] = useState([]);
+    const [audio, setAudio] = useState(null);
     const [original, setOriginal] = useState('');
     const [translation, setTranslation] = useState('');
     const [category, setCategory] = useState('');
-    const [file, setFile] = useState([]);
-    const [stream, setStream] = useState(null);
-    const [permission, setPermission] = useState(false);
-    const [mimeType, setMimeType] = useState('audio/mpeg');
-    const [recordingStatus, setRecordingStatus] = useState('inactive');
-    const [audio, setAudio] = useState(null);
-    const mediaRecorder = useRef(null);
     const inputFile = useRef(null);
+    const mediaRecorder = useRef(null);
     const audioPlayer = useRef(null);
     const categories = useCategories();
     const createAlert = useAlert();
-
-    const handleClose = () => {
-        onClose(isOpen);
-    };
-
-    const handleWord = (event) => {
-        setOriginal(event.target.value);
-    };
-
-    const handleTranslation = (event) => {
-        setTranslation(event.target.value);
-    };
-
-    const handleCategory = (event) => {
-        setCategory(event.target.value);
-    };
-
-    const handleFile = (event) => {
-        if (event.target.files[0].type === 'audio/mpeg') {
-            setFile(event.target.files[0]);
-        } else {
-            createAlert(true, 'error', 'Seul les fichiers .mp3 sont acceptés !');
-        }
-    };
-
-    const clearData = () => {
-        setOriginal('');
-        setTranslation('');
-        setCategory('');
-        setFile([]);
-    };
-
-    const addNewWord = async () => {
-        let soundPath;
-
-        if (original !== '' && translation !== '' && category !== '' && file.length !== 0) {
-            if (file.name && file.type === 'audio/mpeg') {
-                soundPath = './sounds/' + file.name;
-                sendFile(file.path);
-            }
-            if (file.type === 'audio/mpeg') {
-                soundPath = file;
-            }
-
-            const word = new Word(original, translation, category, soundPath);
-            await word.save();
-
-            createAlert(true, 'success', 'Mot enregistré avec succès !');
-            clearData();
-        } else {
-            createAlert(true, 'error', "Veuillez remplir l'ensemble des informations");
-        }
-    };
 
     const getMicPermission = async () => {
         try {
@@ -119,19 +67,66 @@ function AddWord(props) {
         };
     };
 
+    const handleFile = (event) => {
+        if (event.target.files[0].type === 'audio/mpeg') {
+            setFile(event.target.files[0]);
+        } else {
+            createAlert(true, 'error', 'Seul les fichiers .mp3 sont acceptés !');
+        }
+    };
+
+    const clearData = () => {
+        setOriginal('');
+        setTranslation('');
+        setCategory('');
+        setFile([]);
+    };
+
+    const saveChanging = async (wordID) => {
+        let sound;
+
+        
+
+        if (original !== '' || translation !== '' || category !== '' || file.length !== 0) {
+        if (file.name && file.type === 'audio/mpeg') {
+            sound = './sounds/' + file.name;
+            sendFile(file.path);
+        }
+        if (file.type === 'audio/mpeg') {
+            sound = file;
+        }
+
+        let changes = { original, translation, category, sound };
+        const dataArray = Object.entries(changes)
+
+        for (let [key, value] of dataArray) {
+            if (value === "" || value === undefined) delete changes[key] 
+        }
+
+        try {
+            await Word.update(wordID, changes);
+            createAlert(true, 'success', 'Modifications enregistrées avec succés !');
+            clearData();
+        } catch (e) {
+            console.error(e);
+        }
+        } else {
+            createAlert(true, 'warning', "Aucune modification n'a été saisie");
+        }
+    };
+
     useEffect(() => {
         getMicPermission();
-    }, []);
+    }, [word]);
 
     return (
         <ThemeProvider theme={modalTheme}>
-            <Dialog onClose={handleClose} open={isOpen}>
+            <Dialog open={isOpen} onClose={handleClose}>
                 <Box sx={{ padding: '32px', borderBottom: '1px solid var(--blue-dark)', backgroundColor: 'var(--blue)' }}>
-                    <DialogTitle>Enregistrer un mot</DialogTitle>
+                    <DialogTitle>Modifier un mot</DialogTitle>
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '48px', padding: '32px' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '32px', padding: '32px' }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        <h3 className={styles.containerHeading}>Renseignez le mot</h3>
                         <FormControl>
                             <InputLabel htmlFor="word-original">Mot original</InputLabel>
                             <FilledInput
@@ -139,14 +134,14 @@ function AddWord(props) {
                                 type="text"
                                 endAdornment={
                                     <InputAdornment position="end">
-                                        <Icon className={styles.iconContainer}>
+                                        <Icon>
                                             <IconFR />
                                         </Icon>
                                     </InputAdornment>
                                 }
                                 label="Mot original"
-                                value={original}
-                                onChange={handleWord}
+                                defaultValue={word.original}
+                                onChange={(e) => setOriginal(e.target.value)}
                                 required
                             />
                         </FormControl>
@@ -163,14 +158,14 @@ function AddWord(props) {
                                     </InputAdornment>
                                 }
                                 label="Traduction"
-                                value={translation}
-                                onChange={handleTranslation}
+                                defaultValue={word.translation || word.engTranslation}
+                                onChange={(e) => setTranslation(e.target.value)}
                                 required
                             />
                         </FormControl>
                         <FormControl>
                             <InputLabel id="demo-simple-select-label">Catégorie</InputLabel>
-                            <Select label="Catégorie" onChange={handleCategory} value={category} required>
+                            <Select label="Catégorie" defaultValue={word.category} onChange={(e) => setCategory(e.target.value)} required>
                                 <MenuItem value="Récurrent">Récurrent</MenuItem>
                                 {categories?.map((category) => (
                                     <MenuItem key={category.id} value={category.name}>
@@ -181,7 +176,7 @@ function AddWord(props) {
                         </FormControl>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        <h3 className={styles.containerHeading}>Choisissez un son</h3>
+                        <h3 className={styles.containerHeading}>Modifier le son</h3>
                         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', gap: '24px' }}>
                             <Box sx={{ display: 'flex', justifyContent: 'center', gap: '16px', width: '100%' }}>
                                 {recordingStatus === 'inactive' && (
@@ -252,7 +247,7 @@ function AddWord(props) {
                                         backgroundColor: 'var(--green-succes)'
                                     }
                                 }}
-                                onClick={addNewWord}
+                                onClick={() => saveChanging(word.id, {})}
                             >
                                 Enregistrer
                             </Button>
@@ -264,4 +259,4 @@ function AddWord(props) {
     );
 }
 
-export default AddWord;
+export default ModifyWord;
