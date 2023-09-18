@@ -10,10 +10,9 @@ import DownloadIcon from '@mui/icons-material/Download';
 import MicIcon from '@mui/icons-material/Mic';
 import Visualizer from '../Visualizer/Visualizer';
 import styles from './ModifyWord.module.css';
-import { create } from 'react-test-renderer';
 
 function ModifyWord(props) {
-    const { handleClose, isOpen, word } = props;
+    let { handleClose, isOpen, word } = props;
     const [recordingStatus, setRecordingStatus] = useState('inactive');
     const [permission, setPermission] = useState(false);
     const [stream, setStream] = useState(null);
@@ -85,32 +84,35 @@ function ModifyWord(props) {
     const saveChanging = async (wordID) => {
         let sound;
 
-        
-
         if (original !== '' || translation !== '' || category !== '' || file.length !== 0) {
-        if (file.name && file.type === 'audio/mpeg') {
-            sound = './sounds/' + file.name;
-            sendFile(file.path);
-        }
-        if (file.type === 'audio/mpeg') {
-            sound = file;
-        }
+            if (file.name && file.type === 'audio/mpeg') {
+                sound = './sounds/' + file.name;
+                sendFile(file.path);
+            }
+            if (file.type === 'audio/mpeg') {
+                sound = file;
+            }
 
-        let changes = { original, translation, category, sound };
-        const dataArray = Object.entries(changes)
+            let changes = { original, translation, category, sound };
+            const dataArray = Object.entries(changes);
 
-        for (let [key, value] of dataArray) {
-            if (value === "" || value === undefined) delete changes[key] 
-        }
+            for (let [key, value] of dataArray) {
+                if (value === '' || value === undefined) delete changes[key];
+            }
 
-        try {
-            await Word.update(wordID, changes);
-            createAlert(true, 'success', 'Modifications enregistrées avec succés !');
-            clearData();
-        } catch (e) {
-            console.error(e);
-        }
+            try {
+                await Word.update(wordID, changes);
+                createAlert(true, 'success', 'Modifications enregistrées avec succés !');
+                clearData();
+
+                word = { ...word, ...changes };
+
+                console.log(word);
+            } catch (e) {
+                console.error(e);
+            }
         } else {
+            console.log(word);
             createAlert(true, 'warning', "Aucune modification n'a été saisie");
         }
     };

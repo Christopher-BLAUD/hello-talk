@@ -19,14 +19,14 @@ export const searchWord = (array, search) => {
 
 function Words() {
     const allWords = useWords();
-    const [word, setWord] = useState({})
+    const [word, setWord] = useState({});
     const [filteredWord, setFilteredWord] = useState([]);
     const [activeFilter, setActiveFilter] = useState('');
     const [open, setOpen] = useState(false);
 
     const handleClickOpen = (word) => {
-        setWord(word)
-        setOpen(true)
+        setWord(word);
+        setOpen(true);
     };
 
     const handleClose = () => setOpen(false);
@@ -35,7 +35,7 @@ function Words() {
 
     return (
         <div className={styles.wrapper}>
-            <ModifyWord handleClose={handleClose} isOpen={open} word={word}/>
+            <ModifyWord handleClose={handleClose} isOpen={open} word={word} />
             <div className={styles.headingContainer}>
                 <h3 className={styles.heading}>Mots enregistrés</h3>
                 <div className={styles.searchWrapper}>
@@ -109,7 +109,7 @@ function Words() {
                                                   </Tooltip>
                                               </span>
                                               <span>{word.original}</span>
-                                              <span>{word.engTranslation || word.translation}</span>
+                                              <span>{word.translation}</span>
                                               <span>{word.category}</span>
                                               <div className={styles.iconContainer}>
                                                   <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Modifier">
@@ -131,7 +131,7 @@ function Words() {
                                                   </Tooltip>
                                               </span>
                                               <span>{word.original}</span>
-                                              <span>{word.engTranslation || word.translation}</span>
+                                              <span>{word.translation}</span>
                                               <span>{word.category}</span>
                                               <div className={styles.iconContainer}>
                                                   <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Modifier">
