@@ -35,7 +35,7 @@ function Words() {
 
     return (
         <div className={styles.wrapper}>
-            <ModifyWord handleClose={handleClose} isOpen={open} word={word} />
+            <ModifyWord handleClose={handleClose} isOpen={open} word={word}/>
             <div className={styles.headingContainer}>
                 <h3 className={styles.heading}>Mots enregistrés</h3>
                 <div className={styles.searchWrapper}>

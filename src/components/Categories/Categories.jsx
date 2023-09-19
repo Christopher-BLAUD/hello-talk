@@ -1,20 +1,33 @@
+import { useEffect, useState } from 'react';
 import { useCategories } from '../../utils/hooks/useCategories';
 import { db } from '../../utils/Helpers/db';
+import ModifyCategory from '../ModifyCategory/ModifyCategory';
 import { Avatar, Tooltip, Zoom } from '@mui/material';
 import NoData from '../NoData/NoData';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import CancelIcon from '@mui/icons-material/Cancel';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import styles from './Categories.module.css';
 
 function Categories() {
     const categories = useCategories();
+    const [category, setCategory] = useState();
+    const [open, setOpen] = useState(false);
 
     const deleteCategories = async (categoryId) => {
         return await db.categories.delete(categoryId);
     };
 
+    const handleClose = () => setOpen(false);
+
+    const handleClickOpen = (category) => {
+        setOpen(true);
+        setCategory(category);
+    };
+
     return (
         <div className={styles.wrapper}>
+            <ModifyCategory onClose={handleClose} isOpen={open} category={category} />
             <h3 className={styles.heading}>Catégories enregistrées</h3>
             {categories.length > 0 ? (
                 <ul className={styles.listContainer}>
@@ -26,8 +39,11 @@ function Categories() {
                                 </Avatar>
                             </span>
                             <span>{category.name}</span>
-                            <div className={styles.iconContainer} onClick={() => deleteCategories(category.id)}>
-                                <Tooltip placement='left' arrow={true} TransitionComponent={Zoom} title="Supprimer">
+                            <div className={styles.iconContainer}>
+                                <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Modifier" onClick={() => handleClickOpen(category)}>
+                                    <EditNoteIcon className={styles.cancelIcon} />
+                                </Tooltip>
+                                <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Supprimer" onClick={() => deleteCategories(category.id)}>
                                     <CancelIcon className={styles.cancelIcon} />
                                 </Tooltip>
                             </div>

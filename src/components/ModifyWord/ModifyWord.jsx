@@ -81,7 +81,7 @@ function ModifyWord(props) {
         setFile([]);
     };
 
-    const saveChanging = async (wordID) => {
+    const updateWord = async (wordID) => {
         let sound;
 
         if (original !== '' || translation !== '' || category !== '' || file.length !== 0) {
@@ -104,15 +104,10 @@ function ModifyWord(props) {
                 await Word.update(wordID, changes);
                 createAlert(true, 'success', 'Modifications enregistrées avec succés !');
                 clearData();
-
-                word = { ...word, ...changes };
-
-                console.log(word);
             } catch (e) {
                 console.error(e);
             }
         } else {
-            console.log(word);
             createAlert(true, 'warning', "Aucune modification n'a été saisie");
         }
     };
@@ -249,7 +244,7 @@ function ModifyWord(props) {
                                         backgroundColor: 'var(--green-succes)'
                                     }
                                 }}
-                                onClick={() => saveChanging(word.id, {})}
+                                onClick={() => updateWord(word.id)}
                             >
                                 Enregistrer
                             </Button>

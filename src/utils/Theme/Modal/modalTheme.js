@@ -204,6 +204,28 @@ export const modalTheme = createTheme({
                     }
                 }
             }
+        },
+        MuiInputBase: {
+            styleOverrides: {
+                root: {
+                    "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "var(--blue)",
+                        backgroundColor: "var(--blue)"
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                        backgroundColor: "var(--blue-dark)" ,
+                        borderColor: "var(--blue-dark)!important"
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "var(--yellow-primary)!important",
+                        borderWidth: "1px!important"
+                    }, 
+                    "& .MuiColorInput-Button": {
+                        zIndex: "2"
+                    },
+
+                }
+            }
         }
     }
 });
