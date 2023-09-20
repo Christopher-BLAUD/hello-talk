@@ -10,7 +10,7 @@
     gap: 4px;
     border-radius: 4px;
     background: var(--blue);
-    box-shadow: 0px 2px 4px 0px #1f1e2f;
+    box-shadow: 0px 2px 4px 0px #1F1E2F, 0px 0px 7px 0px #202331 inset;
     transition: all 90ms linear;
     border: none;
 }
@@ -31,8 +31,17 @@
     font-weight: 400;
 }
 
+.pad svg{
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    width: 15%;
+}
+
 .pad.outlined svg {
     height: 20px;
+    width: auto;
+    position: initial;
 }
 
 .padId {
@@ -91,6 +100,11 @@
 .pad:hover {
     background: var(--purple-focus);
     outline: transparent;
+    box-shadow: 0px 2px 4px 0px #1F1E2F, -4px -5px 7px 0px #9A81A6 inset;
+}
+
+.pad.outlined:focus, .pad.outlined:hover{
+    box-shadow: unset;
 }
 
 .pad:focus .padId,

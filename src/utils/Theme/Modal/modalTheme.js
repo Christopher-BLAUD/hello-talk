@@ -44,6 +44,7 @@ export const modalTheme = createTheme({
             styleOverrides: {
                 root: {
                     display: 'flex',
+                    width: "30px",
                     justifyContent: 'center',
                     alignItems: 'center'
                 }
@@ -83,6 +84,9 @@ export const modalTheme = createTheme({
                     },
                     '& svg': {
                         fill: '#fdedc9'
+                    },
+                    "& .MuiInputBase-input": {
+                        zIndex: "1"
                     }
                 }
             }
@@ -223,7 +227,10 @@ export const modalTheme = createTheme({
                     "& .MuiColorInput-Button": {
                         zIndex: "2"
                     },
-
+                    "& input": {
+                        fontFamily: 'satoshi',
+                        zIndex: "1"
+                    }
                 }
             }
         }

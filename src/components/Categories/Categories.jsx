@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useCategories } from '../../utils/hooks/useCategories';
 import { db } from '../../utils/Helpers/db';
+import { Tooltip, Zoom } from '@mui/material';
 import ModifyCategory from '../ModifyCategory/ModifyCategory';
-import { Avatar, Tooltip, Zoom } from '@mui/material';
 import NoData from '../NoData/NoData';
-import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import CancelIcon from '@mui/icons-material/Cancel';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import styles from './Categories.module.css';
@@ -14,10 +13,7 @@ function Categories() {
     const [category, setCategory] = useState();
     const [open, setOpen] = useState(false);
 
-    const deleteCategories = async (categoryId) => {
-        return await db.categories.delete(categoryId);
-    };
-
+    const deleteCategories = async (categoryId) => await db.categories.delete(categoryId);
     const handleClose = () => setOpen(false);
 
     const handleClickOpen = (category) => {
@@ -33,15 +29,11 @@ function Categories() {
                 <ul className={styles.listContainer}>
                     {categories?.map((category) => (
                         <li key={category.id} className={styles.rows}>
-                            <span>
-                                <Avatar>
-                                    <FolderOutlinedIcon />
-                                </Avatar>
-                            </span>
+                            <div className={styles.color} style={{ backgroundColor: category.color }}></div>
                             <span>{category.name}</span>
                             <div className={styles.iconContainer}>
                                 <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Modifier" onClick={() => handleClickOpen(category)}>
-                                    <EditNoteIcon className={styles.cancelIcon} />
+                                    <EditNoteIcon className={styles.editIcon} />
                                 </Tooltip>
                                 <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Supprimer" onClick={() => deleteCategories(category.id)}>
                                     <CancelIcon className={styles.cancelIcon} />

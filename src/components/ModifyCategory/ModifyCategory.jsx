@@ -56,7 +56,7 @@ function ModifyCategory(props) {
                 <Box sx={{ padding: '32px', borderBottom: '1px solid var(--blue-dark)', backgroundColor: 'var(--blue)' }}>
                     <DialogTitle sx={{ fontFamily: 'DM sans', fontWeight: '500!important', fontSize: '20px' }}>Modifier une catégorie</DialogTitle>
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px', padding: '32px' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '48px', padding: '32px' }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                         <h3 className={styles.containerHeading}>{categories?.length === 0 ? 'Aucune catégorie enregistée.' : 'Catégories disponibles'}</h3>
                         <List
@@ -103,7 +103,14 @@ function ModifyCategory(props) {
                         </FormControl>
                         <FormControl sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             <h3 className={styles.containerHeading}>Modifiez la couleur</h3>
-                            <MuiColorInput id={styles.colorPicker} value={color} onChange={handleColor} format="hex" isAlphaHidden />
+                            <MuiColorInput
+                                id={styles.colorPicker}
+                                value={color}
+                                onChange={handleColor}
+                                format="hex"
+                                isAlphaHidden
+                                sx={{ '& input': { fontSize: '14px', paddingLeft: '8px', color: 'var(--grey-light)' } }}
+                            />
                         </FormControl>
                         <FormControl>
                             <Button

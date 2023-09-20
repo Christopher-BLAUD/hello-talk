@@ -5,7 +5,7 @@ import { useAlert } from '../../utils/hooks/useAlert';
 import { sendFile } from '../../utils/Helpers/sendFile';
 import { ThemeProvider, Button, Dialog, DialogTitle, FilledInput, InputAdornment, Icon, FormControl, InputLabel, Box, Select, MenuItem } from '@mui/material';
 import { modalTheme } from '../../utils/Theme/Modal/modalTheme';
-import { IconFR, IconEN } from '../LangIcon/LangIcon';
+import { IconORG, IconTRA } from '../LangIcon/LangIcon';
 import DownloadIcon from '@mui/icons-material/Download';
 import MicIcon from '@mui/icons-material/Mic';
 import Visualizer from '../Visualizer/Visualizer';
@@ -140,7 +140,7 @@ function AddWord(props) {
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <Icon className={styles.iconContainer}>
-                                            <IconFR />
+                                            <IconORG />
                                         </Icon>
                                     </InputAdornment>
                                 }
@@ -158,7 +158,7 @@ function AddWord(props) {
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <Icon>
-                                            <IconEN />
+                                            <IconTRA />
                                         </Icon>
                                     </InputAdornment>
                                 }

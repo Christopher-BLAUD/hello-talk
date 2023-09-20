@@ -4,7 +4,7 @@ import { useCategories } from '../../utils/hooks/useCategories';
 import { sendFile } from '../../utils/Helpers/sendFile';
 import { ThemeProvider, Button, Dialog, DialogTitle, FilledInput, InputAdornment, Icon, FormControl, InputLabel, Box, Select, MenuItem } from '@mui/material';
 import { modalTheme } from '../../utils/Theme/Modal/modalTheme';
-import { IconFR, IconEN } from '../LangIcon/LangIcon';
+import { IconORG, IconTRA } from '../LangIcon/LangIcon';
 import Word from '../../controllers/words';
 import DownloadIcon from '@mui/icons-material/Download';
 import MicIcon from '@mui/icons-material/Mic';
@@ -132,7 +132,7 @@ function ModifyWord(props) {
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <Icon>
-                                            <IconFR />
+                                            <IconORG />
                                         </Icon>
                                     </InputAdornment>
                                 }
@@ -150,12 +150,12 @@ function ModifyWord(props) {
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <Icon>
-                                            <IconEN />
+                                            <IconTRA />
                                         </Icon>
                                     </InputAdornment>
                                 }
                                 label="Traduction"
-                                defaultValue={word.translation || word.engTranslation}
+                                defaultValue={word.translation}
                                 onChange={(e) => setTranslation(e.target.value)}
                                 required
                             />

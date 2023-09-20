@@ -34,10 +34,10 @@
 }
 
 .rows span{
-    width: 170px;
+    width: 100px;
     font-family: "Satoshi";
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--blue-light);
 }
 
@@ -45,13 +45,19 @@
 .rows span:nth-child(1){
     display: flex;
     align-items: center;
-    width: 20px;
+    width: fit-content;
 }
 
 .rows span:nth-child(1) svg{
     fill: var(--blue-lavander);
 }
 
+.color{
+    display: flex;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+}
 
 .iconContainer{
     display: flex;
@@ -67,6 +73,10 @@
 .iconContainer .cancelIcon{
     height: 20px;
     fill: var(--red);
+}
+
+.iconContainer .editIcon{
+    fill: #e09f3e;
 }
 
 .listContainer{

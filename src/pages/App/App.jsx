@@ -179,8 +179,8 @@ function App(props) {
     };
 
     useEffect(() => {
-        openController();
-        myController.oninputreport = (e) => selectPad(e);
+        // openController();
+        // myController.oninputreport = (e) => selectPad(e);
         // window.electronAPI.handleDeviceRemoved((event, value) => {
         //     if (value === 'removed') {
         //         setConnected(false);
@@ -246,7 +246,7 @@ function App(props) {
                             permanent={true}
                             id={word.id}
                             word={word.original}
-                            engWord={word.engTranslation}
+                            engWord={word.translation}
                             sound={word.sound}
                             callback={() => makeSentence(word.original, word.sound)}
                         />
@@ -268,8 +268,9 @@ function App(props) {
                                       <Pad
                                           id={word.id}
                                           word={word.original}
-                                          engWord={word.engTranslation}
+                                          engWord={word.translation}
                                           sound={word.sound}
+                                          category={word.category}
                                           callback={() => makeSentence(word.original, word.sound)}
                                       />
                                   </SwiperSlide>
@@ -281,6 +282,7 @@ function App(props) {
                                           word={word.original}
                                           engWord={word.engTranslation}
                                           sound={word.sound}
+                                          category={word.category}
                                           callback={() => makeSentence(word.original, word.sound)}
                                       />
                                   </SwiperSlide>

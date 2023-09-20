@@ -8,6 +8,7 @@ import { useAlert } from '../../utils/hooks/useAlert';
 import { db } from '../../utils/Helpers/db';
 import { autoplay } from '../../utils/Helpers/autoplay';
 import { setFilter } from '../../utils/Helpers/setFilter';
+import { setColorTheme } from '../../utils/Helpers/setColorTheme';
 import { searchWord } from '../../components/Words/Words';
 import { deleteSentence } from '../../utils/Helpers/deleteSentence';
 import { formatSentence } from '../../utils/Helpers/formatSentence';
@@ -136,8 +137,8 @@ function Dashboard() {
                                 <Link
                                     to={'/app'}
                                     onClick={(e) => {
-                                        e.preventDefault();
-                                        connectToDevice();
+                                        // e.preventDefault();
+                                        // connectToDevice();
                                     }}
                                 >
                                     <ListItemIcon className={styles.iconContainer}>
@@ -267,7 +268,8 @@ function Dashboard() {
                                                       key={word.id}
                                                       id={word.id}
                                                       fr={word.original}
-                                                      eng={word.engTranslation || word.translation}
+                                                      eng={word.translation}
+                                                      color={setColorTheme(word.category, categories)}
                                                       callback={() => makeSentence(word.original, word.sound)}
                                                   />
                                               ))
@@ -276,7 +278,8 @@ function Dashboard() {
                                                       key={word.id}
                                                       id={word.id}
                                                       fr={word.original}
-                                                      eng={word.engTranslation || word.translation}
+                                                      eng={word.translation}
+                                                      color={setColorTheme(word.category, categories)}
                                                       callback={() => makeSentence(word.original, word.sound)}
                                                   />
                                               ))}
