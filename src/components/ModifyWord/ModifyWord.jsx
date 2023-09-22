@@ -16,12 +16,12 @@ function ModifyWord(props) {
     const [recordingStatus, setRecordingStatus] = useState('inactive');
     const [permission, setPermission] = useState(false);
     const [stream, setStream] = useState(null);
-    const [mimeType, setMimeType] = useState('audio/mpeg');
     const [file, setFile] = useState([]);
     const [audio, setAudio] = useState(null);
     const [original, setOriginal] = useState('');
     const [translation, setTranslation] = useState('');
     const [category, setCategory] = useState('');
+    const mimeType = 'audio/mpeg'
     const inputFile = useRef(null);
     const mediaRecorder = useRef(null);
     const audioPlayer = useRef(null);

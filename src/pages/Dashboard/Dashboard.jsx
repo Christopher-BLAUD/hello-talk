@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link, useNavigate, Outlet } from 'react-router-dom';
 import { TransitionGroup } from 'react-transition-group';
 import { AppContext } from '../../utils/Context/AppContext';
@@ -68,12 +68,12 @@ function Dashboard() {
             if (devices.length > 0) {
                 setConnected(true);
                 setMyController(devices[0]);
-                setWords([])
+                setWords([]);
                 navigate('/app');
             }
         } else {
             setConnected(true);
-            setWords([])
+            setWords([]);
             navigate('/app');
         }
     };
@@ -101,21 +101,11 @@ function Dashboard() {
         }
     };
 
-    const handleClick = () => {
-        setOpen(!open);
-    };
+    const handleClick = () => setOpen(!open);
+    const closeWordModal = () => setOpenWordModal(false);
+    const closeCategoryModal = () => setOpenCategoryModal(false);
 
-    const closeWordModal = () => {
-        setOpenWordModal(false);
-    };
-
-    const closeCategoryModal = () => {
-        setOpenCategoryModal(false);
-    };
-
-    const setSelected = (path) => {
-        return path === window.location.hash ? true : false;
-    };
+    const setSelected = (path) => (path === window.location.hash ? true : false);
 
     const makeSentence = (word, sound) => {
         setNewSentence(formatSentence(newSentence, word));
@@ -126,6 +116,18 @@ function Dashboard() {
         setNewSentence('');
         setSentenceSounds([]);
     };
+
+    const applyFilter = useCallback(
+        (type, data) => {
+            setWords(setFilter(type, data));
+            setActiveFilter(type);
+        },
+        [setWords]
+    );
+
+    useEffect(() => {
+        applyFilter(activeFilter, allWords);
+    }, [activeFilter, allWords, applyFilter]);
 
     return (
         <ThemeProvider theme={dashboardTheme}>
@@ -228,38 +230,20 @@ function Dashboard() {
                                             <SearchIcon className={styles.icon} />
                                         </div>
                                         <div className={styles.filters}>
-                                            <button
-                                                onClick={() => {
-                                                    setFiltered(setFilter('id', allWords));
-                                                    setActiveFilter('id');
-                                                }}
-                                                className={activeFilter === 'id' ? styles.activeFilter : undefined}
-                                            >
+                                            <button onClick={() => applyFilter('id', allWords)} className={activeFilter === 'id' ? styles.activeFilter : undefined}>
                                                 ID
                                             </button>
                                             <button
-                                                onClick={() => {
-                                                    setFiltered(setFilter('alphabetical', allWords));
-                                                    setActiveFilter('alphabetical');
-                                                }}
+                                                onClick={() => applyFilter('alphabetical', allWords)}
                                                 className={activeFilter === 'alphabetical' ? styles.activeFilter : undefined}
                                             >
                                                 Alphabétique
                                             </button>
-                                            <button
-                                                onClick={() => {
-                                                    setFiltered(setFilter('score', allWords));
-                                                    setActiveFilter('score');
-                                                }}
-                                                className={activeFilter === 'score' ? styles.activeFilter : undefined}
-                                            >
+                                            <button onClick={() => applyFilter('score', allWords)} className={activeFilter === 'score' ? styles.activeFilter : undefined}>
                                                 Utilisation
                                             </button>
                                             <button
-                                                onClick={() => {
-                                                    setFiltered(setFilter('category', allWords));
-                                                    setActiveFilter('category');
-                                                }}
+                                                onClick={() => applyFilter('category', allWords)}
                                                 className={activeFilter === 'category' ? styles.activeFilter : undefined}
                                             >
                                                 Catégorie
@@ -278,7 +262,7 @@ function Dashboard() {
                                                       callback={() => makeSentence(word.original, word.sound)}
                                                   />
                                               ))
-                                            : allWords?.map((word) => (
+                                            : words?.map((word) => (
                                                   <SmallPad
                                                       key={word.id}
                                                       id={word.id}

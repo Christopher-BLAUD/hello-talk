@@ -10,5 +10,5 @@ export const useWords = () => {
         setWords(await db.words.orderBy('id').toArray());
     });
 
-    return words;
+    return [words, setWords];
 };

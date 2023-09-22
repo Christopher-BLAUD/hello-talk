@@ -45,7 +45,7 @@ function App(props) {
         words
     } = useContext(AppContext);
     const navigate = useNavigate();
-    const [padPerLine, setPadPerline] = useState(6);
+    const [padPerLine, setPadPerline] = useState(4);
     const [firstOfRow, setFirstOfRow] = useState(0);
     const [rowIndex, setRowIndex] = useState(0);
     const [openPlan, setOpenPlan] = useState(false);
@@ -61,7 +61,7 @@ function App(props) {
     );
 
     const reccurentsWords = useLiveQuery(async () => {
-        return await db.words.where('category').equals('Récurrent').limit(4).sortBy('id');
+        return await db.words.where('category').equals('Récurrent').limit(2).sortBy('id');
     });
 
     const makeSentence = (word, sound, id, category) => {
@@ -194,13 +194,13 @@ function App(props) {
 
     useEffect(() => {
         // openController();
-        myController.oninputreport = (e) => handlePadPressed(e);
-        window.electronAPI.handleDeviceRemoved((event, value) => {
-            if (value === 'removed') {
-                setConnected(false);
-                navigate('/');
-            }
-        });
+        // myController.oninputreport = (e) => handlePadPressed(e);
+        // window.electronAPI.handleDeviceRemoved((event, value) => {
+        //     if (value === 'removed') {
+        //         setConnected(false);
+        //         navigate('/');
+        //     }
+        // });
     }, [myController, openController, handlePadPressed]);
 
     return (
@@ -277,7 +277,7 @@ function App(props) {
                         slidesPerView={padPerLine}
                         pagination={{ clickable: true }}
                         grid={{ fill: 'row', rows: 3 }}
-                        spaceBetween={8}
+                        spaceBetween={24}
                         modules={[Grid, Pagination]}
                         className={styles.mySwiper}
                         onSwiper={(swiper) => (swiperRef.current = swiper)}
