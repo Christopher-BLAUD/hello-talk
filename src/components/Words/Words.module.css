@@ -27,7 +27,7 @@
     font-weight: 500;
     border: none;
     background-color: transparent;
-    color: var(--blue-dark);
+    color: var(--blue-light);
     padding: 8px 16px;
     border-radius: 5px;
     transition: all 100ms linear;
