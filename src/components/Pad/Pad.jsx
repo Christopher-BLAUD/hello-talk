@@ -27,7 +27,7 @@ function Pad(props) {
                     <span className={styles.french}>{word}</span>
                 )}
                 {engWord && <span className={styles.english}>{engWord}</span>}
-                {!outlined && (
+                {!outlined && !permanent && (
                     <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g filter="url(#filter0_ii_261_1010)">
                             <path

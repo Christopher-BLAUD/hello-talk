@@ -64,13 +64,16 @@ function Dashboard() {
     const connectToDevice = async () => {
         if (myController.vendorId === undefined) {
             const devices = await navigator.hid.requestDevice({ filters: [{ vendorId: 1984, productId: 4410 }] });
+
             if (devices.length > 0) {
                 setConnected(true);
                 setMyController(devices[0]);
+                setWords([])
                 navigate('/app');
             }
         } else {
             setConnected(true);
+            setWords([])
             navigate('/app');
         }
     };
@@ -137,7 +140,9 @@ function Dashboard() {
                                 <Link
                                     to={'/app'}
                                     onClick={(e) => {
-                                        // e.preventDefault();
+                                        e.preventDefault();
+                                        setWords([]);
+                                        navigate('/app');
                                         // connectToDevice();
                                     }}
                                 >
@@ -269,7 +274,7 @@ function Dashboard() {
                                                       id={word.id}
                                                       fr={word.original}
                                                       eng={word.translation}
-                                                      color={setColorTheme(word.category, categories)}
+                                                      color={word.category !== 'Récurrent' && setColorTheme(word.category, categories)}
                                                       callback={() => makeSentence(word.original, word.sound)}
                                                   />
                                               ))
@@ -279,7 +284,7 @@ function Dashboard() {
                                                       id={word.id}
                                                       fr={word.original}
                                                       eng={word.translation}
-                                                      color={setColorTheme(word.category, categories)}
+                                                      color={word.category !== 'Récurrent' && setColorTheme(word.category, categories)}
                                                       callback={() => makeSentence(word.original, word.sound)}
                                                   />
                                               ))}

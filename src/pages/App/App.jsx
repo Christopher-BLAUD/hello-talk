@@ -19,11 +19,11 @@ import Pad from '../../components/Pad/Pad';
 import CategoryModal from '../../components/CategoryModal/CategoryModal';
 import SentenceModal from '../../components/SentenceModal/SentenceModal';
 import logo from '../../assets/img/logo-gradient.svg';
+import PlanModal from '../../components/PlanModal/PlanModal';
 import 'swiper/css';
 import 'swiper/css/grid';
 import 'swiper/css/pagination';
 import styles from './App.module.css';
-import PlanModal from '../../components/PlanModal/PlanModal';
 
 function App(props) {
     let {
@@ -44,22 +44,30 @@ function App(props) {
         category,
         words
     } = useContext(AppContext);
-    const navigate = useNavigate()
-    const [padPerLine, setPadPerline] = useState(5);
+    const navigate = useNavigate();
+    const [padPerLine, setPadPerline] = useState(6);
     const [firstOfRow, setFirstOfRow] = useState(0);
     const [rowIndex, setRowIndex] = useState(0);
-    const [openPlan, setOpenPlan] = useState(false)
+    const [openPlan, setOpenPlan] = useState(false);
+    const [wordUsed, setWordUsed] = useState([]);
     const swiper = useSwiper();
     const swiperRef = useRef();
-    const allWords = useLiveQuery(async () => await db.words.orderBy('id').filter(word => word.category !== "Récurrent").toArray());
+    const allWords = useLiveQuery(
+        async () =>
+            await db.words
+                .orderBy('id')
+                .filter((word) => word.category !== 'Récurrent')
+                .toArray()
+    );
 
     const reccurentsWords = useLiveQuery(async () => {
-        return await db.words.where('category').equals('Récurrent').limit(3).sortBy('id');
+        return await db.words.where('category').equals('Récurrent').limit(4).sortBy('id');
     });
 
-    const makeSentence = (word, sound) => {
+    const makeSentence = (word, sound, id, category) => {
         setSentence(sentence + ' ' + word);
         setSpeech([...speech, sound]);
+        setWordUsed([...wordUsed, { id: id, category: category }]);
     };
 
     const clearSentence = () => {
@@ -67,7 +75,14 @@ function App(props) {
         setSpeech([]);
     };
 
-    const selectPad = useCallback(
+    const saveScore = (wordArray) => {
+        wordArray.forEach(async (word) => {
+            let currentScore = await db.words.get(word.id)
+            console.log(currentScore.score)
+        });
+    };
+
+    const handlePadPressed = useCallback(
         (event) => {
             const targets = document.querySelectorAll('button.selectable');
             const recurrentPads = document.querySelectorAll('.recurrent');
@@ -158,8 +173,7 @@ function App(props) {
         } catch (error) {
             console.error(error);
         }
-    }, [myController, setMyController])
-    
+    }, [myController, setMyController]);
 
     const handleCategoryModal = () => {
         setOpenCategoryModal(true);
@@ -174,20 +188,20 @@ function App(props) {
     const handleClose = () => {
         setOpenCategoryModal(false);
         setOpenSentenceModal(false);
-        setOpenPlan(false)
+        setOpenPlan(false);
         setCurrentTarget((currentTarget = 0));
     };
 
     useEffect(() => {
         // openController();
-        // myController.oninputreport = (e) => selectPad(e);
-        // window.electronAPI.handleDeviceRemoved((event, value) => {
-        //     if (value === 'removed') {
-        //         setConnected(false);
-        //         navigate('/');
-        //     }
-        // });
-    }, [myController, openController, selectPad]);
+        myController.oninputreport = (e) => handlePadPressed(e);
+        window.electronAPI.handleDeviceRemoved((event, value) => {
+            if (value === 'removed') {
+                setConnected(false);
+                navigate('/');
+            }
+        });
+    }, [myController, openController, handlePadPressed]);
 
     return (
         <div className={styles.wrapper}>
@@ -229,13 +243,19 @@ function App(props) {
             <main className={styles.content}>
                 <CategoryModal isOpen={openCategoryModal} onClose={handleClose} />
                 <SentenceModal isOpen={openSentenceModal} onClose={handleClose} />
-                <PlanModal isOpen={openPlan} onClose={handleClose}/>
+                <PlanModal isOpen={openPlan} onClose={handleClose} />
                 <div className={styles.speechWrapper}>
                     <button className={styles.iconContainer} onClick={clearSentence}>
                         <BackspaceOutlinedIcon className="delete" />
                     </button>
                     <input type="text" name="speech" value={sentence} readOnly tabIndex={-1} />
-                    <button className={`${styles.iconContainer} ${!openCategoryModal && !openSentenceModal ? 'selectable' : ''}`} onClick={() => autoplay(0, speech)}>
+                    <button
+                        className={`${styles.iconContainer} ${!openCategoryModal && !openSentenceModal ? 'selectable' : ''}`}
+                        onClick={() => {
+                            autoplay(0, speech);
+                            saveScore(wordUsed)
+                        }}
+                    >
                         <RecordVoiceOverIcon className="play" />
                     </button>
                 </div>
@@ -248,7 +268,7 @@ function App(props) {
                             word={word.original}
                             engWord={word.translation}
                             sound={word.sound}
-                            callback={() => makeSentence(word.original, word.sound)}
+                            callback={() => makeSentence(word.original, word.sound, word.id, word.category)}
                         />
                     ))}
                     <Pad outlined={true} icon={<AppsIcon />} word="Menu" callback={handleCategoryModal} />
@@ -257,7 +277,7 @@ function App(props) {
                         slidesPerView={padPerLine}
                         pagination={{ clickable: true }}
                         grid={{ fill: 'row', rows: 3 }}
-                        spaceBetween={17}
+                        spaceBetween={8}
                         modules={[Grid, Pagination]}
                         className={styles.mySwiper}
                         onSwiper={(swiper) => (swiperRef.current = swiper)}
@@ -271,7 +291,7 @@ function App(props) {
                                           engWord={word.translation}
                                           sound={word.sound}
                                           category={word.category}
-                                          callback={() => makeSentence(word.original, word.sound)}
+                                          callback={() => makeSentence(word.original, word.sound, word.id, word.category)}
                                       />
                                   </SwiperSlide>
                               ))
@@ -280,10 +300,10 @@ function App(props) {
                                       <Pad
                                           id={word.id}
                                           word={word.original}
-                                          engWord={word.engTranslation}
+                                          engWord={word.translation}
                                           sound={word.sound}
                                           category={word.category}
-                                          callback={() => makeSentence(word.original, word.sound)}
+                                          callback={() => makeSentence(word.original, word.sound, word.id, word.category)}
                                       />
                                   </SwiperSlide>
                               ))}

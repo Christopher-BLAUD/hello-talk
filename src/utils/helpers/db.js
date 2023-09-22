@@ -8,18 +8,11 @@ db.version(1).stores({
     sentences: '++id, sentence, *sounds'
 });
 
-db.version(2)
-    .stores({
-        words: '++id, original, translation, category, sound, score',
-        categories: '++id, name, score',
-        sentences: '++id, sentence, *sounds, score'
-    })
-    .upgrade((tx) => {
-        return tx.table('words').modify((word) => {
-            word.translation = word.engTranslation;
-            delete word.engTranslation;
-        });
-    });
+db.version(2).stores({
+    words: '++id, original, translation, category, sound, score',
+    categories: '++id, name, score',
+    sentences: '++id, sentence, *sounds, score'
+});
 
 db.version(3).stores({
     words: '++id, original, translation, category, sound, score',
@@ -46,3 +39,18 @@ db.version(4)
             delete record.engTranslation;
         });
     });
+
+db.version(5)
+    .stores({
+        words: '++id, original, translation, category, sound, score',
+        categories: '++id, name, color, score',
+        sentences: '++id, sentence, *sounds, score'
+    })
+    .upgrade(async (tx) => {
+        const oldRecords = await tx.words.toArray();
+
+        oldRecords.map((record) => {
+            return db.words.update(record.id, { score: 0 });
+        });
+    });
+

@@ -11,7 +11,7 @@ function SmallPad(props) {
                 <g filter="url(#filter0_ii_261_1010)">
                     <path
                         d="M28 26V2.82843C28 1.04662 25.8457 0.154284 24.5858 1.41421L1.41421 24.5858C0.154284 25.8457 1.04662 28 2.82843 28H26C27.1046 28 28 27.1046 28 26Z"
-                        fill={color}
+                        fill={color ? color : undefined}
                     />
                 </g>
                 <defs>

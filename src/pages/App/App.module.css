@@ -80,7 +80,7 @@ button:hover {
     flex-direction: column;
     justify-content: center;
     gap: 16px;
-    max-width: 1248px;
+    max-width: 1257px;
     margin: auto 96px;
 }
 
@@ -127,7 +127,7 @@ button:hover {
 .cardsContainer {
     display: flex;
     width: 100%;
-    gap: 16px;
+    gap: 8px;
     flex-wrap: wrap;
 }
 

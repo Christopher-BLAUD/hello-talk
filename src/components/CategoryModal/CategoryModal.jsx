@@ -22,7 +22,7 @@ function CategoryModal(props) {
         onClose(isOpen);
     };
 
-    const handleListItemClick = async (value) => {
+    const setCategory = async (value) => {
         setWords(await db.words.where('category').equals(value).toArray());
         onClose(value);
     };
@@ -33,13 +33,13 @@ function CategoryModal(props) {
                 <DialogTitle>Catégories</DialogTitle>
                 <List>
                     <ListItem>
-                        <ListItemButton onClick={() => handleListItemClick('')} component="button" className={openCategoryModal ? 'selectable' : ''}>
-                            <ListItemText primary={'Répertoire complet'} sx={{"& .MuiTypography-root": {fontWeight: '500'}}}/>
+                        <ListItemButton onClick={() => setCategory('')} component="button" className={openCategoryModal ? 'selectable' : ''}>
+                            <ListItemText primary={'Liste complète'} sx={{"& .MuiTypography-root": {fontWeight: '500'}}}/>
                         </ListItemButton>
                     </ListItem>
                     {categories?.map((category) => (
                         <ListItem key={category.id}>
-                            <ListItemButton onClick={() => handleListItemClick(category.name)} component="button" className={openCategoryModal ? 'selectable' : ''}>
+                            <ListItemButton onClick={() => setCategory(category.name)} component="button" className={openCategoryModal ? 'selectable' : ''}>
                                 <ListItemText primary={category.name} />
                             </ListItemButton>
                         </ListItem>
