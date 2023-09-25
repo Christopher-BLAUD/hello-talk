@@ -17,6 +17,7 @@ import { dashboardTheme } from '../../utils/Theme/Dashboard/dashboardTheme';
 import { useSearch } from '../../utils/hooks/useSearch';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import Sentence from '../../controllers/sentences';
 import SmallPad from '../../components/SmallPad/SmallPad';
 import Alert from '../../components/Alert/Alert';
 import Zoom from '@mui/material/Zoom';
@@ -42,7 +43,6 @@ import AddCategory from '../../components/AddCategory/AddCategory';
 import CounterCard from '../../components/CounterCard/CounterCard';
 import logo from '../../assets/img/logo-gradient.svg';
 import styles from './Dashboard.module.css';
-import Word from '../../controllers/words';
 
 function Dashboard() {
     const { setConnected, myController, setMyController, alert, setAlert, alertMess, alertType, words, setWords } = useContext(AppContext);
@@ -88,11 +88,11 @@ function Dashboard() {
             createAlert(true, 'warning', "Aucune phrase n'est indiquée.");
         } else {
             const isSentenceExist = await findSentence(newSentence);
+
             if (!isSentenceExist) {
-                await db.sentences.add({
-                    sentence: newSentence,
-                    sounds: sentenceSounds
-                });
+                const sentence = new Sentence(newSentence, sentenceSounds);
+                await sentence.save();
+
                 setNewSentence('');
                 setSentenceSounds([]);
             } else {
@@ -144,8 +144,8 @@ function Dashboard() {
                                     onClick={(e) => {
                                         e.preventDefault();
                                         setWords([]);
-                                        navigate('/app');
                                         // connectToDevice();
+                                        navigate('/app');
                                     }}
                                 >
                                     <ListItemIcon className={styles.iconContainer}>

@@ -20,6 +20,7 @@
 
 .filters{
     display: flex;
+    gap: 4px;
 }
 
 .filters button{
@@ -33,9 +34,14 @@
     transition: all 100ms linear;
 }
 
+.filters button:hover{
+    background-color: var(--yellow-primary);
+    color: var(--blue-dark);
+}
+
 .filters .activeFilter{
-    background-color: var(--blue-light);
-    color: var(--grey-light);
+    background-color: var(--yellow-primary);
+    color: var(--blue-dark);
 }
 
 

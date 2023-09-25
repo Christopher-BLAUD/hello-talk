@@ -13,7 +13,7 @@ export const modalTheme = createTheme({
             styleOverrides: {
                 root: {
                     boxShadow: '0px 0px 13px 6px rgba(32, 35, 49, 0.23)',
-                    backgroundColor: 'var(--blue-background)',
+                    backgroundColor: 'var(--blue-dark)',
                     minWidth: '600px',
                     '&::-webkit-scrollbar-thumb': {
                         backgroundColor: 'var(--blue-light)'

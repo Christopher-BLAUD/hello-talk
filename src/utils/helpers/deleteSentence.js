@@ -1,4 +1,4 @@
-import { db } from "./db";
+import Sentence from "../../controllers/sentences";
 
 /***
  * Delete a sentence into database
@@ -6,5 +6,5 @@ import { db } from "./db";
  * @returns {Promise} Send the query to database
  */
 export const deleteSentence = async (sentenceId) => {
-    return await db.sentences.delete(sentenceId);
+    return await Sentence.delete(sentenceId);
 };

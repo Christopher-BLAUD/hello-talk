@@ -11,3 +11,15 @@
     font-size: 14px;
     color: var(--grey-light);
 }
+
+.categoryContainer{
+    display: flex;
+    gap: 32px;
+}
+
+.categoryContainer .colorValue{
+    display: flex;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}

@@ -2,13 +2,13 @@ import { useSentences } from '../../utils/hooks/useSentences';
 import { deleteSentence } from '../../utils/Helpers/deleteSentence';
 import { autoplay } from '../../utils/Helpers/autoplay';
 import { setFilter } from '../../utils/Helpers/setFilter';
+import { Tooltip, Zoom } from '@mui/material';
+import { useState } from 'react';
 import NoData from '../NoData/NoData';
 import SearchIcon from '@mui/icons-material/Search';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import CancelIcon from '@mui/icons-material/Cancel';
 import styles from './Sentences.module.css';
-import { Tooltip, Zoom } from '@mui/material';
-import { useState } from 'react';
 
 export const searchSentence = (array, search) => {
     if (search === '') return [];

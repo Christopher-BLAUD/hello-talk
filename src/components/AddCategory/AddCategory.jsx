@@ -79,12 +79,8 @@ function AddCategory(props) {
                             }}
                         >
                             {categories?.map((category) => (
-                                <ListItem key={category.id}>
-                                    <ListItemAvatar>
-                                        <Avatar>
-                                            <FolderOutlinedIcon />
-                                        </Avatar>
-                                    </ListItemAvatar>
+                                <ListItem key={category.id} className={styles.categoryContainer}>
+                                    <div className={styles.colorValue} style={{backgroundColor: category.color}}></div>
                                     <ListItemText primary={category.name} />
                                 </ListItem>
                             ))}

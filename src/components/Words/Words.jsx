@@ -5,6 +5,7 @@ import { db } from '../../utils/Helpers/db';
 import { TransitionGroup } from 'react-transition-group';
 import { Collapse, Tooltip, Zoom } from '@mui/material';
 import { setFilter } from '../../utils/Helpers/setFilter.js';
+import Word from '../../controllers/words';
 import ModifyWord from '../ModifyWord/ModifyWord';
 import NoData from '../NoData/NoData';
 import EditNoteIcon from '@mui/icons-material/EditNote';
@@ -31,7 +32,7 @@ function Words() {
 
     const handleClose = () => setOpen(false);
 
-    const deleteWord = async (wordId) => await db.words.delete(wordId);
+    const deleteWord = async (wordId) => await Word.delete(wordId);
 
     const applyFilter = useCallback(
         (type, data) => {
