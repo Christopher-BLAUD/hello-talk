@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useCategories } from '../../utils/hooks/useCategories';
-import { db } from '../../utils/Helpers/db';
 import { Tooltip, Zoom } from '@mui/material';
+import Category from '../../controllers/categories';
 import ModifyCategory from '../ModifyCategory/ModifyCategory';
 import NoData from '../NoData/NoData';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -13,7 +13,7 @@ function Categories() {
     const [category, setCategory] = useState();
     const [open, setOpen] = useState(false);
 
-    const deleteCategories = async (categoryId) => await db.categories.delete(categoryId);
+    const deleteCategories = async (categoryId) => await Category.delete(categoryId);
     const handleClose = () => setOpen(false);
 
     const handleClickOpen = (category) => {

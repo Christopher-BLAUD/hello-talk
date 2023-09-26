@@ -18,11 +18,11 @@ class Category {
         }
     }
 
-    static async update(id, changes) {
+    static async delete(id) {
         try {
-            await db.categories.update(id, changes);
+            await db.categories.delete(id)
         } catch (e) {
-            throw new Error('Error while updating category');
+            throw new Error('An error occurred while deleting the category.')
         }
     }
 }
