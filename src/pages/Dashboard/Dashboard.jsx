@@ -118,11 +118,12 @@ function Dashboard() {
     };
 
     const applyFilter = useCallback(
-        (type, data) => {
-            setWords(setFilter(type, data));
+        (type) => {
+            filtered.length > 0 ? setFiltered(setFilter(type, filtered)) : setWords(setFilter(type, words));
+           
             setActiveFilter(type);
         },
-        [setWords]
+        [setWords, filtered, words]
     );
 
     useEffect(() => {

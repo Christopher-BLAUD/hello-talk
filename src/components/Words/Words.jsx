@@ -44,8 +44,6 @@ function Words() {
 
     useEffect(() => {
         applyFilter(activeFilter, allWords);
-        console.log('allwords', allWords);
-        console.log('filtered', filteredWord);
     }, [activeFilter, allWords, applyFilter, filteredWord]);
 
     return (
