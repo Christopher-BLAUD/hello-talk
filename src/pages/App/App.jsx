@@ -24,6 +24,7 @@ import 'swiper/css';
 import 'swiper/css/grid';
 import 'swiper/css/pagination';
 import styles from './App.module.css';
+import Word from '../../controllers/words';
 
 function App(props) {
     let {
@@ -77,8 +78,14 @@ function App(props) {
 
     const saveScore = (wordArray) => {
         wordArray.forEach(async (word) => {
-            let currentScore = await db.words.get(word.id)
-            console.log(currentScore.score)
+            try {
+                let result = await db.words.where('id').equals(word.id).toArray();
+                const currentWord = result[0];
+
+                await Word.update(currentWord.id, { score: currentWord.score + 1 });
+            } catch (e) {
+                console.error(e);
+            }
         });
     };
 
@@ -253,7 +260,7 @@ function App(props) {
                         className={`${styles.iconContainer} ${!openCategoryModal && !openSentenceModal ? 'selectable' : ''}`}
                         onClick={() => {
                             autoplay(0, speech);
-                            saveScore(wordUsed)
+                            saveScore(wordUsed);
                         }}
                     >
                         <RecordVoiceOverIcon className="play" />

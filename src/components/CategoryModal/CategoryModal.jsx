@@ -40,6 +40,7 @@ function CategoryModal(props) {
                     {categories?.map((category) => (
                         <ListItem key={category.id}>
                             <ListItemButton onClick={() => setCategory(category.name)} component="button" className={openCategoryModal ? 'selectable' : ''}>
+                                <div style={{display: 'flex', width: "20px", height: "20px", backgroundColor: category.color, borderRadius: "50%", marginLeft: "32px"}}></div>
                                 <ListItemText primary={category.name} />
                             </ListItemButton>
                         </ListItem>
