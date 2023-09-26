@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCategories } from '../../utils/hooks/useCategories';
 import { Tooltip, Zoom } from '@mui/material';
 import Category from '../../controllers/categories';
@@ -20,6 +20,20 @@ function Categories() {
         setOpen(true);
         setCategory(category);
     };
+
+    useEffect(() => {
+        async function find(id) {
+            try {
+                const result = await Category.findOne(id);
+
+                console.log(result);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        find(5)
+    });
 
     return (
         <div className={styles.wrapper}>

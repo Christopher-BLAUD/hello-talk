@@ -38,16 +38,24 @@ function AddCategory(props) {
     };
 
     const addCategory = async () => {
-        if (category === '') {
-            createAlert(true, 'error', 'Veuillez saisir un nom de catégorie');
-        } else if (color === '#ffff') {
-            createAlert(true, 'error', 'Veuillez sélectionner une autre couleur');
-        } else {
-            const newCategory = new Category(category, color);
-            await newCategory.save();
+        const findCategory = await Category.findOne(category);
+        const isExisting = findCategory.length > 0
+        try {
+            if (category === '') {
+                createAlert(true, 'error', 'Veuillez saisir un nom de catégorie');
+            } else if (color === '#ffff') {
+                createAlert(true, 'error', 'Veuillez sélectionner une autre couleur');
+            } else if (isExisting) {
+                createAlert(true, 'warning', 'Cette catégorie existe déja !')
+            } else {
+                const newCategory = new Category(category, color);
+                await newCategory.save();
 
-            createAlert(true, 'success', 'Catégorie créée avec succès !');
-            setCategory('');
+                createAlert(true, 'success', 'Catégorie créée avec succès !');
+                setCategory('');
+            }
+        } catch (e) {
+            console.error(e);
         }
     };
 
@@ -80,7 +88,7 @@ function AddCategory(props) {
                         >
                             {categories?.map((category) => (
                                 <ListItem key={category.id} className={styles.categoryContainer}>
-                                    <div className={styles.colorValue} style={{backgroundColor: category.color}}></div>
+                                    <div className={styles.colorValue} style={{ backgroundColor: category.color }}></div>
                                     <ListItemText primary={category.name} />
                                 </ListItem>
                             ))}

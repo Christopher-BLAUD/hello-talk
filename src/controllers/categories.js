@@ -18,6 +18,14 @@ class Category {
         }
     }
 
+    static async findOne(name) {
+        try {
+            return await db.categories.where('name').equals(name).toArray()
+        } catch (e) {
+            throw new Error('An error occurred while finding the category.')
+        }
+    }
+
     static async delete(id) {
         try {
             await db.categories.delete(id)

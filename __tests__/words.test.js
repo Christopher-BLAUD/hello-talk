@@ -75,11 +75,11 @@ describe('word', () => {
     });
 
     it('should to call the delete method with the word id', () => {
-        const id = 4;
+        const name = 'Présentation';
 
-        Word.delete(id);
+        Word.delete(name);
 
-        expect(Word.delete).toHaveBeenCalledWith(id);
+        expect(Word.delete).toHaveBeenCalledWith(name);
         expect(Word.delete).toHaveBeenCalledTimes(1);
     });
 });
