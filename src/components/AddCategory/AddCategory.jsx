@@ -18,9 +18,7 @@ import {
     Icon,
     Button,
     Box,
-    ListItemText,
-    ListItemAvatar,
-    Avatar
+    ListItemText
 } from '@mui/material';
 import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
@@ -39,14 +37,15 @@ function AddCategory(props) {
 
     const addCategory = async () => {
         const findCategory = await Category.findOne(category);
-        const isExisting = findCategory.length > 0
+        const isExisting = findCategory.length > 0;
+
         try {
             if (category === '') {
                 createAlert(true, 'error', 'Veuillez saisir un nom de catégorie');
             } else if (color === '#ffff') {
                 createAlert(true, 'error', 'Veuillez sélectionner une autre couleur');
             } else if (isExisting) {
-                createAlert(true, 'warning', 'Cette catégorie existe déja !')
+                createAlert(true, 'warning', 'Cette catégorie existe déja !');
             } else {
                 const newCategory = new Category(category, color);
                 await newCategory.save();

@@ -35,15 +35,18 @@ function Words() {
     const deleteWord = async (wordId) => await Word.delete(wordId);
 
     const applyFilter = useCallback(
-        (type, data) => {
-            setWords(setFilter(type, data));
+        (type) => {
+            filteredWord.length > 0 ? setFilteredWord(setFilter(type, filteredWord)) : setWords(setFilter(type, allWords));
             setActiveFilter(type);
-        }, [setWords]        
-    ) 
+        },
+        [setWords, allWords, filteredWord]
+    );
 
     useEffect(() => {
-        applyFilter(activeFilter, allWords)
-    }, [activeFilter, allWords, applyFilter])
+        applyFilter(activeFilter, allWords);
+        console.log('allwords', allWords);
+        console.log('filtered', filteredWord);
+    }, [activeFilter, allWords, applyFilter, filteredWord]);
 
     return (
         <div className={styles.wrapper}>
@@ -52,16 +55,16 @@ function Words() {
                 <h3 className={styles.heading}>Mots enregistrés</h3>
                 <div className={styles.searchWrapper}>
                     <div className={styles.filters}>
-                        <button onClick={() => applyFilter('id', allWords)} className={activeFilter === 'id' ? styles.activeFilter : undefined}>
+                        <button onClick={() => applyFilter('id')} className={activeFilter === 'id' ? styles.activeFilter : undefined}>
                             ID
                         </button>
-                        <button onClick={() => applyFilter('alphabetical', allWords)} className={activeFilter === 'alphabetical' ? styles.activeFilter : undefined}>
+                        <button onClick={() => applyFilter('alphabetical')} className={activeFilter === 'alphabetical' ? styles.activeFilter : undefined}>
                             Alphabétique
                         </button>
-                        <button onClick={() => applyFilter('score', allWords)} className={activeFilter === 'score' ? styles.activeFilter : undefined}>
+                        <button onClick={() => applyFilter('score')} className={activeFilter === 'score' ? styles.activeFilter : undefined}>
                             Utilisation
                         </button>
-                        <button onClick={() => applyFilter('category', allWords)} className={activeFilter === 'category' ? styles.activeFilter : undefined}>
+                        <button onClick={() => applyFilter('category')} className={activeFilter === 'category' ? styles.activeFilter : undefined}>
                             Catégorie
                         </button>
                     </div>
