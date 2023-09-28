@@ -56,11 +56,14 @@ function App(props) {
     const swiper = useSwiper();
     const swiperRef = useRef();
     const allWords = useLiveQuery(
-        async () =>
-            await db.words
-                .orderBy('id')
+        async () => {
+            let words = await db.words
+                .orderBy('score')
                 .filter((word) => word.category !== 'Récurrent')
                 .toArray()
+
+            return words.reverse()
+        }
     );
 
     const reccurentsWords = useLiveQuery(async () => {

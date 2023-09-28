@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useCategories } from '../../utils/hooks/useCategories';
 import { Tooltip, Zoom } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import Category from '../../controllers/categories';
 import ModifyCategory from '../ModifyCategory/ModifyCategory';
 import NoData from '../NoData/NoData';
@@ -29,7 +28,6 @@ function Categories() {
         setFilteredCategories(setFilter(type, categories));
         setActiveFilter(type);
     };
-    useEffect(() => console.log(filteredCategories), [filteredCategories]);
 
     return (
         <div className={styles.wrapper}>
@@ -52,20 +50,6 @@ function Categories() {
             </div>
             {categories.length > 0 ? (
                 <ul className={styles.listContainer}>
-                    {/* {categories?.map((category) => (
-                        <li key={category.id} className={styles.rows}>
-                            <div className={styles.color} style={{ backgroundColor: category.color }}></div>
-                            <span>{category.name}</span>
-                            <div className={styles.iconContainer}>
-                                <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Modifier" onClick={() => handleClickOpen(category)}>
-                                    <EditNoteIcon className={styles.editIcon} />
-                                </Tooltip>
-                                <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Supprimer" onClick={() => deleteCategories(category.id)}>
-                                    <CancelIcon className={styles.cancelIcon} />
-                                </Tooltip>
-                            </div>
-                        </li>
-                    ))} */}
                     {filteredCategories.length > 0
                         ? filteredCategories?.map((category) => (
                               <li key={category.id} className={styles.rows}>
