@@ -27,7 +27,7 @@ class Word {
             throw new Error('Database connection error');
         }
     }
-
+    
     static async update(id, changes) {
         try {
             await db.words.update(id, changes);

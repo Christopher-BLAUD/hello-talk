@@ -17,12 +17,9 @@ import {
     Icon,
     Button,
     Box,
-    ListItemText,
-    ListItemAvatar,
-    Avatar
+    ListItemText
 } from '@mui/material';
 import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
-import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import styles from './ModifyCategory.module.css';
 
 function ModifyCategory(props) {
@@ -38,7 +35,7 @@ function ModifyCategory(props) {
     const updateCategory = async (categoryID) => {
         try {
             await Category.update(categoryID, { color });
-            createAlert(true, 'success', 'Modifications enregistrées avec succés !');
+            createAlert(true, 'success', 'Changes saved successfully!');
         } catch (e) {
             console.error(e);
         }
@@ -54,11 +51,11 @@ function ModifyCategory(props) {
         <ThemeProvider theme={modalTheme}>
             <Dialog onClose={handleClose} open={isOpen}>
                 <Box sx={{ padding: '32px', borderBottom: '1px solid var(--blue-dark)', backgroundColor: 'var(--blue)' }}>
-                    <DialogTitle sx={{ fontFamily: 'DM sans', fontWeight: '500!important', fontSize: '20px' }}>Modifier une catégorie</DialogTitle>
+                    <DialogTitle sx={{ fontFamily: 'DM sans', fontWeight: '500!important', fontSize: '20px' }}>Edit a categorie</DialogTitle>
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: '48px', padding: '32px' }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                        <h3 className={styles.containerHeading}>{categories?.length === 0 ? 'Aucune catégorie enregistée.' : 'Catégories disponibles'}</h3>
+                        <h3 className={styles.containerHeading}>{categories?.length === 0 ? 'No categories registered.' : 'Available categories'}</h3>
                         <List
                             sx={{
                                 display: 'flex',
@@ -72,11 +69,7 @@ function ModifyCategory(props) {
                         >
                             {categories?.map((category) => (
                                 <ListItem key={category.id}>
-                                    <ListItemAvatar>
-                                        <Avatar>
-                                            <FolderOutlinedIcon />
-                                        </Avatar>
-                                    </ListItemAvatar>
+                                    <div className={styles.colorTheme} style={{backgroundColor: category.color}}></div>
                                     <ListItemText primary={category.name} />
                                 </ListItem>
                             ))}
@@ -84,7 +77,7 @@ function ModifyCategory(props) {
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '56px' }}>
                         <FormControl>
-                            <InputLabel htmlFor="word-original">Nom</InputLabel>
+                            <InputLabel htmlFor="word-original">Name</InputLabel>
                             <FilledInput
                                 id="word-original"
                                 type="text"
@@ -102,7 +95,7 @@ function ModifyCategory(props) {
                             />
                         </FormControl>
                         <FormControl sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                            <h3 className={styles.containerHeading}>Modifiez la couleur</h3>
+                            <h3 className={styles.containerHeading}>Edit the color</h3>
                             <MuiColorInput
                                 id={styles.colorPicker}
                                 value={color}
@@ -130,7 +123,7 @@ function ModifyCategory(props) {
                                 }}
                                 onClick={() => updateCategory(category?.id)}
                             >
-                                Enregistrer
+                                save
                             </Button>
                         </FormControl>
                     </Box>

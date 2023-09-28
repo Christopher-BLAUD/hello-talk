@@ -27,15 +27,15 @@ function Home() {
                         Marius system <img src={logo} alt="logo de marius system" />
                     </h1>
                     <p className={styles.titleP}>
-                        L’application de communication augmentée et alternative. Communiquez sans barrière, soyez entendu et soyez inspiré.
+                    The augmented and alternative communication application. Communicate without barriers, be heard and be inspired.
                     </p>
                     {!connected && (
                         <div className={styles.buttonsContainer}>
                             <Button variant="contained" onClick={connectToDevice} tabIndex={-1} className={styles.titleButton}>
-                                Lancer l'application
+                                Run Application
                             </Button>
                             <Button variant="outlined" className={styles.titleButtonOutlined} onClick={() => navigate('/dashboard')}>
-                                Accéder au tableau de bord
+                                Go to dashboard
                             </Button>
                         </div>
                     )}

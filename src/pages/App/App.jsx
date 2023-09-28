@@ -245,7 +245,7 @@ function App(props) {
                                         <ListItemIcon>
                                             <InfoOutlinedIcon />
                                         </ListItemIcon>
-                                        <ListItemText primary="Raccordement" />
+                                        <ListItemText primary="Connection" />
                                     </Link>
                                 </ListItemButton>
                                 <ListItemButton>
@@ -253,7 +253,7 @@ function App(props) {
                                         <ListItemIcon>
                                             <ExitToAppIcon />
                                         </ListItemIcon>
-                                        <ListItemText primary="Tableau de bord" />
+                                        <ListItemText primary="Dashboard" />
                                     </Link>
                                 </ListItemButton>
                             </List>
@@ -293,7 +293,7 @@ function App(props) {
                         />
                     ))}
                     <Pad outlined={true} icon={<AppsIcon />} word="Menu" callback={handleCategoryModal} />
-                    <Pad outlined={true} icon={<FormatAlignLeftIcon />} word="Liste" callback={handleSentenceModal} />
+                    <Pad outlined={true} icon={<FormatAlignLeftIcon />} word="List" callback={handleSentenceModal} />
                     <Swiper
                         slidesPerView={padPerLine}
                         pagination={{ clickable: true }}

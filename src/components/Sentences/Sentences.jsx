@@ -23,7 +23,7 @@ function Sentences() {
     return (
         <div className={styles.wrapper}>
             <div className={styles.headingContainer}>
-                <h3 className={styles.heading}>Phrases enregistrées</h3>
+                <h3 className={styles.heading}>Sentences</h3>
                 <div className={styles.searchWrapper}>
                     <div className={styles.filters}>
                         <button
@@ -42,7 +42,7 @@ function Sentences() {
                             }}
                             className={activeFilter === 'alphabetical' ? styles.activeFilter : undefined}
                         >
-                            Alphabétique
+                            A-Z
                         </button>
                         <button
                             onClick={() => {
@@ -51,13 +51,13 @@ function Sentences() {
                             }}
                             className={activeFilter === 'score' ? styles.activeFilter : undefined}
                         >
-                            Utilisation
+                            Score
                         </button>
                     </div>
                     <div className={styles.inputContainer}>
                         <input
                             type="text"
-                            placeholder="Rechercher un mot ..."
+                            placeholder="Search for a word ..."
                             name="word-finder"
                             autoComplete="off"
                             onChange={(e) => setFiltered(searchSentence(sentences, e.target.value))}
@@ -69,21 +69,21 @@ function Sentences() {
             {sentences?.length > 0 ? (
                 <div className={styles.listContainer}>
                     <div className={styles.listHeader}>
-                        <span>Son</span>
-                        <span>Phrase</span>
+                        <span>Sound</span>
+                        <span>Sentence</span>
                     </div>
                     <div className={styles.listRows}>
                         {filtered.length > 0
                             ? filtered?.map((item) => (
                                   <article key={item.id} className={styles.rows}>
                                       <span onClick={() => autoplay(0, item.sounds)}>
-                                          <Tooltip placement="left" arrow={true} TransitionComponent={Zoom} title="Écouter">
+                                          <Tooltip placement="left" arrow={true} TransitionComponent={Zoom} title="Play sound">
                                               <VolumeUpIcon className={styles.speakerIcon} />
                                           </Tooltip>
                                       </span>
                                       <span>{item.sentence}</span>
                                       <div className={styles.iconContainer} onClick={() => deleteSentence(item.id)}>
-                                          <Tooltip placement="left" arrow={true} TransitionComponent={Zoom} title="Supprimer">
+                                          <Tooltip placement="left" arrow={true} TransitionComponent={Zoom} title="Delete">
                                               <CancelIcon className={styles.cancelIcon} />
                                           </Tooltip>
                                       </div>
@@ -92,13 +92,13 @@ function Sentences() {
                             : sentences?.map((item) => (
                                   <article key={item.id} className={styles.rows}>
                                       <span onClick={() => autoplay(0, item.sounds)}>
-                                          <Tooltip placement="left" arrow={true} TransitionComponent={Zoom} title="Écouter">
+                                          <Tooltip placement="left" arrow={true} TransitionComponent={Zoom} title="Play sound">
                                               <VolumeUpIcon className={styles.speakerIcon} />
                                           </Tooltip>
                                       </span>
                                       <span>{item.sentence}</span>
                                       <div className={styles.iconContainer} onClick={() => deleteSentence(item.id)}>
-                                          <Tooltip placement="left" arrow={true} TransitionComponent={Zoom} title="Supprimer">
+                                          <Tooltip placement="left" arrow={true} TransitionComponent={Zoom} title="Delete">
                                               <CancelIcon className={styles.cancelIcon} />
                                           </Tooltip>
                                       </div>
@@ -107,7 +107,7 @@ function Sentences() {
                     </div>
                 </div>
             ) : (
-                <NoData text={'Oups ... Aucune phrase disponible.'} />
+                <NoData text={'Oops... No sentences available.'} />
             )}
         </div>
     );

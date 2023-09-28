@@ -30,11 +30,11 @@ function CategoryModal(props) {
     return (
         <ThemeProvider theme={appModal}>
             <Dialog onClose={handleClose} open={isOpen}>
-                <DialogTitle>Catégories</DialogTitle>
+                <DialogTitle>Categories</DialogTitle>
                 <List>
                     <ListItem>
                         <ListItemButton onClick={() => setCategory('')} component="button" className={openCategoryModal ? 'selectable' : ''}>
-                            <ListItemText primary={'Liste complète'} sx={{"& .MuiTypography-root": {fontWeight: '500'}}}/>
+                            <ListItemText primary={'All words'} sx={{"& .MuiTypography-root": {fontWeight: '500'}}}/>
                         </ListItemButton>
                     </ListItem>
                     {categories?.map((category) => (

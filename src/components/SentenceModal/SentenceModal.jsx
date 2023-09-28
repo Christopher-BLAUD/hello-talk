@@ -31,7 +31,7 @@ function SentenceModal(props) {
     return (
         <ThemeProvider theme={appModal}>
             <Dialog onClose={handleClose} open={isOpen}>
-                <DialogTitle>Phrases enregistrées</DialogTitle>
+                <DialogTitle>Sentences</DialogTitle>
                 <List>
                     {sentences?.map((item) => (
                         <ListItem key={item.id}>

@@ -43,6 +43,7 @@ import AddCategory from '../../components/AddCategory/AddCategory';
 import CounterCard from '../../components/CounterCard/CounterCard';
 import logo from '../../assets/img/logo-gradient.svg';
 import styles from './Dashboard.module.css';
+import { useWords } from '../../utils/hooks/useWords';
 
 function Dashboard() {
     const { setConnected, myController, setMyController, alert, setAlert, alertMess, alertType, words, setWords } = useContext(AppContext);
@@ -79,7 +80,7 @@ function Dashboard() {
     };
 
     const findSentence = async (str) => {
-        const result = await db.sentences.where('sentence').equals(str).toArray();
+        const result = await Sentence.findOne(str);
         return result.length !== 0 ? true : false;
     };
 
@@ -120,7 +121,7 @@ function Dashboard() {
     const applyFilter = useCallback(
         (type) => {
             filtered.length > 0 ? setFiltered(setFilter(type, filtered)) : setWords(setFilter(type, words));
-           
+
             setActiveFilter(type);
         },
         [setWords, filtered, words]
@@ -152,32 +153,32 @@ function Dashboard() {
                                     <ListItemIcon className={styles.iconContainer}>
                                         <AppsOutlinedIcon className={styles.navIcon} />
                                     </ListItemIcon>
-                                    <ListItemText primary="Application" className={styles.navText} />
+                                    <ListItemText primary="App" className={styles.navText} />
                                 </Link>
                             </ListItemButton>
                             <ListItemButton component="li" className={styles.navItem} sx={{ padding: '16px 24px' }} onClick={handleClick} title="Ajouter un élément">
                                 <ListItemIcon className={styles.iconContainer}>
                                     <AddCircleOutlineOutlinedIcon className={styles.navIcon} />
                                 </ListItemIcon>
-                                <ListItemText primary="Ajouter un élement" className={styles.navText} />
+                                <ListItemText primary="Add items" className={styles.navText} />
                                 {open ? <ExpandLess className={styles.navIcon} /> : <ExpandMore className={styles.navIcon} />}
                             </ListItemButton>
                             <Collapse in={open} timeout="auto" unmountOnExit>
                                 <List component="ul">
-                                    <ListItemButton component="li" className={styles.navItem} sx={{ pl: 4 }} title="Ajouter une catégorie">
+                                    <ListItemButton component="li" className={styles.navItem} sx={{ pl: 4 }} title="Add a category">
                                         <Link onClick={() => setOpenCategoryModal(true)}>
                                             <ListItemIcon className={styles.iconContainer}>
                                                 <CreateNewFolderOutlinedIcon className={styles.navIcon} />
                                             </ListItemIcon>
-                                            <ListItemText primary="Nouvelle catégorie" className={styles.navText} />
+                                            <ListItemText primary="Add a category" className={styles.navText} />
                                         </Link>
                                     </ListItemButton>
-                                    <ListItemButton component="li" className={styles.navItem} sx={{ pl: 4 }} title="Ajouter un mot">
+                                    <ListItemButton component="li" className={styles.navItem} sx={{ pl: 4 }} title="Add a word">
                                         <Link onClick={() => setOpenWordModal(true)}>
                                             <ListItemIcon className={styles.iconContainer}>
                                                 <DriveFileRenameOutlineIcon className={styles.navIcon} />
                                             </ListItemIcon>
-                                            <ListItemText primary="Nouveau mot" className={styles.navText} />
+                                            <ListItemText primary="Add a word" className={styles.navText} />
                                         </Link>
                                     </ListItemButton>
                                 </List>
@@ -189,24 +190,19 @@ function Dashboard() {
                     <AddWord onClose={closeWordModal} isOpen={openWordModal} />
                     <AddCategory onClose={closeCategoryModal} isOpen={openCategoryModal} />
                     <div className={styles.container}>
-                        <h2 className={styles.titleH2}>Tableau de bord</h2>
+                        <h2 className={styles.titleH2}>Dashboard</h2>
                         <section className={styles.globalInfos}>
                             <div className={styles.cardsContainer}>
-                                <CounterCard
-                                    onClick={() => navigate('')}
-                                    title={'Mots enregistrés'}
-                                    count={allWords?.length}
-                                    icon={<AbcIcon sx={{ fill: '#7D8CC4' }} />}
-                                />
+                                <CounterCard onClick={() => navigate('')} title={'Words'} count={allWords?.length} icon={<AbcIcon sx={{ fill: '#7D8CC4' }} />} />
                                 <CounterCard
                                     onClick={() => navigate('categories')}
-                                    title={'Catégories'}
+                                    title={'Categories'}
                                     count={categories?.length}
                                     icon={<FormatListBulletedIcon sx={{ fill: '#CB9173' }} />}
                                 />
                                 <CounterCard
                                     onClick={() => navigate('sentences')}
-                                    title={'Phrases enregistrées'}
+                                    title={'Sentences'}
                                     count={sentences?.length}
                                     icon={<SubjectIcon sx={{ fill: '#7FC29B' }} />}
                                 />
@@ -216,14 +212,14 @@ function Dashboard() {
                             </div>
                         </section>
                         <section className={styles.sentenceWrapper}>
-                            <h3 className={styles.sentenceTitle}>Rédiger une phrase</h3>
+                            <h3 className={styles.sentenceTitle}>Write a sentence</h3>
                             <div className={styles.sentenceContainer}>
                                 <div className={styles.wordFinder}>
                                     <div className={styles.searchWrapper}>
                                         <div className={styles.inputContainer}>
                                             <input
                                                 type="text"
-                                                placeholder="Rechercher un mot ..."
+                                                placeholder="Search for a word..."
                                                 name="word-finder"
                                                 autoComplete="off"
                                                 onChange={(e) => setFiltered(searchWord(allWords, e.target.value))}
@@ -238,16 +234,16 @@ function Dashboard() {
                                                 onClick={() => applyFilter('alphabetical', allWords)}
                                                 className={activeFilter === 'alphabetical' ? styles.activeFilter : undefined}
                                             >
-                                                Alphabétique
+                                                A-Z
                                             </button>
                                             <button onClick={() => applyFilter('score', allWords)} className={activeFilter === 'score' ? styles.activeFilter : undefined}>
-                                                Utilisation
+                                                Score
                                             </button>
                                             <button
                                                 onClick={() => applyFilter('category', allWords)}
                                                 className={activeFilter === 'category' ? styles.activeFilter : undefined}
                                             >
-                                                Catégorie
+                                                Categorie
                                             </button>
                                         </div>
                                     </div>
@@ -278,30 +274,30 @@ function Dashboard() {
                                 </div>
                                 <div className={styles.sentenceMaker}>
                                     <div className={styles.inputContainer}>
-                                        <Tooltip arrow={true} TransitionComponent={Zoom} title="Effacer la sélection">
+                                        <Tooltip arrow={true} TransitionComponent={Zoom} title="Clear selection">
                                             <BackspaceIcon className={styles.deleteIcon} onClick={clearSentence} />
                                         </Tooltip>
-                                        <input type="text" placeholder="Votre phrase ..." name="word-finder" defaultValue={newSentence} readOnly />
+                                        <input type="text" placeholder="Your sentence ..." name="word-finder" defaultValue={newSentence} readOnly />
                                         <div className={styles.iconsWrapper}>
-                                            <Tooltip arrow={true} TransitionComponent={Zoom} title="Enregistrer">
+                                            <Tooltip arrow={true} TransitionComponent={Zoom} title="Save">
                                                 <SendIcon className={styles.sendIcon} onClick={addSentence} />
                                             </Tooltip>
                                         </div>
                                     </div>
                                     <div className={styles.lastItem}>
-                                        <h4 className={styles.sentenceMakerTitle}>Dernières phrases enregistrées</h4>
+                                        <h4 className={styles.sentenceMakerTitle}>Last sentences</h4>
                                         <div className={styles.registered}>
                                             <TransitionGroup className={styles.transitionContainer}>
                                                 {lastSentences?.map((item) => (
                                                     <Collapse key={item.id}>
                                                         <article key={item.id} className={styles.sentenceItem}>
                                                             <div className={styles.contentContainer}>
-                                                                <Tooltip arrow={true} TransitionComponent={Zoom} title="Écouter">
+                                                                <Tooltip arrow={true} TransitionComponent={Zoom} title="Play sound">
                                                                     <VolumeUpIcon onClick={() => autoplay(0, item.sounds)} />
                                                                 </Tooltip>
                                                                 <span>{item.sentence}</span>
                                                             </div>
-                                                            <Tooltip arrow={true} TransitionComponent={Zoom} title="Supprimer">
+                                                            <Tooltip arrow={true} TransitionComponent={Zoom} title="Delete">
                                                                 <CancelIcon className={styles.cancelIcon} onClick={() => deleteSentence(item.id)} />
                                                             </Tooltip>
                                                         </article>
@@ -309,7 +305,7 @@ function Dashboard() {
                                                 ))}
                                             </TransitionGroup>
                                         </div>
-                                        {lastSentences.length === 0 && <span className={styles.noData}>Aucune phrase disponible.</span>}
+                                        {lastSentences.length === 0 && <span className={styles.noData}>No sentences available.</span>}
                                     </div>
                                 </div>
                             </div>

@@ -22,7 +22,7 @@
 .rows{
     display: flex;
     align-items: center;
-    gap: 48px;
+    gap: 32px;
     width: 100%;
     padding: 24px 24px;
     background-color: #EEEEF1;
@@ -39,11 +39,14 @@
 }
 
 .rows span{
-    width: 100px;
+    width: 170px;
     font-family: "Satoshi";
     font-size: 14px;
     font-weight: 600;
     color: var(--blue-light);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 

@@ -33,17 +33,17 @@ function Categories() {
         <div className={styles.wrapper}>
             <ModifyCategory onClose={handleClose} isOpen={open} category={category} />
             <div className={styles.headingContainer}>
-                <h3 className={styles.heading}>Catégories enregistrées</h3>
+                <h3 className={styles.heading}>Categories</h3>
                 <div className={styles.searchWrapper}>
                     <div className={styles.filters}>
                         <button onClick={() => applyFilter('id')} className={activeFilter === 'id' ? styles.activeFilter : undefined}>
                             ID
                         </button>
                         <button onClick={() => applyFilter('alphabetical')} className={activeFilter === 'alphabetical' ? styles.activeFilter : undefined}>
-                            Alphabétique
+                            A-Z
                         </button>
                         <button onClick={() => applyFilter('score')} className={activeFilter === 'score' ? styles.activeFilter : undefined}>
-                            Utilisation
+                            Score
                         </button>
                     </div>
                 </div>
@@ -56,10 +56,10 @@ function Categories() {
                                   <div className={styles.color} style={{ backgroundColor: category.color }}></div>
                                   <span>{category.name}</span>
                                   <div className={styles.iconContainer}>
-                                      <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Modifier" onClick={() => handleClickOpen(category)}>
+                                      <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Edit" onClick={() => handleClickOpen(category)}>
                                           <EditNoteIcon className={styles.editIcon} />
                                       </Tooltip>
-                                      <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Supprimer" onClick={() => deleteCategories(category.id)}>
+                                      <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Delete" onClick={() => deleteCategories(category.id)}>
                                           <CancelIcon className={styles.cancelIcon} />
                                       </Tooltip>
                                   </div>
@@ -70,10 +70,10 @@ function Categories() {
                                   <div className={styles.color} style={{ backgroundColor: category.color }}></div>
                                   <span>{category.name}</span>
                                   <div className={styles.iconContainer}>
-                                      <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Modifier" onClick={() => handleClickOpen(category)}>
+                                      <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Edit" onClick={() => handleClickOpen(category)}>
                                           <EditNoteIcon className={styles.editIcon} />
                                       </Tooltip>
-                                      <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Supprimer" onClick={() => deleteCategories(category.id)}>
+                                      <Tooltip placement="top" arrow={true} TransitionComponent={Zoom} title="Delete" onClick={() => deleteCategories(category.id)}>
                                           <CancelIcon className={styles.cancelIcon} />
                                       </Tooltip>
                                   </div>

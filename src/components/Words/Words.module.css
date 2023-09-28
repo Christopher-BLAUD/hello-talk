@@ -55,7 +55,7 @@
 .inputContainer input {
     height: 100%;
     min-width: 200px;
-    padding: 4px 8px;
+    padding: 4px 24px 4px 8px;
     border-radius: 5px;
     border: 1px solid var(--blue-icon);
     background: #fff;
@@ -114,6 +114,9 @@
     font-weight: 600;
     font-size: 14px;
     color: var(--blue-light);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .rows span {
@@ -122,7 +125,7 @@
 
 .listHeader span:nth-child(1),
 .rows span:nth-child(1) {
-    width: 60px;
+    width: 85px;
 }
 
 .iconContainer {

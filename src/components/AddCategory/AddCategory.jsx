@@ -21,7 +21,6 @@ import {
     ListItemText
 } from '@mui/material';
 import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
-import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import styles from './AddCategory.module.css';
 
 function AddCategory(props) {
@@ -41,16 +40,16 @@ function AddCategory(props) {
 
         try {
             if (category === '') {
-                createAlert(true, 'error', 'Veuillez saisir un nom de catégorie');
+                createAlert(true, 'error', 'Please enter a category name');
             } else if (color === '#ffff') {
-                createAlert(true, 'error', 'Veuillez sélectionner une autre couleur');
+                createAlert(true, 'error', 'Please select another color');
             } else if (isExisting) {
-                createAlert(true, 'warning', 'Cette catégorie existe déja !');
+                createAlert(true, 'warning', 'This category already exists!');
             } else {
                 const newCategory = new Category(category, color);
                 await newCategory.save();
 
-                createAlert(true, 'success', 'Catégorie créée avec succès !');
+                createAlert(true, 'success', 'Category created successfully!');
                 setCategory('');
             }
         } catch (e) {
@@ -69,11 +68,11 @@ function AddCategory(props) {
         <ThemeProvider theme={modalTheme}>
             <Dialog onClose={handleClose} open={isOpen}>
                 <Box sx={{ padding: '32px', borderBottom: '1px solid var(--blue-dark)', backgroundColor: 'var(--blue)' }}>
-                    <DialogTitle sx={{ fontFamily: 'DM sans', fontWeight: '500!important', fontSize: '20px' }}>Enregistrer une catégorie</DialogTitle>
+                    <DialogTitle sx={{ fontFamily: 'DM sans', fontWeight: '500!important', fontSize: '20px' }}>Save a category</DialogTitle>
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px', padding: '32px' }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                        <h3 className={styles.containerHeading}>{categories?.length === 0 ? 'Aucune catégorie enregistée.' : 'Catégories disponibles'}</h3>
+                        <h3 className={styles.containerHeading}>{categories?.length === 0 ? 'No categories registered.' : 'Available categories'}</h3>
                         <List
                             sx={{
                                 display: 'flex',
@@ -95,7 +94,7 @@ function AddCategory(props) {
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '56px' }}>
                         <FormControl>
-                            <InputLabel htmlFor="word-original">Nouvelle catégorie</InputLabel>
+                            <InputLabel htmlFor="word-original">New category</InputLabel>
                             <FilledInput
                                 id="word-original"
                                 type="text"
@@ -113,7 +112,7 @@ function AddCategory(props) {
                             />
                         </FormControl>
                         <FormControl sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                            <h3 className={styles.containerHeading}>Choisissez une couleur</h3>
+                            <h3 className={styles.containerHeading}>Choose a color</h3>
                             <MuiColorInput id={styles.colorPicker} value={color} onChange={handleColor} format="hex" isAlphaHidden />
                         </FormControl>
                         <FormControl>
@@ -134,7 +133,7 @@ function AddCategory(props) {
                                 }}
                                 onClick={addCategory}
                             >
-                                Enregistrer
+                                SAVE
                             </Button>
                         </FormControl>
                     </Box>

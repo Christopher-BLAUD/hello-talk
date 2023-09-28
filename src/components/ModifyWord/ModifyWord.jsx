@@ -21,7 +21,7 @@ function ModifyWord(props) {
     const [original, setOriginal] = useState('');
     const [translation, setTranslation] = useState('');
     const [category, setCategory] = useState('');
-    const mimeType = 'audio/mpeg'
+    const mimeType = 'audio/mpeg';
     const inputFile = useRef(null);
     const mediaRecorder = useRef(null);
     const audioPlayer = useRef(null);
@@ -120,12 +120,12 @@ function ModifyWord(props) {
         <ThemeProvider theme={modalTheme}>
             <Dialog open={isOpen} onClose={handleClose}>
                 <Box sx={{ padding: '32px', borderBottom: '1px solid var(--blue-dark)', backgroundColor: 'var(--blue)' }}>
-                    <DialogTitle>Modifier un mot</DialogTitle>
+                    <DialogTitle>Edit a word</DialogTitle>
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: '32px', padding: '32px' }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <FormControl>
-                            <InputLabel htmlFor="word-original">Mot original</InputLabel>
+                            <InputLabel htmlFor="word-original">Original</InputLabel>
                             <FilledInput
                                 id="word-original"
                                 type="text"
@@ -143,7 +143,7 @@ function ModifyWord(props) {
                             />
                         </FormControl>
                         <FormControl>
-                            <InputLabel htmlFor="word-original">Traduction</InputLabel>
+                            <InputLabel htmlFor="word-original">Translation</InputLabel>
                             <FilledInput
                                 id="word-original"
                                 type="text"
@@ -161,7 +161,7 @@ function ModifyWord(props) {
                             />
                         </FormControl>
                         <FormControl>
-                            <InputLabel id="demo-simple-select-label">Catégorie</InputLabel>
+                            <InputLabel id="demo-simple-select-label">Categorie</InputLabel>
                             <Select label="Catégorie" defaultValue={word.category} onChange={(e) => setCategory(e.target.value)} required>
                                 <MenuItem value="Récurrent">Récurrent</MenuItem>
                                 {categories?.map((category) => (
@@ -173,13 +173,13 @@ function ModifyWord(props) {
                         </FormControl>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        <h3 className={styles.containerHeading}>Modifier le son</h3>
+                        <h3 className={styles.containerHeading}>Update the sound</h3>
                         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', gap: '24px' }}>
                             <Box sx={{ display: 'flex', justifyContent: 'center', gap: '16px', width: '100%' }}>
                                 {recordingStatus === 'inactive' && (
                                     <FormControl sx={{ width: '100%' }}>
                                         <Button variant="outlined" startIcon={<DownloadIcon />} onClick={() => inputFile.current.click()}>
-                                            Télécharger un fichier
+                                            Download a file
                                         </Button>
                                     </FormControl>
                                 )}
@@ -199,7 +199,7 @@ function ModifyWord(props) {
                                             }}
                                             onClick={startRecording}
                                         >
-                                            Enregistrer ma voix
+                                            Record my voice
                                         </Button>
                                     )}
                                     {recordingStatus === 'recording' && (
@@ -219,7 +219,7 @@ function ModifyWord(props) {
                                                 }
                                             }}
                                         >
-                                            Arrêter l'enregistrement
+                                            Stop recording
                                         </Button>
                                     )}
                                 </FormControl>
@@ -246,7 +246,7 @@ function ModifyWord(props) {
                                 }}
                                 onClick={() => updateWord(word.id)}
                             >
-                                Enregistrer
+                                save
                             </Button>
                         </FormControl>
                     </Box>

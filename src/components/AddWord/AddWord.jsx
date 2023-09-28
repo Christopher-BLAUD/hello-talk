@@ -19,7 +19,7 @@ function AddWord(props) {
     const [file, setFile] = useState([]);
     const [stream, setStream] = useState(null);
     const [permission, setPermission] = useState(false);
-    const [mimeType, setMimeType] = useState('audio/mpeg');
+    const [mimeType,] = useState('audio/mpeg');
     const [recordingStatus, setRecordingStatus] = useState('inactive');
     const [audio, setAudio] = useState(null);
     const mediaRecorder = useRef(null);
@@ -48,7 +48,7 @@ function AddWord(props) {
         if (event.target.files[0].type === 'audio/mpeg') {
             setFile(event.target.files[0]);
         } else {
-            createAlert(true, 'error', 'Seul les fichiers .mp3 sont acceptés !');
+            createAlert(true, 'error', 'Only .mp3 files are accepted!');
         }
     };
 
@@ -74,10 +74,10 @@ function AddWord(props) {
             const word = new Word(original, translation, category, soundPath);
             await word.save();
 
-            createAlert(true, 'success', 'Mot enregistré avec succès !');
+            createAlert(true, 'success', 'Word saved successfully!');
             clearData();
         } else {
-            createAlert(true, 'error', "Veuillez remplir l'ensemble des informations");
+            createAlert(true, 'error', "Please complete all information");
         }
     };
 
@@ -127,13 +127,13 @@ function AddWord(props) {
         <ThemeProvider theme={modalTheme}>
             <Dialog onClose={handleClose} open={isOpen}>
                 <Box sx={{ padding: '32px', borderBottom: '1px solid var(--blue-dark)', backgroundColor: 'var(--blue)' }}>
-                    <DialogTitle>Enregistrer un mot</DialogTitle>
+                    <DialogTitle>Save a word</DialogTitle>
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: '48px', padding: '32px' }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        <h3 className={styles.containerHeading}>Renseignez le mot</h3>
+                        <h3 className={styles.containerHeading}>Enter the word</h3>
                         <FormControl>
-                            <InputLabel htmlFor="word-original">Mot original</InputLabel>
+                            <InputLabel htmlFor="word-original">Original</InputLabel>
                             <FilledInput
                                 id="word-original"
                                 type="text"
@@ -151,7 +151,7 @@ function AddWord(props) {
                             />
                         </FormControl>
                         <FormControl>
-                            <InputLabel htmlFor="word-original">Traduction</InputLabel>
+                            <InputLabel htmlFor="word-original">Translation</InputLabel>
                             <FilledInput
                                 id="word-original"
                                 type="text"
@@ -169,7 +169,7 @@ function AddWord(props) {
                             />
                         </FormControl>
                         <FormControl>
-                            <InputLabel id="demo-simple-select-label">Catégorie</InputLabel>
+                            <InputLabel id="demo-simple-select-label">Categorie</InputLabel>
                             <Select label="Catégorie" onChange={handleCategory} value={category} required>
                                 <MenuItem value="Récurrent">Récurrent</MenuItem>
                                 {categories?.map((category) => (
@@ -181,13 +181,13 @@ function AddWord(props) {
                         </FormControl>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        <h3 className={styles.containerHeading}>Choisissez un son</h3>
+                        <h3 className={styles.containerHeading}>Choose a sound</h3>
                         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', gap: '24px' }}>
                             <Box sx={{ display: 'flex', justifyContent: 'center', gap: '16px', width: '100%' }}>
                                 {recordingStatus === 'inactive' && (
                                     <FormControl sx={{ width: '100%' }}>
                                         <Button variant="outlined" startIcon={<DownloadIcon />} onClick={() => inputFile.current.click()}>
-                                            Télécharger un fichier
+                                            Download a file
                                         </Button>
                                     </FormControl>
                                 )}
@@ -207,7 +207,7 @@ function AddWord(props) {
                                             }}
                                             onClick={startRecording}
                                         >
-                                            Enregistrer ma voix
+                                            Record my voice
                                         </Button>
                                     )}
                                     {recordingStatus === 'recording' && (
@@ -227,7 +227,7 @@ function AddWord(props) {
                                                 }
                                             }}
                                         >
-                                            Arrêter l'enregistrement
+                                            Stop recording
                                         </Button>
                                     )}
                                 </FormControl>
@@ -254,7 +254,7 @@ function AddWord(props) {
                                 }}
                                 onClick={addNewWord}
                             >
-                                Enregistrer
+                                save
                             </Button>
                         </FormControl>
                     </Box>
