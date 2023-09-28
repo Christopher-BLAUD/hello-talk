@@ -5,10 +5,13 @@ export const dashboardTheme = createTheme({
         MuiListItemButton: {
             styleOverrides: {
                 root: {
+                    display: "flex",
+                    gap: "24px",
                     padding: '0',
                     '& a': {
                         display: 'flex',
                         alignItems: 'center',
+                        gap: "24px",
                         width: '100%',
                         height: '100%',
                         padding: '16px 24px',

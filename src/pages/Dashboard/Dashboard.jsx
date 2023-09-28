@@ -269,7 +269,7 @@ function Dashboard() {
                                                       callback={() => makeSentence(word.original, word.sound)}
                                                   />
                                               ))}
-                                        {result?.length === 0 && allWords?.length === 0 && <span>Aucun mot disponible pour le moment ...</span>}
+                                        {result?.length === 0 && allWords?.length === 0 && <span>No word available at this time...</span>}
                                     </div>
                                 </div>
                                 <div className={styles.sentenceMaker}>

@@ -5,7 +5,8 @@
   width: 100%;
   min-height: 100dvh;
   background-image: url(../../assets/img/home-bg.svg);
-  background-size: 100% 100%;
+  background-size: 100%;
+  background-position: center center;
 }
 
 .titleWrapper{
@@ -45,7 +46,7 @@
 
 .titleP{
   font-size: 18px;
-  font-weight: 400;
+  font-weight: 300;
   line-height: 1.5;
   max-width: 482px;
 }
@@ -53,7 +54,12 @@
 .buttonsContainer{
   display: flex;
   gap: 56px;
+  width: 100%;
   margin-top: 32px;
+}
+
+.mainContent .titleButton, .mainContent .titleButtonOutlined{
+  width: calc(50% - 28px);
 }
 
 .mainContent .titleButton{

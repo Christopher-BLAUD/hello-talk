@@ -16,7 +16,7 @@ function PlanModal(props) {
     return (
         <ThemeProvider theme={appModal}>
             <Dialog onClose={handleClose} open={isOpen}>
-                <DialogTitle>Schéma de connexion</DialogTitle>
+                <DialogTitle>Connection plan</DialogTitle>
                 <Box sx={{ padding: "72px" ,"& img": {
                     width: "100%"
                 }}}>

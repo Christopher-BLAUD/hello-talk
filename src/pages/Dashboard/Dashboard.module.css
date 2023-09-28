@@ -46,7 +46,7 @@
 }
 
 .navItem .iconContainer {
-    min-width: 36px;
+    min-width: 20px;
 }
 
 .navItem .navIcon {
@@ -405,6 +405,7 @@
     .navBar .navItem {
         justify-content: center;
         padding-right: 0;
+        gap: 0;
     }
 
     .content{

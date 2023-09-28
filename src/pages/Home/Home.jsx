@@ -24,7 +24,7 @@ function Home() {
             <main className={styles.mainContent}>
                 <div className={styles.title}>
                     <h1 className={styles.titleH1}>
-                        Marius system <img src={logo} alt="logo de marius system" />
+                       <img src={logo} alt="logo de marius system" /> Marius system 
                     </h1>
                     <p className={styles.titleP}>
                     The augmented and alternative communication application. Communicate without barriers, be heard and be inspired.
