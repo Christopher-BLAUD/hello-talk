@@ -84,7 +84,7 @@ function ModifyCategory(props) {
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '56px' }}>
                         <FormControl>
-                            <InputLabel htmlFor="word-original">Modifier le nom</InputLabel>
+                            <InputLabel htmlFor="word-original">Nom</InputLabel>
                             <FilledInput
                                 id="word-original"
                                 type="text"

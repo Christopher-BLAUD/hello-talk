@@ -15,6 +15,22 @@ class Sentence {
         }
     }
 
+    static async findOne(str) {
+        try {
+            return await db.sentences.where('sentence').equals(str).toArray()
+        } catch (e) {
+            throw new Error('An error occurred while finding the sentence')
+        }
+    }
+
+    static async updateScore(id, changes) {
+        try {
+            await db.sentences.update(id, changes)
+        } catch (e) {
+            throw new Error('An error occurred while updating the score')
+        }
+    }
+
     static async delete(id) {
         try {
             await db.sentences.delete(id)

@@ -4,8 +4,8 @@ export const setFilter = (type, stack) => {
             return stack.sort((a, b) => a.id - b.id);
         case 'alphabetical':
             return stack.sort((a, b) => {
-                if (a.original < b.original || a.sentence < b.sentence) return -1;
-                if (a.original > b.original || a.sentence > b.sentence) return 1;
+                if (a.original < b.original || a.sentence < b.sentence || a.name < b.name) return -1;
+                if (a.original > b.original || a.sentence > b.sentence || a.name > b.name) return 1;
                 return 0;
             });
         case 'category':

@@ -2,8 +2,9 @@ import Sentence from '../src/controllers/sentences';
 import { db } from '../src/utils/Helpers/db';
 
 jest.mock('../src/utils/Helpers/db');
-Sentence.save = jest.fn()
-Sentence.delete = jest.fn()
+Sentence.save = jest.fn();
+Sentence.delete = jest.fn();
+Sentence.findOne = jest.fn();
 
 describe('sentence', () => {
     const sentence = new Sentence('bonjour mon nom est christopher', ['./sounds/bonjour', './sounds/mon', './sounds/nom', './sounds/est', './sounds/christopher']);
@@ -27,11 +28,20 @@ describe('sentence', () => {
     });
 
     it('should call the delete method with specific parameters', async () => {
-        const id = 1
+        const id = 1;
 
-        await Sentence.delete(id)
+        await Sentence.delete(id);
 
-        expect(Sentence.delete).toHaveBeenCalledTimes(1)
-        expect(Sentence.delete).toHaveBeenCalledWith(id)
-    })
+        expect(Sentence.delete).toHaveBeenCalledTimes(1);
+        expect(Sentence.delete).toHaveBeenCalledWith(id);
+    });
+
+    it('should call the findOne method by id', async () => {
+        const id = 3;
+
+        await Sentence.findOne(id);
+
+        expect(Sentence.findOne).toHaveBeenCalledTimes(1);
+        expect(Sentence.findOne).toHaveBeenCalledWith(id);
+    });
 });

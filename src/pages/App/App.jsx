@@ -9,6 +9,9 @@ import { ThemeProvider } from '@emotion/react';
 import { List, ListItemButton, ListItemIcon, ListItemText, createTheme } from '@mui/material';
 import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
 import { Grid, Pagination } from 'swiper/modules';
+import Word from '../../controllers/words';
+import Category from '../../controllers/categories';
+import Sentence from '../../controllers/sentences';
 import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import AppsIcon from '@mui/icons-material/Apps';
@@ -24,7 +27,6 @@ import 'swiper/css';
 import 'swiper/css/grid';
 import 'swiper/css/pagination';
 import styles from './App.module.css';
-import Word from '../../controllers/words';
 
 function App(props) {
     let {
@@ -50,7 +52,7 @@ function App(props) {
     const [firstOfRow, setFirstOfRow] = useState(0);
     const [rowIndex, setRowIndex] = useState(0);
     const [openPlan, setOpenPlan] = useState(false);
-    const [wordUsed, setWordUsed] = useState([]);
+    const [wordsUsed, setWordsUsed] = useState([]);
     const swiper = useSwiper();
     const swiperRef = useRef();
     const allWords = useLiveQuery(
@@ -68,7 +70,7 @@ function App(props) {
     const makeSentence = (word, sound, id, category) => {
         setSentence(sentence + ' ' + word);
         setSpeech([...speech, sound]);
-        setWordUsed([...wordUsed, { id: id, category: category }]);
+        setWordsUsed([...wordsUsed, { id: id, category: category }]);
     };
 
     const clearSentence = () => {
@@ -76,13 +78,22 @@ function App(props) {
         setSpeech([]);
     };
 
-    const saveScore = (wordArray) => {
-        wordArray.forEach(async (word) => {
-            try {
-                let result = await db.words.where('id').equals(word.id).toArray();
-                const currentWord = result[0];
+    const saveScore = async (words) => {
+        const sentenceQuery = await Sentence.findOne(sentence.trim());
+        if (sentenceQuery.length > 0) {
+            const currentSentence = sentenceQuery[0];
+            await Sentence.updateScore(currentSentence.id, { score: currentSentence.score || 0 + 1 })
+        }
 
+        words.forEach(async (word) => {
+            try {
+                const wordQuery = await Word.getWord(word.id);
+                const currentWord = wordQuery[0];
                 await Word.update(currentWord.id, { score: currentWord.score + 1 });
+
+                const categoryQuery = await Category.findOne(currentWord.category);
+                const currentCategory = categoryQuery[0];
+                await Category.updateScore(currentCategory.id, { score: currentCategory.score || 0 + 1 });
             } catch (e) {
                 console.error(e);
             }
@@ -260,7 +271,7 @@ function App(props) {
                         className={`${styles.iconContainer} ${!openCategoryModal && !openSentenceModal ? 'selectable' : ''}`}
                         onClick={() => {
                             autoplay(0, speech);
-                            saveScore(wordUsed);
+                            saveScore(wordsUsed);
                         }}
                     >
                         <RecordVoiceOverIcon className="play" />

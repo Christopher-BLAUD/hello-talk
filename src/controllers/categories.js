@@ -33,6 +33,14 @@ class Category {
             throw new Error('An error occurred while deleting the category.')
         }
     }
+
+    static async updateScore(id, changes) {
+        try {
+            await db.categories.update(id, changes);
+        } catch (e) {
+            throw new Error('Error while updating score');
+        }
+    }
 }
 
 export default Category;

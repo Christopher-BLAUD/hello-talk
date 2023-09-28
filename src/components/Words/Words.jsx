@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useWords } from '../../utils/hooks/useWords';
 import { autoplay } from '../../utils/Helpers/autoplay';
-import { db } from '../../utils/Helpers/db';
 import { TransitionGroup } from 'react-transition-group';
 import { Collapse, Tooltip, Zoom } from '@mui/material';
 import { setFilter } from '../../utils/Helpers/setFilter.js';
