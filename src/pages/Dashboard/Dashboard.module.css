@@ -90,8 +90,8 @@
 }
 
 .titleH2 {
-    color: var(--blue-light);
-    font-weight: 700;
+    color: var(--blue);
+    font-weight: 900;
 }
 
 .globalInfos {
@@ -103,14 +103,15 @@
 .cardsContainer {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     gap: 24px;
 }
 
 .details {
     display: flex;
-    height: 387px;
+    height: 415px;
     width: 100%;
-    padding: 16px;
+    padding: 24px;
     flex-direction: column;
     align-items: flex-start;
     gap: 32px;

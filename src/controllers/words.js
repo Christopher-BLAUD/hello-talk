@@ -27,6 +27,14 @@ class Word {
             throw new Error('Database connection error');
         }
     }
+
+    static async getAll() {
+        try {
+            return await db.words.orderBy('id').toArray()
+        } catch (e) {
+            throw new Error('Database connection error')
+        }
+    }
     
     static async update(id, changes) {
         try {

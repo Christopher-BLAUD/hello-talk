@@ -15,7 +15,11 @@ export const setFilter = (type, stack) => {
                 return 0;
             });
         case 'score':
-            return stack.sort((a, b) => a.score - b.score).reverse();
+            return stack.sort((a,b) => {
+                if (a.score > b.score) return -1
+                if (a.score < b.score) return 1
+                return 0
+            })
         default:
             return stack;
     }

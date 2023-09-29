@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link, useNavigate, Outlet } from 'react-router-dom';
 import { TransitionGroup } from 'react-transition-group';
+import { Collapse, Zoom } from '@mui/material';
 import { AppContext } from '../../utils/Context/AppContext';
 import { useCategories } from '../../utils/hooks/useCategories';
 import { useSentences } from '../../utils/hooks/useSentences';
@@ -20,7 +21,6 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import Sentence from '../../controllers/sentences';
 import SmallPad from '../../components/SmallPad/SmallPad';
 import Alert from '../../components/Alert/Alert';
-import Zoom from '@mui/material/Zoom';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -37,13 +37,11 @@ import SendIcon from '@mui/icons-material/Send';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import AbcIcon from '@mui/icons-material/Abc';
 import SubjectIcon from '@mui/icons-material/Subject';
-import Collapse from '@mui/material/Collapse';
 import AddWord from '../../components/AddWord/AddWord';
 import AddCategory from '../../components/AddCategory/AddCategory';
 import CounterCard from '../../components/CounterCard/CounterCard';
 import logo from '../../assets/img/logo-gradient.svg';
 import styles from './Dashboard.module.css';
-import { useWords } from '../../utils/hooks/useWords';
 
 function Dashboard() {
     const { setConnected, myController, setMyController, alert, setAlert, alertMess, alertType, words, setWords } = useContext(AppContext);
@@ -106,8 +104,6 @@ function Dashboard() {
     const closeWordModal = () => setOpenWordModal(false);
     const closeCategoryModal = () => setOpenCategoryModal(false);
 
-    const setSelected = (path) => (path === window.location.hash ? true : false);
-
     const makeSentence = (word, sound) => {
         setNewSentence(formatSentence(newSentence, word));
         setSentenceSounds([...sentenceSounds, sound]);
@@ -140,7 +136,7 @@ function Dashboard() {
                     </h1>
                     <nav className={styles.navBar}>
                         <List component="ul" className={styles.listContainer}>
-                            <ListItemButton component="li" className={styles.navItem} selected={setSelected('#/app')} title="Application">
+                            <ListItemButton component="li" className={styles.navItem} title="Application">
                                 <Link
                                     to={'/app'}
                                     onClick={(e) => {
@@ -153,7 +149,7 @@ function Dashboard() {
                                     <ListItemIcon className={styles.iconContainer}>
                                         <AppsOutlinedIcon className={styles.navIcon} />
                                     </ListItemIcon>
-                                    <ListItemText primary="App" className={styles.navText} />
+                                    <ListItemText primary="Application" className={styles.navText} />
                                 </Link>
                             </ListItemButton>
                             <ListItemButton component="li" className={styles.navItem} sx={{ padding: '16px 24px' }} onClick={handleClick} title="Ajouter un élément">
@@ -193,17 +189,25 @@ function Dashboard() {
                         <h2 className={styles.titleH2}>Dashboard</h2>
                         <section className={styles.globalInfos}>
                             <div className={styles.cardsContainer}>
-                                <CounterCard onClick={() => navigate('')} title={'Words'} count={allWords?.length} icon={<AbcIcon sx={{ fill: '#7D8CC4' }} />} />
+                                <CounterCard
+                                    onClick={() => navigate('')}
+                                    title={'Words'}
+                                    count={allWords?.length}
+                                    bg={'#7d8cc41f'}
+                                    icon={<AbcIcon sx={{ fill: '#7D8CC4' }} />}
+                                />
                                 <CounterCard
                                     onClick={() => navigate('categories')}
                                     title={'Categories'}
                                     count={categories?.length}
+                                    bg={'#cb917326'}
                                     icon={<FormatListBulletedIcon sx={{ fill: '#CB9173' }} />}
                                 />
                                 <CounterCard
                                     onClick={() => navigate('sentences')}
                                     title={'Sentences'}
                                     count={sentences?.length}
+                                    bg={'#7fc29b30'}
                                     icon={<SubjectIcon sx={{ fill: '#7FC29B' }} />}
                                 />
                             </div>
@@ -247,30 +251,34 @@ function Dashboard() {
                                             </button>
                                         </div>
                                     </div>
-                                    <div className={styles.smallCardsContainer}>
-                                        {filtered?.length > 0
-                                            ? filtered?.map((word) => (
-                                                  <SmallPad
-                                                      key={word.id}
-                                                      id={word.id}
-                                                      fr={word.original}
-                                                      eng={word.translation}
-                                                      color={word.category !== 'Récurrent' && setColorTheme(word.category, categories)}
-                                                      callback={() => makeSentence(word.original, word.sound)}
-                                                  />
-                                              ))
-                                            : words?.map((word) => (
-                                                  <SmallPad
-                                                      key={word.id}
-                                                      id={word.id}
-                                                      fr={word.original}
-                                                      eng={word.translation}
-                                                      color={word.category !== 'Récurrent' && setColorTheme(word.category, categories)}
-                                                      callback={() => makeSentence(word.original, word.sound)}
-                                                  />
-                                              ))}
+                                        <TransitionGroup component={'ul'} className={styles.smallCardsContainer}>
+                                            {filtered?.length > 0
+                                                ? filtered?.map((word) => (
+                                                      <Collapse component={'li'}>
+                                                          <SmallPad
+                                                              key={word.id}
+                                                              id={word.id}
+                                                              fr={word.original}
+                                                              eng={word.translation}
+                                                              color={word.category !== 'Récurrent' && setColorTheme(word.category, categories)}
+                                                              callback={() => makeSentence(word.original, word.sound)}
+                                                          />
+                                                      </Collapse>
+                                                  ))
+                                                : allWords?.map((word) => (
+                                                      <Collapse component={'li'}>
+                                                          <SmallPad
+                                                              key={word.id}
+                                                              id={word.id}
+                                                              fr={word.original}
+                                                              eng={word.translation}
+                                                              color={word.category !== 'Récurrent' && setColorTheme(word.category, categories)}
+                                                              callback={() => makeSentence(word.original, word.sound)}
+                                                          />
+                                                      </Collapse>
+                                                  ))}
+                                        </TransitionGroup>
                                         {result?.length === 0 && allWords?.length === 0 && <span>No word available at this time...</span>}
-                                    </div>
                                 </div>
                                 <div className={styles.sentenceMaker}>
                                     <div className={styles.inputContainer}>

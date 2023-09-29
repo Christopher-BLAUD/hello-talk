@@ -79,6 +79,14 @@ export const dashboardTheme = createTheme({
                     }
                 }
             }
+        },
+        MuiCollapse: {
+            styleOverrides: {
+                root: {
+                    width: 'calc(50% - 8px)',
+                    listStyle: 'none'
+                }
+            }
         }
     }
 });
