@@ -5,13 +5,13 @@ export const dashboardTheme = createTheme({
         MuiListItemButton: {
             styleOverrides: {
                 root: {
-                    display: "flex",
-                    gap: "24px",
+                    display: 'flex',
+                    gap: '24px',
                     padding: '0',
                     '& a': {
                         display: 'flex',
                         alignItems: 'center',
-                        gap: "24px",
+                        gap: '24px',
                         width: '100%',
                         height: '100%',
                         padding: '16px 24px',
@@ -83,7 +83,6 @@ export const dashboardTheme = createTheme({
         MuiCollapse: {
             styleOverrides: {
                 root: {
-                    width: 'calc(50% - 8px)',
                     listStyle: 'none'
                 }
             }

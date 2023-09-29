@@ -1,7 +1,7 @@
 .pad {
     display: flex;
     min-width: 118px;
-    width: 100%;
+    width: calc(50% - 8px);
     height: 90px;
     padding: 10px;
     position: relative;

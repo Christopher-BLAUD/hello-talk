@@ -45,7 +45,13 @@
 }
 
 *::-webkit-scrollbar-thumb {
-    background: #ABABAB;
+    background-color: var(--yellow-transparent);
+    transition: all 200ms linear;
+    border-radius: 50px;
+}
+
+*::-webkit-scrollbar-thumb:hover{
+    background-color: var(--yellow-primary);
 }
 
 *::-webkit-scrollbar-track {

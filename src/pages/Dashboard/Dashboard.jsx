@@ -27,8 +27,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import AppsOutlinedIcon from '@mui/icons-material/AppsOutlined';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import SearchIcon from '@mui/icons-material/Search';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -125,7 +123,8 @@ function Dashboard() {
 
     useEffect(() => {
         applyFilter(activeFilter, allWords);
-    }, [activeFilter, allWords, applyFilter]);
+        setWords(allWords)
+    }, [activeFilter, allWords, applyFilter, setWords]);
 
     return (
         <ThemeProvider theme={dashboardTheme}>
@@ -161,20 +160,16 @@ function Dashboard() {
                             </ListItemButton>
                             <Collapse in={open} timeout="auto" unmountOnExit>
                                 <List component="ul">
-                                    <ListItemButton component="li" className={styles.navItem} sx={{ pl: 4 }} title="Add a category">
+                                    <ListItemButton component="li" className={styles.navItem} sx={{ pl: 4 }} title="Category">
                                         <Link onClick={() => setOpenCategoryModal(true)}>
-                                            <ListItemIcon className={styles.iconContainer}>
-                                                <CreateNewFolderOutlinedIcon className={styles.navIcon} />
-                                            </ListItemIcon>
-                                            <ListItemText primary="Add a category" className={styles.navText} />
+                                            <div className={styles.dote}></div>
+                                            <ListItemText primary="Category" className={styles.navText} />
                                         </Link>
                                     </ListItemButton>
-                                    <ListItemButton component="li" className={styles.navItem} sx={{ pl: 4 }} title="Add a word">
+                                    <ListItemButton component="li" className={styles.navItem} sx={{ pl: 4 }} title="Word">
                                         <Link onClick={() => setOpenWordModal(true)}>
-                                            <ListItemIcon className={styles.iconContainer}>
-                                                <DriveFileRenameOutlineIcon className={styles.navIcon} />
-                                            </ListItemIcon>
-                                            <ListItemText primary="Add a word" className={styles.navText} />
+                                            <div className={styles.dote}></div>
+                                            <ListItemText primary="Word" className={styles.navText} />
                                         </Link>
                                     </ListItemButton>
                                 </List>
@@ -251,34 +246,30 @@ function Dashboard() {
                                             </button>
                                         </div>
                                     </div>
-                                        <TransitionGroup component={'ul'} className={styles.smallCardsContainer}>
-                                            {filtered?.length > 0
-                                                ? filtered?.map((word) => (
-                                                      <Collapse component={'li'}>
-                                                          <SmallPad
-                                                              key={word.id}
-                                                              id={word.id}
-                                                              fr={word.original}
-                                                              eng={word.translation}
-                                                              color={word.category !== 'Récurrent' && setColorTheme(word.category, categories)}
-                                                              callback={() => makeSentence(word.original, word.sound)}
-                                                          />
-                                                      </Collapse>
-                                                  ))
-                                                : allWords?.map((word) => (
-                                                      <Collapse component={'li'}>
-                                                          <SmallPad
-                                                              key={word.id}
-                                                              id={word.id}
-                                                              fr={word.original}
-                                                              eng={word.translation}
-                                                              color={word.category !== 'Récurrent' && setColorTheme(word.category, categories)}
-                                                              callback={() => makeSentence(word.original, word.sound)}
-                                                          />
-                                                      </Collapse>
-                                                  ))}
-                                        </TransitionGroup>
-                                        {result?.length === 0 && allWords?.length === 0 && <span>No word available at this time...</span>}
+                                    <div className={styles.smallCardsContainer}>
+                                        {filtered?.length > 0
+                                            ? filtered?.map((word) => (
+                                                  <SmallPad
+                                                      key={word.id}
+                                                      id={word.id}
+                                                      fr={word.original}
+                                                      eng={word.translation}
+                                                      color={word.category !== 'Récurrent' && setColorTheme(word.category, categories)}
+                                                      callback={() => makeSentence(word.original, word.sound)}
+                                                  />
+                                              ))
+                                            : words?.map((word) => (
+                                                  <SmallPad
+                                                      key={word.id}
+                                                      id={word.id}
+                                                      fr={word.original}
+                                                      eng={word.translation}
+                                                      color={word.category !== 'Récurrent' && setColorTheme(word.category, categories)}
+                                                      callback={() => makeSentence(word.original, word.sound)}
+                                                  />
+                                              ))}
+                                    </div>
+                                    {result?.length === 0 && allWords?.length === 0 && <span>No word available at this time...</span>}
                                 </div>
                                 <div className={styles.sentenceMaker}>
                                     <div className={styles.inputContainer}>
