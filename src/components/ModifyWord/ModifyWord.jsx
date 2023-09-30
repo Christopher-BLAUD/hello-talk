@@ -102,13 +102,13 @@ function ModifyWord(props) {
 
             try {
                 await Word.update(wordID, changes);
-                createAlert(true, 'success', 'Modifications enregistrées avec succés !');
+                createAlert(true, 'success', 'Changes saved successfully!');
                 clearData();
             } catch (e) {
                 console.error(e);
             }
         } else {
-            createAlert(true, 'warning', "Aucune modification n'a été saisie");
+            createAlert(true, 'warning', "No changes have been entered");
         }
     };
 

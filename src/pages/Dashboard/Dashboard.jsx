@@ -15,7 +15,6 @@ import { deleteSentence } from '../../utils/Helpers/deleteSentence';
 import { formatSentence } from '../../utils/Helpers/formatSentence';
 import { ThemeProvider, Tooltip } from '@mui/material';
 import { dashboardTheme } from '../../utils/Theme/Dashboard/dashboardTheme';
-import { useSearch } from '../../utils/hooks/useSearch';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import Sentence from '../../controllers/sentences';
@@ -58,7 +57,7 @@ function Dashboard() {
     const navigate = useNavigate();
 
     const connectToDevice = async () => {
-        if (myController.vendorId === undefined) {
+        if (myController.vendorId === undefined || myController.vendorId !== 1984) {
             const devices = await navigator.hid.requestDevice({ filters: [{ vendorId: 1984, productId: 4410 }] });
 
             if (devices.length > 0) {
@@ -140,7 +139,7 @@ function Dashboard() {
                                     onClick={(e) => {
                                         e.preventDefault();
                                         setWords([]);
-                                        // connectToDevice();
+                                        connectToDevice();
                                         navigate('/app');
                                     }}
                                 >
