@@ -55,16 +55,14 @@ function App(props) {
     const [wordsUsed, setWordsUsed] = useState([]);
     const swiper = useSwiper();
     const swiperRef = useRef();
-    const allWords = useLiveQuery(
-        async () => {
-            let words = await db.words
-                .orderBy('score')
-                .filter((word) => word.category !== 'Récurrent')
-                .toArray()
+    const allWords = useLiveQuery(async () => {
+        let words = await db.words
+            .orderBy('score')
+            .filter((word) => word.category !== 'Récurrent')
+            .toArray();
 
-            return words.reverse()
-        }
-    );
+        return words.reverse();
+    });
 
     const reccurentsWords = useLiveQuery(async () => {
         return await db.words.where('category').equals('Récurrent').limit(2).sortBy('id');
@@ -85,18 +83,18 @@ function App(props) {
         const sentenceQuery = await Sentence.findOne(sentence.trim());
         if (sentenceQuery.length > 0) {
             const currentSentence = sentenceQuery[0];
-            await Sentence.updateScore(currentSentence.id, { score: currentSentence.score || 0 + 1 })
+            await Sentence.updateScore(currentSentence.id, { score: (currentSentence.score || 0) + 1 });
         }
 
         words.forEach(async (word) => {
             try {
                 const wordQuery = await Word.getWord(word.id);
                 const currentWord = wordQuery[0];
-                await Word.update(currentWord.id, { score: currentWord.score + 1 });
+                await Word.update(currentWord.id, { score: (currentWord.score || 0) + 1 });
 
                 const categoryQuery = await Category.findOne(currentWord.category);
                 const currentCategory = categoryQuery[0];
-                await Category.updateScore(currentCategory.id, { score: currentCategory.score || 0 + 1 });
+                await Category.updateScore(currentCategory.id, { score: (currentCategory.score || 0) + 1 });
             } catch (e) {
                 console.error(e);
             }

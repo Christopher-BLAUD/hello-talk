@@ -11,12 +11,21 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import { useLiveQuery } from 'dexie-react-hooks';
 
-
 function SentenceModal(props) {
     const { onClose, isOpen } = props;
     let { openSentenceModal, setSentence, setSpeech } = useContext(AppContext);
-    const sentences = useLiveQuery(async () => await db.sentences.orderBy('id').toArray())
-
+    const sentences = useLiveQuery(async () => {
+        const result = await db.sentences.orderBy('id').toArray();
+        return result.sort((a, b) => {
+            if ('score' in a) {
+                if (a.score > b.score) return -1;
+                if (a.score < b.score) return 1;
+                return 0;
+            } else {
+                return a.id - b.id;
+            }
+        });
+    });
 
     const handleClose = () => {
         onClose(isOpen);
@@ -24,7 +33,7 @@ function SentenceModal(props) {
 
     const handleListItemClick = (value, sounds) => {
         setSentence(value);
-        setSpeech(sounds)
+        setSpeech(sounds);
         onClose(value);
     };
 
@@ -35,7 +44,11 @@ function SentenceModal(props) {
                 <List>
                     {sentences?.map((item) => (
                         <ListItem key={item.id}>
-                            <ListItemButton onClick={() => handleListItemClick(item.sentence, item.sounds)} component="button" className={openSentenceModal ? 'selectable' : ''}>
+                            <ListItemButton
+                                onClick={() => handleListItemClick(item.sentence, item.sounds)}
+                                component="button"
+                                className={openSentenceModal ? 'selectable' : ''}
+                            >
                                 <ListItemText primary={item.sentence} />
                             </ListItemButton>
                         </ListItem>
@@ -45,6 +58,5 @@ function SentenceModal(props) {
         </ThemeProvider>
     );
 }
-
 
 export default SentenceModal;
