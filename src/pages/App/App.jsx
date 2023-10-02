@@ -48,7 +48,7 @@ function App(props) {
         words
     } = useContext(AppContext);
     const navigate = useNavigate();
-    const [padPerLine, setPadPerline] = useState(4);
+    const [padPerLine,] = useState(4);
     const [firstOfRow, setFirstOfRow] = useState(0);
     const [rowIndex, setRowIndex] = useState(0);
     const [openPlan, setOpenPlan] = useState(false);
@@ -101,6 +101,16 @@ function App(props) {
         });
     };
 
+    const saveSentence = async () => {
+        const mySentence = new Sentence(sentence, speech);
+
+        try {
+            await mySentence.save();
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     const handlePadPressed = useCallback(
         (event) => {
             const targets = document.querySelectorAll('button.selectable');
@@ -115,7 +125,8 @@ function App(props) {
 
             switch (padData) {
                 case 32:
-                    clearSentence();
+                    if (currentTarget > padPerLine) swiperRef.current.slidePrev(); 
+                    else clearSentence();
                     break;
                 case 16:
                     if (!openCategoryModal && !openSentenceModal) {
@@ -212,14 +223,14 @@ function App(props) {
     };
 
     useEffect(() => {
-        openController();
-        myController.oninputreport = (e) => handlePadPressed(e);
-        window.electronAPI.handleDeviceRemoved((event, value) => {
-            if (value === 'removed') {
-                setConnected(false);
-                navigate('/');
-            }
-        });
+        // openController();
+        // myController.oninputreport = (e) => handlePadPressed(e);
+        // window.electronAPI.handleDeviceRemoved((event, value) => {
+        //     if (value === 'removed') {
+        //         setConnected(false);
+        //         navigate('/');
+        //     }
+        // });
     }, [myController, openController, handlePadPressed, setConnected, navigate]);
 
     return (
@@ -273,6 +284,7 @@ function App(props) {
                         onClick={() => {
                             autoplay(0, speech);
                             saveScore(wordsUsed);
+                            saveSentence()
                         }}
                     >
                         <RecordVoiceOverIcon className="play" />

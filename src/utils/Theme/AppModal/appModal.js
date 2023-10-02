@@ -5,7 +5,11 @@ export const appModal = createTheme({
         MuiDialog: {
             styleOverrides: {
                 root: {
-                    '& .MuiPaper-root': { backgroundColor: '#3c435d', minWidth: '400px' }
+                    '& .MuiPaper-root': {
+                        backgroundColor: '#3c435d',
+                        minWidth: '400px',
+                        maxHeight: '470px'
+                    }
                 }
             }
         },

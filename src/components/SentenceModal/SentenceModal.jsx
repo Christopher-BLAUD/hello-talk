@@ -14,8 +14,10 @@ import { useLiveQuery } from 'dexie-react-hooks';
 function SentenceModal(props) {
     const { onClose, isOpen } = props;
     let { openSentenceModal, setSentence, setSpeech } = useContext(AppContext);
+    
     const sentences = useLiveQuery(async () => {
         const result = await db.sentences.orderBy('id').toArray();
+
         return result.sort((a, b) => {
             if ('score' in a) {
                 if (a.score > b.score) return -1;
