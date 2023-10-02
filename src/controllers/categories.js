@@ -41,6 +41,14 @@ class Category {
             throw new Error('Error while updating score');
         }
     }
+
+    static async update(id, changes) {
+        try {
+            await db.categories.update(id, changes);
+        } catch (e) {
+            throw new Error('Error while updating category');
+        }
+    }
 }
 
 export default Category;

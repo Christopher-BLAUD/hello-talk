@@ -6,6 +6,7 @@ Category.save = jest.fn();
 Category.delete = jest.fn();
 Category.findOne = jest.fn();
 Category.updateScore = jest.fn();
+Category.update = jest.fn();
 
 describe('class category', () => {
     const caterory = new Category('Présentation', '4f6fd8');
@@ -55,5 +56,15 @@ describe('class category', () => {
 
         expect(Category.updateScore).toBeCalledTimes(1);
         expect(Category.updateScore).toBeCalledWith(id, changes);
+    });
+
+    it('should call the update method with specific parameters', async () => {
+        const id = 6;
+        const changes = { color: '#4f6fd8' };
+
+        await Category.update(id, changes);
+
+        expect(Category.update).toBeCalledTimes(1);
+        expect(Category.update).toBeCalledWith(id, changes);
     });
 });

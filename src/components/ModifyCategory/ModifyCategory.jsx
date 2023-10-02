@@ -34,7 +34,7 @@ function ModifyCategory(props) {
 
     const updateCategory = async (categoryID) => {
         try {
-            await Category.update(categoryID, { color });
+            await Category.update(categoryID, { color: color });
             createAlert(true, 'success', 'Changes saved successfully!');
         } catch (e) {
             console.error(e);
@@ -121,7 +121,7 @@ function ModifyCategory(props) {
                                         backgroundColor: 'var(--green-succes)'
                                     }
                                 }}
-                                onClick={() => updateCategory(category?.id)}
+                                onClick={() => updateCategory(category.id)}
                             >
                                 save
                             </Button>
