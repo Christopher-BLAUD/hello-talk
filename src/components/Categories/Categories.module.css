@@ -78,7 +78,7 @@
     background-color: transparent;
     color: var(--blue-light);
     padding: 8px 12px;
-    border-radius: 5px;
+    border-radius: 3px;
     transition: all 100ms linear;
 }
 
@@ -90,37 +90,6 @@
 .filters .activeFilter{
     background-color: var(--yellow-primary);
     color: var(--blue-dark);
-}
-
-.inputContainer {
-    display: flex;
-    position: relative;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.inputContainer input {
-    height: 100%;
-    min-width: 200px;
-    padding: 4px 8px;
-    border-radius: 5px;
-    border: 1px solid var(--blue-icon);
-    background: #fff;
-    color: var(--blue);
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.inputContainer input::placeholder {
-    color: #a5a5bb;
-    font-weight: 500;
-}
-
-.inputContainer .icon {
-    position: absolute;
-    right: 4px;
-    fill: var(--blue-icon);
-    height: 18px;
 }
 
 .color{

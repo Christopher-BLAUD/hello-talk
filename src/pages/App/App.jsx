@@ -48,13 +48,14 @@ function App(props) {
         words
     } = useContext(AppContext);
     const navigate = useNavigate();
-    const [padPerLine,] = useState(4);
+    const [padPerLine] = useState(4);
     const [firstOfRow, setFirstOfRow] = useState(0);
     const [rowIndex, setRowIndex] = useState(0);
     const [openPlan, setOpenPlan] = useState(false);
     const [wordsUsed, setWordsUsed] = useState([]);
     const swiper = useSwiper();
     const swiperRef = useRef();
+
     const allWords = useLiveQuery(async () => {
         let words = await db.words
             .orderBy('score')
@@ -69,7 +70,11 @@ function App(props) {
     });
 
     const makeSentence = (word, sound, id, category) => {
-        setSentence(sentence + ' ' + word);
+        setSentence(() => {
+            if (sentence === "") return word
+            else return sentence + ' ' + word
+        });
+
         setSpeech([...speech, sound]);
         setWordsUsed([...wordsUsed, { id: id, category: category }]);
     };
@@ -80,7 +85,7 @@ function App(props) {
     };
 
     const saveScore = async (words) => {
-        const sentenceQuery = await Sentence.findOne(sentence.trim());
+        const sentenceQuery = await Sentence.findOne(sentence);
         if (sentenceQuery.length > 0) {
             const currentSentence = sentenceQuery[0];
             await Sentence.updateScore(currentSentence.id, { score: (currentSentence.score || 0) + 1 });
@@ -105,7 +110,9 @@ function App(props) {
         const mySentence = new Sentence(sentence, speech);
 
         try {
-            await mySentence.save();
+            const result = await Sentence.findOne(sentence);
+            if (result.length === 0) await mySentence.save();
+            console.log(result);
         } catch (e) {
             console.error(e);
         }
@@ -125,7 +132,7 @@ function App(props) {
 
             switch (padData) {
                 case 32:
-                    if (currentTarget > padPerLine) swiperRef.current.slidePrev(); 
+                    if (currentTarget > padPerLine) swiperRef.current.slidePrev();
                     else clearSentence();
                     break;
                 case 16:
@@ -223,14 +230,14 @@ function App(props) {
     };
 
     useEffect(() => {
-        // openController();
-        // myController.oninputreport = (e) => handlePadPressed(e);
-        // window.electronAPI.handleDeviceRemoved((event, value) => {
-        //     if (value === 'removed') {
-        //         setConnected(false);
-        //         navigate('/');
-        //     }
-        // });
+        openController();
+        myController.oninputreport = (e) => handlePadPressed(e);
+        window.electronAPI.handleDeviceRemoved((event, value) => {
+            if (value === 'removed') {
+                setConnected(false);
+                navigate('/');
+            }
+        });
     }, [myController, openController, handlePadPressed, setConnected, navigate]);
 
     return (
@@ -284,7 +291,7 @@ function App(props) {
                         onClick={() => {
                             autoplay(0, speech);
                             saveScore(wordsUsed);
-                            saveSentence()
+                            saveSentence();
                         }}
                     >
                         <RecordVoiceOverIcon className="play" />

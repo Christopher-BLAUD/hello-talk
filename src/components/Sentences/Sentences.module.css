@@ -40,7 +40,7 @@
     border: none;
     background-color: transparent;
     padding: 8px 12px;
-    border-radius: 5px;
+    border-radius: 3px;
     transition: all 100ms linear;
 }
 
@@ -61,8 +61,8 @@
     height: 100%;
     min-width: 200px;
     padding: 4px 8px;
-    border-radius: 5px;
-    border: 1px solid var(--blue-icon);
+    border-radius: 3px;
+    border: 1px solid var(--input-border);
     background: #fff;
     color: var(--blue);
     font-size: 14px;
