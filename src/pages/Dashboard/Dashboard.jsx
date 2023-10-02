@@ -32,6 +32,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import BackspaceIcon from '@mui/icons-material/Backspace';
 import SendIcon from '@mui/icons-material/Send';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import StorageIcon from '@mui/icons-material/Storage';
 import AbcIcon from '@mui/icons-material/Abc';
 import SubjectIcon from '@mui/icons-material/Subject';
 import AddWord from '../../components/AddWord/AddWord';
@@ -42,7 +43,8 @@ import styles from './Dashboard.module.css';
 
 function Dashboard() {
     const { setConnected, myController, setMyController, alert, setAlert, alertMess, alertType, words, setWords } = useContext(AppContext);
-    const [open, setOpen] = useState(false);
+    const [openAddMenu, setOpenAddMenu] = useState(false);
+    const [openDataMenu, setOpenDataMenu] = useState(false);
     const [openWordModal, setOpenWordModal] = useState(false);
     const [openCategoryModal, setOpenCategoryModal] = useState(false);
     const [newSentence, setNewSentence] = useState('');
@@ -96,10 +98,6 @@ function Dashboard() {
         }
     };
 
-    const handleClick = () => setOpen(!open);
-    const closeWordModal = () => setOpenWordModal(false);
-    const closeCategoryModal = () => setOpenCategoryModal(false);
-
     const makeSentence = (word, sound) => {
         setNewSentence(formatSentence(newSentence, word));
         setSentenceSounds([...sentenceSounds, sound]);
@@ -149,14 +147,20 @@ function Dashboard() {
                                     <ListItemText primary="Application" className={styles.navText} />
                                 </Link>
                             </ListItemButton>
-                            <ListItemButton component="li" className={styles.navItem} sx={{ padding: '16px 24px' }} onClick={handleClick} title="Ajouter un élément">
+                            <ListItemButton
+                                component="li"
+                                className={styles.navItem}
+                                sx={{ padding: '16px 24px' }}
+                                onClick={() => setOpenAddMenu(!openAddMenu)}
+                                title="Add element"
+                            >
                                 <ListItemIcon className={styles.iconContainer}>
                                     <AddCircleOutlineOutlinedIcon className={styles.navIcon} />
                                 </ListItemIcon>
                                 <ListItemText primary="Add items" className={styles.navText} />
-                                {open ? <ExpandLess className={styles.navIcon} /> : <ExpandMore className={styles.navIcon} />}
+                                {openAddMenu ? <ExpandLess className={styles.navIcon} /> : <ExpandMore className={styles.navIcon} />}
                             </ListItemButton>
-                            <Collapse in={open} timeout="auto" unmountOnExit>
+                            <Collapse in={openAddMenu} timeout="auto" unmountOnExit>
                                 <List component="ul">
                                     <ListItemButton component="li" className={styles.navItem} sx={{ pl: 4 }} title="Category">
                                         <Link onClick={() => setOpenCategoryModal(true)}>
@@ -172,12 +176,41 @@ function Dashboard() {
                                     </ListItemButton>
                                 </List>
                             </Collapse>
+                            <ListItemButton
+                                component="li"
+                                className={styles.navItem}
+                                sx={{ padding: '16px 24px' }}
+                                onClick={() => setOpenDataMenu(!openDataMenu)}
+                                title="Ajouter un élément"
+                            >
+                                <ListItemIcon className={styles.iconContainer}>
+                                    <StorageIcon className={styles.navIcon} />
+                                </ListItemIcon>
+                                <ListItemText primary="Data" className={styles.navText} />
+                                {openDataMenu ? <ExpandLess className={styles.navIcon} /> : <ExpandMore className={styles.navIcon} />}
+                            </ListItemButton>
+                            <Collapse in={openDataMenu} timeout="auto" unmountOnExit>
+                                <List component="ul">
+                                    <ListItemButton component="li" className={styles.navItem} sx={{ pl: 4 }} title="Export to csv">
+                                        <Link onClick={() => setOpenCategoryModal(true)}>
+                                            <div className={styles.dote}></div>
+                                            <ListItemText primary="Export to csv" className={styles.navText} />
+                                        </Link>
+                                    </ListItemButton>
+                                    <ListItemButton component="li" className={styles.navItem} sx={{ pl: 4 }} title="Import csv">
+                                        <Link onClick={() => setOpenWordModal(true)}>
+                                            <div className={styles.dote}></div>
+                                            <ListItemText primary="Import csv" className={styles.navText} />
+                                        </Link>
+                                    </ListItemButton>
+                                </List>
+                            </Collapse>
                         </List>
                     </nav>
                 </header>
                 <main className={styles.content}>
-                    <AddWord onClose={closeWordModal} isOpen={openWordModal} />
-                    <AddCategory onClose={closeCategoryModal} isOpen={openCategoryModal} />
+                    <AddWord onClose={() => setOpenWordModal(false)} isOpen={openWordModal} />
+                    <AddCategory onClose={() => setOpenCategoryModal(false)} isOpen={openCategoryModal} />
                     <div className={styles.container}>
                         <h2 className={styles.titleH2}>Dashboard</h2>
                         <section className={styles.globalInfos}>
