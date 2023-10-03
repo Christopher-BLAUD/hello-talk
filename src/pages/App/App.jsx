@@ -230,14 +230,14 @@ function App(props) {
     };
 
     useEffect(() => {
-        openController();
-        myController.oninputreport = (e) => handlePadPressed(e);
-        window.electronAPI.handleDeviceRemoved((event, value) => {
-            if (value === 'removed') {
-                setConnected(false);
-                navigate('/');
-            }
-        });
+        // openController();
+        // myController.oninputreport = (e) => handlePadPressed(e);
+        // window.electronAPI.handleDeviceRemoved((event, value) => {
+        //     if (value === 'removed') {
+        //         setConnected(false);
+        //         navigate('/');
+        //     }
+        // });
     }, [myController, openController, handlePadPressed, setConnected, navigate]);
 
     return (

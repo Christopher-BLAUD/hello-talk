@@ -17,6 +17,7 @@ import { ThemeProvider, Tooltip } from '@mui/material';
 import { dashboardTheme } from '../../utils/Theme/Dashboard/dashboardTheme';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { jsonToCSV } from 'react-papaparse';
 import Sentence from '../../controllers/sentences';
 import SmallPad from '../../components/SmallPad/SmallPad';
 import Alert from '../../components/Alert/Alert';
@@ -56,6 +57,8 @@ function Dashboard() {
     const createAlert = useAlert();
     const categories = useCategories();
     const allWords = useLiveQuery(async () => await db.words.orderBy('id').toArray());
+    const allCategories = useLiveQuery(async () => await db.categories.orderBy('id').toArray());
+    const allSentences = useLiveQuery(async () => await db.sentences.orderBy('id').toArray());
     const navigate = useNavigate();
 
     const connectToDevice = async () => {
@@ -116,6 +119,33 @@ function Dashboard() {
         },
         [setWords, filtered, words]
     );
+
+    const exportData = () => {
+        let data = [allWords, allCategories, allSentences];
+        let filesName = ['words', 'categories', 'sentences'];
+
+        const options = {
+            quotes: false,
+            quoteChar: '"',
+            escapeChar: '"',
+            delimiter: ',',
+            header: true,
+            newline: '\r\n',
+            skipEmptyLines: true,
+            columns: null
+        };
+
+        data.forEach((element, index) => {
+            const csv = jsonToCSV(element, options);
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filesName[index];
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    };
 
     useEffect(() => {
         applyFilter(activeFilter, allWords);
@@ -181,7 +211,7 @@ function Dashboard() {
                                 className={styles.navItem}
                                 sx={{ padding: '16px 24px' }}
                                 onClick={() => setOpenDataMenu(!openDataMenu)}
-                                title="Ajouter un élément"
+                                title="Add element"
                             >
                                 <ListItemIcon className={styles.iconContainer}>
                                     <StorageIcon className={styles.navIcon} />
@@ -192,7 +222,7 @@ function Dashboard() {
                             <Collapse in={openDataMenu} timeout="auto" unmountOnExit>
                                 <List component="ul">
                                     <ListItemButton component="li" className={styles.navItem} sx={{ pl: 4 }} title="Export to csv">
-                                        <Link onClick={() => setOpenCategoryModal(true)}>
+                                        <Link onClick={exportData}>
                                             <div className={styles.dote}></div>
                                             <ListItemText primary="Export to csv" className={styles.navText} />
                                         </Link>
