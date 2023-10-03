@@ -48,9 +48,17 @@ db.version(5)
     })
     .upgrade(async (tx) => {
         const oldRecords = await tx.words.toArray();
-
         oldRecords.map((record) => {
             return db.words.update(record.id, { score: 0 });
         });
     });
 
+db.version(6)
+    .stores({
+        words: '++id, original, translation, category, sound, score',
+        categories: '++id, name, color, score',
+        sentences: '++id, sentence, *sounds, score'
+    })
+    .upgrade(async () => {
+        return await db.words.toCollection().modify(word => delete word.engTranslation)
+    });
