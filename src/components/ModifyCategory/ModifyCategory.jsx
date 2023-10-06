@@ -4,27 +4,14 @@ import { useAlert } from '../../utils/hooks/useAlert';
 import Category from '../../controllers/categories';
 import { modalTheme } from '../../utils/Theme/Modal/modalTheme';
 import { MuiColorInput } from 'mui-color-input';
-import {
-    ThemeProvider,
-    List,
-    ListItem,
-    Dialog,
-    DialogTitle,
-    FormControl,
-    InputLabel,
-    FilledInput,
-    InputAdornment,
-    Icon,
-    Button,
-    Box,
-    ListItemText
-} from '@mui/material';
+import { ThemeProvider, List, ListItem, Dialog, DialogTitle, FormControl, InputLabel, FilledInput, InputAdornment, Icon, Button, Box, ListItemText } from '@mui/material';
 import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
 import styles from './ModifyCategory.module.css';
 
 function ModifyCategory(props) {
     const { onClose, isOpen, category } = props;
     const [color, setColor] = useState('#ffff');
+    const [name, setName] = useState('');
     const categories = useCategories();
     const createAlert = useAlert();
 
@@ -33,8 +20,16 @@ function ModifyCategory(props) {
     };
 
     const updateCategory = async (categoryID) => {
+        let changes = { name, color };
+
+        const dataArray = Object.entries(changes);
+
+        for (let [key, value] of dataArray) {
+            if (value === '' || value === undefined) delete changes[key];
+        }
+
         try {
-            await Category.update(categoryID, { color: color });
+            await Category.update(categoryID, changes);
             createAlert(true, 'success', 'Changes saved successfully!');
         } catch (e) {
             console.error(e);
@@ -42,6 +37,7 @@ function ModifyCategory(props) {
     };
 
     const handleColor = (color) => setColor(color);
+    const handleName = (name) => setName(name);
 
     useEffect(() => {
         setColor(category?.color);
@@ -69,7 +65,7 @@ function ModifyCategory(props) {
                         >
                             {categories?.map((category) => (
                                 <ListItem key={category.id}>
-                                    <div className={styles.colorTheme} style={{backgroundColor: category.color}}></div>
+                                    <div className={styles.colorTheme} style={{ backgroundColor: category.color }}></div>
                                     <ListItemText primary={category.name} />
                                 </ListItem>
                             ))}
@@ -91,7 +87,7 @@ function ModifyCategory(props) {
                                 label="Nouvelle catégorie"
                                 sx={{ '& input': { padding: '16px', fontWeight: '400' } }}
                                 defaultValue={category?.name}
-                                readOnly
+                                onChange={(e) => handleName(e.target.value)}
                             />
                         </FormControl>
                         <FormControl sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
