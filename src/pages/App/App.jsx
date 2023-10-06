@@ -366,13 +366,6 @@ function App(props) {
                 </div>
             </header>
             <main className={styles.content}>
-                {/* SIMULATION DES PADS */}
-                <div className={styles.padSimulator}>
-                    <button className={styles.blue} onClick={(e) => simulatePad(16)}></button>
-                    <button className={styles.yellow} onClick={(e) => simulatePad(32)}></button>
-                    <button className={styles.red} onClick={(e) => simulatePad(4)}></button>
-                    <button className={styles.green} onClick={(e) => simulatePad(8)}></button>
-                </div>
                 <CategoryModal isOpen={openCategoryModal} onClose={handleClose} />
                 <SentenceModal isOpen={openSentenceModal} onClose={handleClose} />
                 <PlanModal isOpen={openPlan} onClose={handleClose} />
