@@ -71,8 +71,8 @@ function App(props) {
 
     const makeSentence = (word, sound, id, category) => {
         setSentence(() => {
-            if (sentence === "") return word
-            else return sentence + ' ' + word
+            if (sentence === '') return word;
+            else return sentence + ' ' + word;
         });
 
         setSpeech([...speech, sound]);
@@ -229,6 +229,94 @@ function App(props) {
         setCurrentTarget((currentTarget = 0));
     };
 
+    const simulatePad = (value) => {
+        const targets = document.querySelectorAll('button.selectable');
+        const recurrentPads = document.querySelectorAll('.recurrent');
+        const optionsPads = document.querySelectorAll('.options');
+        const firstRow = recurrentPads.length + optionsPads.length;
+        const otherPages = swiperRef.current.snapGrid.length - 1;
+        const totalPerRow = padPerLine + otherPages;
+        const slideIndex = swiperRef.current.snapIndex;
+
+        switch (value) {
+            case 32:
+                if (currentTarget > firstRow) {
+                    if (currentTarget === targets.length - 1 && currentTarget - firstOfRow < totalPerRow) {
+                        let rowLength = currentTarget - firstOfRow + 1;
+                        setCurrentTarget((currentTarget -= padPerLine - (totalPerRow - rowLength)));
+                    } else if (currentTarget - padPerLine < firstOfRow) {
+                        setCurrentTarget(firstOfRow);
+                    } else {
+                        setCurrentTarget((currentTarget -= padPerLine));
+                    }
+                    swiperRef.current.slidePrev();
+                } else {
+                    clearSentence();
+                }
+                break;
+            case 16:
+                if (!openCategoryModal && !openSentenceModal) {
+                    if (currentTarget + totalPerRow > targets.length - 1) {
+                        setCurrentTarget((currentTarget = 0));
+                        setRowIndex(0);
+                        setFirstOfRow(0);
+                    } else {
+                        if (currentTarget === 0) {
+                            setCurrentTarget((currentTarget += firstRow));
+                        } else if (currentTarget <= firstRow) {
+                            setCurrentTarget((currentTarget += firstRow + slideIndex));
+                            setFirstOfRow(firstRow + 1);
+                        } else if (currentTarget > firstRow) {
+                            setCurrentTarget((currentTarget += totalPerRow));
+                            setRowIndex((r) => r + 1);
+                            setFirstOfRow(firstRow + totalPerRow * (rowIndex + 1) + 1);
+                        }
+                    }
+                } else {
+                    currentTarget === targets.length - 1 ? setCurrentTarget((currentTarget = 0)) : setCurrentTarget((currentTarget += 1));
+                }
+                break;
+            case 8:
+                if (currentTarget < targets.length - 1) {
+                    if (currentTarget === firstRow) {
+                        slideIndex !== 0 && swiperRef.current.slideTo(0);
+                        setFirstOfRow(currentTarget + 1);
+                        setCurrentTarget((currentTarget += 1));
+                    } else if (
+                        currentTarget > firstRow &&
+                        currentTarget >= firstOfRow + padPerLine - 1 &&
+                        currentTarget < firstOfRow + totalPerRow - 1 &&
+                        !openCategoryModal &&
+                        !openSentenceModal
+                    ) {
+                        swiperRef.current.slideNext();
+                        setCurrentTarget((currentTarget += 1));
+                    } else if (currentTarget === firstOfRow + totalPerRow - 1) {
+                        swiperRef.current.slideTo(0);
+                        setCurrentTarget((currentTarget += 1));
+                        setFirstOfRow(currentTarget);
+                    } else {
+                        setCurrentTarget((currentTarget += 1));
+                    }
+                } else {
+                    if (slideIndex < otherPages && !openCategoryModal && !openSentenceModal) {
+                        swiperRef.current.slideNext();
+                    } else {
+                        setCurrentTarget(0);
+                        setRowIndex(0);
+                        setFirstOfRow(0);
+                    }
+                }
+                break;
+            case 4:
+                targets[currentTarget].click();
+                break;
+            default:
+                break;
+        }
+        targets[currentTarget].focus();
+    };
+
     useEffect(() => {
         // openController();
         // myController.oninputreport = (e) => handlePadPressed(e);
@@ -278,6 +366,13 @@ function App(props) {
                 </div>
             </header>
             <main className={styles.content}>
+                {/* SIMULATION DES PADS */}
+                <div className={styles.padSimulator}>
+                    <button className={styles.blue} onClick={(e) => simulatePad(16)}></button>
+                    <button className={styles.yellow} onClick={(e) => simulatePad(32)}></button>
+                    <button className={styles.red} onClick={(e) => simulatePad(4)}></button>
+                    <button className={styles.green} onClick={(e) => simulatePad(8)}></button>
+                </div>
                 <CategoryModal isOpen={openCategoryModal} onClose={handleClose} />
                 <SentenceModal isOpen={openSentenceModal} onClose={handleClose} />
                 <PlanModal isOpen={openPlan} onClose={handleClose} />
