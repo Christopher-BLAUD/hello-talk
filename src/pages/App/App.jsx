@@ -132,8 +132,21 @@ function App(props) {
 
             switch (padData) {
                 case 32:
-                    if (currentTarget > padPerLine) swiperRef.current.slidePrev();
-                    else clearSentence();
+                    if (currentTarget > firstRow) {
+                        if (currentTarget === targets.length - 1 && currentTarget - firstOfRow < totalPerRow) {
+                            let rowLength = currentTarget - firstOfRow + 1;
+                            setCurrentTarget((currentTarget -= padPerLine - (totalPerRow - rowLength)));
+                        } else if (currentTarget === firstOfRow) {
+                            setCurrentTarget(firstOfRow);
+                        } else if (currentTarget - padPerLine < firstOfRow) {
+                            setCurrentTarget((currentTarget -= 1));
+                        } else {
+                            setCurrentTarget((currentTarget -= padPerLine));
+                        }
+                        swiperRef.current.slidePrev();
+                    } else {
+                        clearSentence();
+                    }
                     break;
                 case 16:
                     if (!openCategoryModal && !openSentenceModal) {
@@ -230,14 +243,14 @@ function App(props) {
     };
 
     useEffect(() => {
-        // openController();
-        // myController.oninputreport = (e) => handlePadPressed(e);
-        // window.electronAPI.handleDeviceRemoved((event, value) => {
-        //     if (value === 'removed') {
-        //         setConnected(false);
-        //         navigate('/');
-        //     }
-        // });
+        openController();
+        myController.oninputreport = (e) => handlePadPressed(e);
+        window.electronAPI.handleDeviceRemoved((event, value) => {
+            if (value === 'removed') {
+                setConnected(false);
+                navigate('/');
+            }
+        });
     }, [myController, openController, handlePadPressed, setConnected, navigate]);
 
     return (
