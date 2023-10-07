@@ -244,8 +244,10 @@ function App(props) {
                     if (currentTarget === targets.length - 1 && currentTarget - firstOfRow < totalPerRow) {
                         let rowLength = currentTarget - firstOfRow + 1;
                         setCurrentTarget((currentTarget -= padPerLine - (totalPerRow - rowLength)));
-                    } else if (currentTarget - padPerLine < firstOfRow) {
+                    } else if (currentTarget === firstOfRow) {
                         setCurrentTarget(firstOfRow);
+                    } else if (currentTarget - padPerLine < firstOfRow) {
+                        setCurrentTarget((currentTarget -= 1));
                     } else {
                         setCurrentTarget((currentTarget -= padPerLine));
                     }
