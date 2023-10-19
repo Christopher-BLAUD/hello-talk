@@ -56,14 +56,13 @@ function App(props) {
     const swiper = useSwiper();
     const swiperRef = useRef();
 
-    const allWords = useLiveQuery(async () => {
-        let words = await db.words
-            .orderBy('score')
-            .filter((word) => word.category !== 'Récurrent')
-            .toArray();
-
-        return words.reverse();
-    });
+    const allWords = useLiveQuery(
+        async () =>
+            await db.words
+                .orderBy('id')
+                .filter((word) => word.category !== 'Récurrent')
+                .toArray()
+    );
 
     const reccurentsWords = useLiveQuery(async () => {
         return await db.words.where('category').equals('Récurrent').limit(2).sortBy('id');
@@ -230,7 +229,7 @@ function App(props) {
     };
 
     const simulatePad = (value) => {
-        const targets = document.querySelectorAll('button.selectable');
+        const buttons = document.querySelectorAll('button.selectable');
         const recurrentPads = document.querySelectorAll('.recurrent');
         const optionsPads = document.querySelectorAll('.options');
         const firstRow = recurrentPads.length + optionsPads.length;
@@ -241,7 +240,7 @@ function App(props) {
         switch (value) {
             case 32:
                 if (currentTarget > firstRow) {
-                    if (currentTarget === targets.length - 1 && currentTarget - firstOfRow < totalPerRow) {
+                    if (currentTarget === buttons.length - 1 && currentTarget - firstOfRow < totalPerRow) {
                         let rowLength = currentTarget - firstOfRow + 1;
                         setCurrentTarget((currentTarget -= padPerLine - (totalPerRow - rowLength)));
                     } else if (currentTarget === firstOfRow) {
@@ -251,14 +250,14 @@ function App(props) {
                     } else {
                         setCurrentTarget((currentTarget -= padPerLine));
                     }
-                    swiperRef.current.slidePrev();
+                    swiperRef.current.slideTo(slideIndex - padPerLine);
                 } else {
                     clearSentence();
                 }
                 break;
             case 16:
                 if (!openCategoryModal && !openSentenceModal) {
-                    if (currentTarget + totalPerRow > targets.length - 1) {
+                    if (currentTarget + totalPerRow > buttons.length - 1) {
                         setCurrentTarget((currentTarget = 0));
                         setRowIndex(0);
                         setFirstOfRow(0);
@@ -275,11 +274,11 @@ function App(props) {
                         }
                     }
                 } else {
-                    currentTarget === targets.length - 1 ? setCurrentTarget((currentTarget = 0)) : setCurrentTarget((currentTarget += 1));
+                    currentTarget === buttons.length - 1 ? setCurrentTarget((currentTarget = 0)) : setCurrentTarget((currentTarget += 1));
                 }
                 break;
             case 8:
-                if (currentTarget < targets.length - 1) {
+                if (currentTarget < buttons.length - 1) {
                     if (currentTarget === firstRow) {
                         slideIndex !== 0 && swiperRef.current.slideTo(0);
                         setFirstOfRow(currentTarget + 1);
@@ -311,12 +310,12 @@ function App(props) {
                 }
                 break;
             case 4:
-                targets[currentTarget].click();
+                buttons[currentTarget].click();
                 break;
             default:
                 break;
         }
-        targets[currentTarget].focus();
+        buttons[currentTarget].focus();
     };
 
     useEffect(() => {
