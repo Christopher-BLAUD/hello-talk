@@ -49,6 +49,14 @@ class Category {
             throw new Error('Error while updating category');
         }
     }
+
+    static async findAll() {
+        try {
+            return await db.categories.toArray()
+        } catch (e) {
+            throw new Error('Error while loading category')
+        }
+    }
 }
 
 export default Category;

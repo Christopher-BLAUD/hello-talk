@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../../utils/Context/AppContext';
 import { Link } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { useAlert } from '../../utils/hooks/useAlert';
 import { autoplay } from '../../utils/Helpers/autoplay';
 import { db } from '../../utils/Helpers/db';
 import { ThemeProvider } from '@emotion/react';
@@ -47,6 +48,7 @@ function App(props) {
         category,
         words
     } = useContext(AppContext);
+    const createAlert = useAlert();
     const navigate = useNavigate();
     const [padPerLine] = useState(4);
     const [firstOfRow, setFirstOfRow] = useState(0);
@@ -110,8 +112,12 @@ function App(props) {
 
         try {
             const result = await Sentence.findOne(sentence);
-            if (result.length === 0) await mySentence.save();
-            console.log(result);
+            if (result.length === 0) {
+                await mySentence.save();
+                autoplay(0, speech);
+            } else {
+                autoplay(0, speech);
+            }
         } catch (e) {
             console.error(e);
         }
@@ -211,9 +217,18 @@ function App(props) {
         }
     }, [myController, setMyController]);
 
-    const handleCategoryModal = () => {
-        setOpenCategoryModal(true);
-        setCurrentTarget((currentTarget = 0));
+    const handleCategoryModal = async () => {
+        try {
+            const categories = await Category.findAll();
+            if (categories.length === 4) {
+                setOpenCategoryModal(true);
+                setCurrentTarget((currentTarget = 0));
+            } else {
+                createAlert(true, "warning", "No categories available")
+            }
+        } catch (e) {
+            console.error(e);
+        }
     };
 
     const handleSentenceModal = () => {
@@ -385,9 +400,8 @@ function App(props) {
                     <button
                         className={`${styles.iconContainer} ${!openCategoryModal && !openSentenceModal ? 'selectable' : ''}`}
                         onClick={() => {
-                            autoplay(0, speech);
-                            saveScore(wordsUsed);
                             saveSentence();
+                            saveScore(wordsUsed);
                         }}
                     >
                         <RecordVoiceOverIcon className="play" />
