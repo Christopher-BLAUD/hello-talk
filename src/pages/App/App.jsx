@@ -109,8 +109,12 @@ function App(props) {
 
         try {
             const result = await Sentence.findOne(sentence);
-            if (result.length === 0) await mySentence.save();
-            console.log(result);
+            if (result.length === 0) {
+                await mySentence.save();
+                autoplay(0, speech);
+            } else {
+                autoplay(0, speech);
+            }
         } catch (e) {
             console.error(e);
         }
@@ -300,9 +304,8 @@ function App(props) {
                     <button
                         className={`${styles.iconContainer} ${!openCategoryModal && !openSentenceModal ? 'selectable' : ''}`}
                         onClick={() => {
-                            autoplay(0, speech);
-                            saveScore(wordsUsed);
                             saveSentence();
+                            saveScore(wordsUsed);
                         }}
                     >
                         <RecordVoiceOverIcon className="play" />
