@@ -138,7 +138,6 @@ function Dashboard() {
                                     to={'/app'}
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        setWords([]);
                                         connectToDevice();
                                     }}
                                 >
