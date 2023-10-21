@@ -138,9 +138,7 @@ function Dashboard() {
                                     to={'/app'}
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        setWords([]);
                                         connectToDevice();
-                                        navigate('/app');
                                     }}
                                 >
                                     <ListItemIcon className={styles.iconContainer}>
