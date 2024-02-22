@@ -1,7 +1,7 @@
 import Word from '../src/controllers/words';
-import { db } from '../src/utils/Helpers/db';
+import { db } from '../src/utils/helpers/db';
 
-jest.mock('../src/utils/Helpers/db');
+jest.mock('../src/utils/helpers/db');
 
 Word.getWord = jest.fn();
 Word.update = jest.fn();

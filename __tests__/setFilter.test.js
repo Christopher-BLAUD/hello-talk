@@ -1,4 +1,4 @@
-import { setFilter } from '../src/utils/Helpers/setFilter.Js';
+import { setFilter } from '../src/utils/helpers/setFilter.Js';
 
 const words = [
     {

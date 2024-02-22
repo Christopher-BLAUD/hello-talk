@@ -3,7 +3,7 @@ import { useCategories } from '../../utils/hooks/useCategories';
 import { useAlert } from '../../utils/hooks/useAlert';
 import Category from '../../controllers/categories';
 import { modalTheme } from '../../utils/Theme/Modal/modalTheme';
-import { formatName } from '../../utils/Helpers/formatName';
+import { formatName } from '../../utils/helpers/formatName';
 import { MuiColorInput } from 'mui-color-input';
 import {
     ThemeProvider,

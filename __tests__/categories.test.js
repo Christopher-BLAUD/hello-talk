@@ -1,7 +1,7 @@
 import Category from '../src/controllers/categories';
-import { db } from '../src/utils/Helpers/db';
+import { db } from '../src/utils/helpers/db';
 
-jest.mock('../src/utils/Helpers/db');
+jest.mock('../src/utils/helpers/db');
 Category.save = jest.fn();
 Category.delete = jest.fn();
 Category.findOne = jest.fn();

@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { AppContext } from '../../utils/Context/AppContext';
 import { useCategories } from '../../utils/hooks/useCategories';
-import { setColorTheme } from '../../utils/Helpers/setColorTheme';
+import { setColorTheme } from '../../utils/helpers/setColorTheme';
 import styles from './Pad.module.css';
 
 function Pad(props) {

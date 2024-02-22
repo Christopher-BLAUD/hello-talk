@@ -1,4 +1,4 @@
-import { formatSentence } from '../src/utils/Helpers/formatSentence';
+import { formatSentence } from '../src/utils/helpers/formatSentence';
 
 describe('should return a formated sentence whitout white-spaces at the start and end of a string', () => {
     test('the string is empty', () => {

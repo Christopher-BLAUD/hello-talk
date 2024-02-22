@@ -1,7 +1,7 @@
 import Sentence from '../src/controllers/sentences';
-import { db } from '../src/utils/Helpers/db';
+import { db } from '../src/utils/helpers/db';
 
-jest.mock('../src/utils/Helpers/db');
+jest.mock('../src/utils/helpers/db');
 Sentence.save = jest.fn();
 Sentence.delete = jest.fn();
 Sentence.findOne = jest.fn();

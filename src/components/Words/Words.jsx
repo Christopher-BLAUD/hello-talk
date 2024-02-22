@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useWords } from '../../utils/hooks/useWords';
-import { autoplay } from '../../utils/Helpers/autoplay';
+import { autoplay } from '../../utils/helpers/autoplay';
 import { TransitionGroup } from 'react-transition-group';
 import { Collapse, Tooltip, Zoom } from '@mui/material';
-import { setFilter } from '../../utils/Helpers/setFilter.js';
+import { setFilter } from '../../utils/helpers/setFilter.js';
 import Word from '../../controllers/words';
 import ModifyWord from '../ModifyWord/ModifyWord';
 import NoData from '../NoData/NoData';

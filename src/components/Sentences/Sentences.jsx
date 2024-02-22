@@ -1,7 +1,7 @@
 import { useSentences } from '../../utils/hooks/useSentences';
-import { deleteSentence } from '../../utils/Helpers/deleteSentence';
-import { autoplay } from '../../utils/Helpers/autoplay';
-import { setFilter } from '../../utils/Helpers/setFilter';
+import { deleteSentence } from '../../utils/helpers/deleteSentence';
+import { autoplay } from '../../utils/helpers/autoplay';
+import { setFilter } from '../../utils/helpers/setFilter';
 import { Tooltip, Zoom } from '@mui/material';
 import { useState } from 'react';
 import NoData from '../NoData/NoData';

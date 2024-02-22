@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { AppContext } from '../../utils/Context/AppContext';
 import { ThemeProvider } from '@emotion/react';
 import { appModal } from '../../utils/Theme/AppModal/appModal';
-import { db } from '../../utils/Helpers/db';
+import { db } from '../../utils/helpers/db';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';

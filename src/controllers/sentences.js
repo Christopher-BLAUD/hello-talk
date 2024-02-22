@@ -1,4 +1,4 @@
-import { db } from '../utils/Helpers/db';
+import { db } from '../utils/helpers/db';
 
 class Sentence {
     constructor(sentence, sounds, score) {

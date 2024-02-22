@@ -1,5 +1,5 @@
-import { findANumber } from '../utils/Helpers/regex';
-import { db } from '../utils/Helpers/db';
+import { findANumber } from '../utils/helpers/regex';
+import { db } from '../utils/helpers/db';
 
 class Category {
     constructor(name, color, score) {

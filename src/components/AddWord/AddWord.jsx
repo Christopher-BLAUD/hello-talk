@@ -2,7 +2,7 @@ import Word from '../../controllers/words';
 import { useEffect, useRef, useState } from 'react';
 import { useCategories } from '../../utils/hooks/useCategories';
 import { useAlert } from '../../utils/hooks/useAlert';
-import { sendFile } from '../../utils/Helpers/sendFile';
+import { sendFile } from '../../utils/helpers/sendFile';
 import { ThemeProvider, Button, Dialog, DialogTitle, FilledInput, InputAdornment, Icon, FormControl, InputLabel, Box, Select, MenuItem } from '@mui/material';
 import { modalTheme } from '../../utils/Theme/Modal/modalTheme';
 import { IconORG, IconTRA } from '../LangIcon/LangIcon';

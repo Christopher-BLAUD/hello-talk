@@ -1,4 +1,4 @@
-import { validator } from "../src/utils/Helpers/validator";
+import { validator } from "../src/utils/helpers/validator";
 
 describe("test user entries", () => {
     it('should return false if input contains a number', () => {

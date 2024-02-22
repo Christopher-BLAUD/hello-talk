@@ -1,4 +1,4 @@
-import { db } from '../Helpers/db';
+import { db } from '../helpers/db';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useContext, useState } from 'react';
 import { AppContext } from '../Context/AppContext';

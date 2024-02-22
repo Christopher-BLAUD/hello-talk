@@ -7,7 +7,7 @@ import NoData from '../NoData/NoData';
 import CancelIcon from '@mui/icons-material/Cancel';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import styles from './Categories.module.css';
-import { setFilter } from '../../utils/Helpers/setFilter';
+import { setFilter } from '../../utils/helpers/setFilter';
 
 function Categories() {
     const categories = useCategories();

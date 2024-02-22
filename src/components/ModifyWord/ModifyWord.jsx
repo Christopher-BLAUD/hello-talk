@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAlert } from '../../utils/hooks/useAlert';
 import { useCategories } from '../../utils/hooks/useCategories';
-import { sendFile } from '../../utils/Helpers/sendFile';
+import { sendFile } from '../../utils/helpers/sendFile';
 import { ThemeProvider, Button, Dialog, DialogTitle, FilledInput, InputAdornment, Icon, FormControl, InputLabel, Box, Select, MenuItem } from '@mui/material';
 import { modalTheme } from '../../utils/Theme/Modal/modalTheme';
 import { IconORG, IconTRA } from '../LangIcon/LangIcon';
